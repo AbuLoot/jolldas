@@ -1,0 +1,110 @@
+<div>
+	<div class="px-3 py-3 border-bottom mb-3">
+		<div class="container d-flex flex-wrap justify-content-between align-items-center">
+
+		  <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Трек посылки</h4>
+
+		  <form class="col-8 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
+			  <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Введите трек код..." aria-label="Search">
+		  </form>
+
+		  <div class="col-4 col-lg-4 text-end ms-md-auto ms-lg-0">
+  			<button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalAddTrack">
+          <i class="bi bi-plus-circle-fill me-sm-2"></i> <span class="d-none d-sm-inline">Добавить трек</span>
+        </button>
+		  </div>
+		</div>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast-container position-fixed end-0 p-4">
+    <div class="toast align-items-center text-bg-info border-0" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body text-white" id="toastBody"></div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <?php
+
+      $statusClasses = [
+        'arrived' => [
+          'card-color' => 'bg-arrived',
+          'item-color' => 'bg-secondary',
+        ],
+        'sent' => [
+          'card-color' => 'bg-sent',
+          'item-color' => 'bg-secondary',
+        ],
+        'waiting' => [
+          'card-color' => 'bg-received',
+          'item-color' => 'bg-warning',
+        ],
+        'received' => [
+          'card-color' => 'bg-received',
+          'item-color' => 'bg-warning',
+        ],
+        'added' => [
+          'card-color' => 'bg-added',
+          'item-color' => 'bg-muted',
+        ],
+      ];
+
+    ?>
+
+  	<!-- Content -->
+    @foreach($tracks as $track)
+      <div class="track-item mb-2">
+
+        <?php $activeStatus = $track->statuses->last(); ?>
+
+        <div class="border {{ $statusClasses[$activeStatus->slug]['card-color'] }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
+          <div class="row">
+            <div class="col-5"><b>Трек-код:</b> {{ $track->code }}</div>
+            <div class="col-5"><b>Дата:</b> {{ $activeStatus->created_at }}</div>
+            <div class="col-5"><b>Описание:</b> {{ Str::limit($track->description, 35) }}</div>
+            <div class="col-5"><b>Статус:</b> {{ $activeStatus->title }}</div>
+          </div>
+        </div>
+
+        <div class="collapse" id="collapse{{ $track->id }}">
+          <div class="border border-top-0 rounded-bottom p-3">
+            <section>
+              <ul class="timeline-with-icons">
+                @foreach($track->statuses()->orderByDesc('id')->get() as $status)
+
+                  @if($activeStatus->id == $status->id)
+                    <li class="timeline-item mb-2">
+                      <span class="timeline-icon bg-success"><i class="bi bi-check text-white"></i></span>
+                      <p class="text-success mb-0">{{ $status->title }}</p>
+                      <p class="text-success mb-0">{{ $status->created_at }}</p>
+                    </li>
+                    @continue
+                  @endif
+
+                  <li class="timeline-item mb-2">
+                    <span class="timeline-icon bg-secondary"><i class="bi bi-check text-white"></i></span>
+                    <p class="text-body mb-0">{{ $status->title }}</p>
+                    <p class="text-body mb-0">{{ $status->created_at }}</p>
+                  </li>
+                @endforeach
+              </ul>
+              <p><b>Описание:</b> {{ $track->description }}</p>
+            </section>
+          </div>
+        </div>
+      </div>
+    @endforeach
+
+    <br>
+    <nav aria-label="Page navigation example">
+      {{ $tracks->links() }}
+    </nav>
+  </div>
+
+  <!-- Modal Add Track -->
+  <livewire:client.add-track>
+
+</div>
