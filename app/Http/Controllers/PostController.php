@@ -12,21 +12,12 @@ use App\Models\Comment;
 
 class PostController extends Controller
 {
-    public function postsCategory()
+    public function posts()
     {
-        $page = Page::where('slug', 'news-category')->first();
-        $posts = Post::orderBy('created_at', 'desc')->paginate(10);
+        $page = Page::where('slug', 'news')->first();
+        $posts = Post::orderBy('created_at', 'desc')->where('status', 1)->paginate(10);
 
-        return view('pages.posts', compact('page', 'posts'));
-    }
-
-    public function postsCategory2()
-    {
-        $postCategory = Page::where('slug', $page)->first();
-        $postCategories = Page::where('slug', 'posts')->get()->toTree();
-        $post = Post::where('page_id', $postCategory->id)->paginate(10);
-
-        return view('pages.posts-category', compact('postsCategory', 'posts', 'postsCategories'));
+        return view('posts', compact('page', 'posts'));
     }
 
     public function postSingle($page)
@@ -36,7 +27,7 @@ class PostController extends Controller
         $prev = Post::where('id', '<', $post->id)->latest('id')->first();
         $posts = Post::where('id', '!=', $post->id)->orderBy('created_at', 'desc')->take(5)->get();
 
-        return view('pages.post', compact('post', 'next', 'prev', 'posts'));
+        return view('post', compact('post', 'next', 'prev', 'posts'));
     }
 
     public function saveComment(Request $request)

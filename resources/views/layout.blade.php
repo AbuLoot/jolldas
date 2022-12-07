@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,46 +32,25 @@
   @endif
 </head>
 <body class="bg-light">
-
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-brand-" aria-label="Main navigation">
     <div class="container-xl">
-      <a href="#" class="navbar-brand">JOLLDAS</a>
+      <a href="/" class="navbar-brand">JOLLDAS</a>
       <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav py-2 mx-auto-">
           <li class="nav-item">
-            <a class="nav-link px-3 active" aria-current="page" href="/">Главная</a>
+            <a class="nav-link px-3" aria-current="page" href="/"><i class="bi bi-house-fill text-white"></i></a>
           </li>
           @foreach($pages as $page)
             <li class="nav-item">
-              <a class="nav-link px-3 active" aria-current="page" href="/i/{{ $page->slug }}">{{ $page->title }}</a>
+              <a class="nav-link px-3" aria-current="page" href="/i/{{ $page->slug }}">{{ $page->title }}</a>
             </li>
           @endforeach
         </ul>
         <div class="ms-auto">
-          @guest
-            <a href="/login" class="btn btn-outline-light btn-lg me-2">Вход</a>
-            <a href="/register" class="btn btn-warning btn-lg">Регистрация</a>
-          @else
-            <div class="flex-shrink-0 dropdown ms-md-auto ps-3">
-              <a href="#" class="d-block link-light text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-person-circle fs-4 text-white"></i>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end text-small shadow">
-                <div class="text-muted px-3 py-1">{{ Auth::user()->name . ' ' . Auth::user()->lastname }}</div>
-                <li><a class="dropdown-item py-2" href="/{{ $lang }}/profile">Профиль</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                  <form method="POST" action="/logout">
-                    @csrf
-                    <a class="dropdown-item py-2" href="#" onclick="event.preventDefault(); this.closest('form').submit();">Выйти</a>
-                  </form>
-                </li>
-              </ul>
-            </div>
-          @endguest
+          @include('components.auth-dropdown')
         </div>
       </div>
 

@@ -17,6 +17,7 @@
           <td>Пользователь</td>
           <td>Track-code</td>
           <td>Описание</td>
+          <td>Дата</td>
           <td>Статус</td>
           <td>Язык</td>
           <td class="text-right">Функции</td>
@@ -29,8 +30,10 @@
             <td>{{ $i++ }}</td>
             <td>{{ $track->user->name.' '.$track->user->lastname }}</td>
             <td>{{ $track->code }}</td>
-            <td>{{ $track->description }}</td>
-            <td>{{ $track->statuses()->orderBy('created_at', 'desc')->first()->title }}</td>
+            <td>{{ Str::limit($track->description, 35) }}</td>
+            <?php $lastStatus = $track->statuses()->orderBy('created_at', 'desc')->first(); ?>
+            <td>{{ $lastStatus->created_at->format('Y-m-d') }}</td>
+            <td>{{ $lastStatus->title }}</td>
             <td>{{ $track->lang }}</td>
             <td class="text-right">
               <a class="btn btn-link btn-xs" href="{{ route('tracks.edit', [$lang, $track->id]) }}" title="Редактировать"><i class="material-icons md-18">mode_edit</i></a>

@@ -30,10 +30,10 @@
   @livewireStyles
 </head>
 <body class="bg-light">
-  <?php $locale = app()->getLocale(); ?>
+  <?php $lang = app()->getLocale(); ?>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-brand-" aria-label="Main navigation">
     <div class="container-xl">
-      <a href="/{{ $locale }}/storage" class="navbar-brand">JOLLDAS</a>
+      <a href="/{{ $lang }}/client" class="navbar-brand">JOLLDAS</a>
       <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -41,37 +41,20 @@
       <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav py-2 mx-auto-">
           <li class="nav-item">
-            <a class="nav-link px-3" href="/{{ $locale }}/tracks">Мои треки</a>
+            <a class="nav-link px-3" aria-current="page" href="/"><i class="bi bi-house-fill text-white"></i></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link px-3" href="/{{ $locale }}/profile">Профиль</a>
+            <a class="nav-link px-3" href="/{{ $lang }}/client">Мои треки</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3" href="/{{ $lang }}/profile">Мой профиль</a>
           </li>
         </ul>
 
         <button type="button" class="btn btn-primary btn-lg d-block d-sm-none ms-md-auto" data-bs-toggle="modal" data-bs-target="#modalAddTrack"><i class="bi bi-plus-circle-fill me-2"></i> Добавить трек</button>
 
         <div class="flex-shrink-0 dropdown ms-md-auto ps-3">
-          @guest
-            <a href="/login" class="btn btn-outline-light btn-lg me-2">Login</a>
-            <a href="/register" class="btn btn-warning btn-lg">Sign-up</a>
-          @else
-            <div class="flex-shrink-0 dropdown ms-md-auto ps-3">
-              <a href="#" class="d-block link-light text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-person-circle fs-4 text-white"></i>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end text-small shadow">
-                <div class="text-muted px-3 py-1">{{ Auth::user()->name . ' ' . Auth::user()->lastname }}</div>
-                <li><a class="dropdown-item py-2" href="/{{ $locale }}/profile">Profile</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                  <form method="POST" action="/logout">
-                    @csrf
-                    <a class="dropdown-item py-2" href="#" onclick="event.preventDefault(); this.closest('form').submit();">Выйти</a>
-                  </form>
-                </li>
-              </ul>
-            </div>
-          @endguest
+          @include('components.auth-dropdown')
         </div>
 
       </div>
@@ -83,32 +66,14 @@
   </main>
 
   @livewireScripts
-  <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
   <script type="text/javascript">
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-  </script> -->
+  </script>
   <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
   <script src="/js/offcanvas.js"></script>
 
-  <script type="text/javascript">
-    // Toast Script
-    window.addEventListener('show-toast', event => {
-      if (event.detail.reload) {
-        document.location.reload()
-      }
-
-      if (event.detail.selector) {
-        const btnCloseModal = document.getElementById(event.detail.selector)
-        btnCloseModal.click()
-      }
-
-      const toast = new bootstrap.Toast(document.getElementById('liveToast'))
-      toast.show()
-
-      const toastBody = document.getElementById('toastBody')
-      toastBody.innerHTML = event.detail.message
-    })
-  </script>
+  @yield('scripts')
 </body>
 </html>

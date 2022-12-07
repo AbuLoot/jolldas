@@ -30,10 +30,10 @@
   @livewireStyles
 </head>
 <body class="bg-light">
-  <?php $locale = app()->getLocale(); ?>
+  <?php $lang = app()->getLocale(); ?>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-brand-" aria-label="Main navigation">
     <div class="container-xl">
-      <a href="/{{ $locale }}/storage" class="navbar-brand">JOLLDAS</a>
+      <a href="/{{ $lang }}/storage" class="navbar-brand">JOLLDAS</a>
       <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -41,21 +41,24 @@
       <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav py-2 mx-auto-">
           <li class="nav-item">
-            <a class="nav-link px-3" href="/{{ $locale }}/storage/tracks">All tracks</a>
+            <a class="nav-link px-3" aria-current="page" href="/"><i class="bi bi-house-fill text-white"></i></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3" href="/{{ $lang }}/storage/tracks">All tracks</a>
           </li>
           @can('reception', Auth::user())
             <li class="nav-item">
-              <a class="nav-link px-3" href="/{{ $locale }}/storage/reception">Reception</a>
+              <a class="nav-link px-3" href="/{{ $lang }}/storage/reception">Reception</a>
             </li>
           @endcan
           @can('sending', Auth::user())
             <li class="nav-item">
-              <a class="nav-link px-3" href="/{{ $locale }}/storage/sending">Sending</a>
+              <a class="nav-link px-3" href="/{{ $lang }}/storage/sending">Sending</a>
             </li>
           @endcan
           @can('arrival', Auth::user())
             <li class="nav-item">
-              <a class="nav-link px-3" href="/{{ $locale }}/storage/arrival">Arrival</a>
+              <a class="nav-link px-3" href="/{{ $lang }}/storage/arrival">Arrival</a>
             </li>
           @endcan
         </ul>
@@ -63,27 +66,7 @@
         <button type="button" class="btn btn-primary btn-lg d-block d-sm-none ms-md-auto" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-plus-circle-fill me-2"></i> Добавить трек</button>
 
         <div class="flex-shrink-0 dropdown ms-md-auto ps-3">
-          @guest
-            <a href="/login" class="btn btn-outline-light btn-lg me-2">Login</a>
-            <a href="/register" class="btn btn-warning btn-lg">Sign-up</a>
-          @else
-            <div class="flex-shrink-0 dropdown ms-md-auto ps-3">
-              <a href="#" class="d-block link-light text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-person-circle fs-4 text-white"></i>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end text-small shadow">
-                <div class="text-muted px-3 py-1">{{ Auth::user()->name . ' ' . Auth::user()->lastname }}</div>
-                <li><a class="dropdown-item py-2" href="/{{ $locale }}/profile">Profile</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                  <form method="POST" action="/logout">
-                    @csrf
-                    <a class="dropdown-item py-2" href="#" onclick="event.preventDefault(); this.closest('form').submit();">Выйти</a>
-                  </form>
-                </li>
-              </ul>
-            </div>
-          @endguest
+          @include('components.auth-dropdown')
         </div>
 
       </div>

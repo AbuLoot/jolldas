@@ -30,12 +30,14 @@
         @foreach($posts as $post)
           <div class="col">
             <div class="card shadow-sm">
-              <img src="{{ $post->title }}" class="card-img-top" alt="{{ $post->title }}">
+              @if($post->image)
+                <img src="/img/posts/{{ $post->image }}" class="card-img-top" alt="{{ $post->title }}">
+              @endif
 
               <div class="card-body">
                 <h5 class="card-title">{{ $post->title }}</h5>
-                <p class="card-text">{{ Str::limit($post->content, 50) }}</p>
-                <a href="/news/{{ $post->slug }}" class="btn btn-link">Дальше</a>
+                <p class="card-text">{!! Str::limit($post->content, 50) !!}</p>
+                <a href="/i/news/{{ $post->slug }}" class="btn btn-link">Дальше</a>
               </div>
             </div>
           </div>

@@ -18,7 +18,7 @@
             {!! csrf_field() !!}
             <div class="form-group">
               <label for="user_id">Пользователь</label>
-              <input type="text" class="form-control" id="user_id" name="user_id" value="{{ $track->user->name . ' ' . $track->user->lastname }}">
+              <input type="text" class="form-control" id="user_id" name="user_id" value="{{ $track->user->name . ' ' . $track->user->lastname }}" disabled>
             </div>
             <div class="form-group">
               <label for="code">Трек код</label>
@@ -27,6 +27,10 @@
             <div class="form-group">
               <label for="description">Описание</label>
               <input type="text" class="form-control" id="description" name="description" maxlength="80" value="{{ (old('description')) ? old('description') : $track->description }}">
+            </div>
+            <div class="form-group">
+              <label for="updated_at">Дата</label>
+              <input type="text" class="form-control" id="updated_at" name="updated_at" maxlength="80" value="{{ (old('updated_at')) ? old('updated_at') : $track->updated_at }}" disabled>
             </div>
             <div class="form-group">
               <label for="lang">Язык</label>

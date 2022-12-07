@@ -61,8 +61,8 @@
         </div>
 
         <button type="submit" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary">Зарегистрироваться</button>
-        <hr class="my-4">
-        <small class="text-muted">By clicking Sign up, you agree to the terms of use.</small>
+        <!-- <hr class="my-4"> -->
+        <!-- <small class="text-muted">By clicking Sign up, you agree to the terms of use.</small> -->
       </form>
     </div>
   </div>

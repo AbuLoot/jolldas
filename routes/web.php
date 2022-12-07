@@ -45,6 +45,7 @@ use App\Http\Livewire\Storage\Tracks;
 Route::redirect('client', '/'.app()->getLocale().'/client');
 Route::group(['prefix' => '/{lang}/client', 'middleware' => ['auth']], function () {
     Route::get('/', Client::class);
+    Route::get('/tracks', Client::class);
 });
 
 // Storage Livewire Routes
@@ -141,8 +142,8 @@ Route::group(['prefix' => '{lang}', 'middleware' => 'auth'], function() {
 });
 
 // News
-Route::get('news', [BlogController::class, 'posts']);
-Route::get('news/{page}', [BlogController::class, 'postSingle']);
+Route::get('i/news', [BlogController::class, 'posts']);
+Route::get('i/news/{page}', [BlogController::class, 'postSingle']);
 
 // Pages
 Route::get('i/contacts', [SiteController::class, 'contacts']);
