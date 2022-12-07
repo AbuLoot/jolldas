@@ -113,7 +113,8 @@
                   </div>
                   <div class="col-6 col-md-4"><b>Received: {{ $group['dateName'] }}</b></div>
                   <div class="col-12s col-md-4 text-end">
-                    <button type="button" class="btn btn-primary btn-lg" wire:click="getTrackCodes('{{ $group['group']->pluck('id') }}')" data-bs-toggle="modal" data-bs-target="#trackCodesModal">Open</button>
+                    <!-- data-bs-toggle="modal" data-bs-target="#trackCodesModal" -->
+                    <button type="button" class="btn btn-primary btn-lg" wire:click="getTrackCodes('{{ $group['group']->pluck('id') }}')">Open</button>
                     <button type="button" class="btn btn-success btn-lg" wire:click="toSend('{{ $group['group']->pluck('id') }}')">Send</button>
                   </div>
                 </div>
@@ -146,4 +147,11 @@
       </div>
     </div>
   </div>
+
+  <script>
+    window.addEventListener('open-modal', event => {
+      var docModal = new bootstrap.Modal(document.getElementById("trackCodesModal"), {});
+      docModal.show();
+    })
+  </script>
 </div>

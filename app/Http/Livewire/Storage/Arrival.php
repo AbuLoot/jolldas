@@ -41,6 +41,7 @@ class Arrival extends Component
         $ids = explode(',', $trackIds);
 
         $this->trackCodes = Track::whereIn('id', $ids)->get();
+        $this->dispatchBrowserEvent('open-modal');
     }
 
     public function toAccept($trackIds)

@@ -32,7 +32,7 @@
   <?php $lang = app()->getLocale(); ?>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-brand-" aria-label="Main navigation">
     <div class="container-xl">
-      <a href="/{{ $lang }}/" class="navbar-brand">JOLLDAS</a>
+      <a href="/" class="navbar-brand">JOLLDAS</a>
       <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
