@@ -18,7 +18,7 @@
             {!! csrf_field() !!}
             <div class="form-group">
               <label for="user_id">Пользователь</label>
-              <input type="text" class="form-control" id="user_id" name="user_id" value="{{ $track->user->name . ' ' . $track->user->lastname }}" disabled>
+              <input type="text" class="form-control" id="user_id" name="user_id" value="@if($track->user) {{ $track->user->name . ' ' . $track->user->lastname }} @endif" disabled>
             </div>
             <div class="form-group">
               <label for="code">Трек код</label>

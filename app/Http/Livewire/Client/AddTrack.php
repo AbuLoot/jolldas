@@ -15,7 +15,7 @@ class AddTrack extends Component
     public Track $track;
 
     protected $rules = [
-        'track.code' => 'required|string|min:8',
+        'track.code' => 'required|string|min:12|max:20',
         'track.description' => 'required|string|max:1000',
     ];
 

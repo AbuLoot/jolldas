@@ -28,7 +28,7 @@
         @foreach ($tracks as $track)
           <tr>
             <td>{{ $i++ }}</td>
-            <td>{{ $track->user->name.' '.$track->user->lastname }}</td>
+            <td>@if($track->user) {{ $track->user->name.' '.$track->user->lastname }} @endif</td>
             <td>{{ $track->code }}</td>
             <td>{{ Str::limit($track->description, 35) }}</td>
             <?php $lastStatus = $track->statuses()->orderBy('created_at', 'desc')->first(); ?>
