@@ -31,7 +31,7 @@ class AddTrack extends Component
 
         $existsTrack = Track::where('code', $this->track->code)->first();
 
-        if ($existsTrack->user_id == null) {
+        if ($existsTrack && $existsTrack->user_id == null) {
             $existsTrack->user_id = auth()->user()->id;
             $existsTrack->description = $this->track->description;
             $existsTrack->save();
