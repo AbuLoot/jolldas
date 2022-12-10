@@ -50,7 +50,7 @@ Route::group(['prefix' => '/{lang}/client', 'middleware' => ['auth']], function 
 
 // Storage Livewire Routes
 Route::redirect('storage', '/'.app()->getLocale().'/storage');
-Route::group(['prefix' => '/{lang}/storage', 'middleware' => ['auth', 'roles:admin|storekeeper']], function () {
+Route::group(['prefix' => '/{lang}/storage', 'middleware' => ['auth', 'roles:admin|storekeeper-first|storekeeper-last']], function () {
     Route::get('/', Reception::class);
     Route::get('reception', Reception::class);
     Route::get('sending', Sending::class);

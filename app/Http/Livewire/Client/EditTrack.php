@@ -1,0 +1,55 @@
+<?php
+
+namespace App\Http\Livewire\Client;
+
+use Livewire\Component;
+
+use App\Models\Track;
+use App\Models\Status;
+use App\Models\TrackStatus;
+
+class EditTrack extends Component
+{
+    public $lang;
+    public $search;
+    public Track $track;
+
+    protected $listeners = ['editTrack' => 'editTrack'];
+
+    protected $rules = [
+        'track.code' => 'required|string|min:12|max:20',
+        'track.description' => 'required|string|max:1000',
+    ];
+
+    public function mount()
+    {
+        $this->lang = app()->getLocale();
+    }
+
+    public function editTrack($id)
+    {
+        $this->track = Track::find($id);
+
+        $this->dispatchBrowserEvent('open-modal');
+    }
+
+    public function saveTrack()
+    {
+        $this->validate();
+
+        $this->track->save();
+
+        $this->track->code = null;
+        $this->track->description = null;
+
+        $this->emitUp('newData');
+        $this->dispatchBrowserEvent('show-toast', [
+            'message' => 'Data saved', 'selector' => 'closeEditTrack'
+        ]);
+    }
+
+    public function render()
+    {
+        return view('livewire.client.edit-track');
+    }
+}

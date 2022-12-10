@@ -31,6 +31,22 @@ class AddTrack extends Component
 
         $existsTrack = Track::where('code', $this->track->code)->first();
 
+        if ($existsTrack->user_id == null) {
+            $existsTrack->user_id = auth()->user()->id;
+            $existsTrack->description = $this->track->description;
+            $existsTrack->save();
+
+            $this->track->code = null;
+            $this->track->description = null;
+
+            $this->emitUp('newData');
+            $this->dispatchBrowserEvent('show-toast', [
+                'message' => 'Data added', 'selector' => 'closeAddTrack'
+            ]);
+
+            exit();
+        }
+
         if ($existsTrack) {
             $this->addError('track.code', 'Track code exists');
             return;

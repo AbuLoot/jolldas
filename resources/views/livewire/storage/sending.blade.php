@@ -150,8 +150,8 @@
 
   <script>
     window.addEventListener('open-modal', event => {
-      var docModal = new bootstrap.Modal(document.getElementById("trackCodesModal"), {});
-      docModal.show();
+      var tracksModal = new bootstrap.Modal(document.getElementById("trackCodesModal"), {});
+      tracksModal.show();
     })
   </script>
 </div>

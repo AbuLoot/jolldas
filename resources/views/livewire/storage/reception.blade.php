@@ -68,10 +68,20 @@
 
             <div class="border {{ $statusClasses[$activeStatus->slug]['card-color'] }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
               <div class="row">
-                <div class="col-5"><b>Track code:</b> {{ $track->code }}</div>
-                <div class="col-5"><b>{{ ucfirst($activeStatus->slug) }} Date:</b> {{ $activeStatus->created_at }}</div>
-                <div class="col-5"><b>Description:</b> {{ Str::limit($track->description, 35) }}</div>
-                <div class="col-5"><b>Status:</b> {{ $activeStatus->title }}</div>
+                <div class="col-12 col-lg-6">
+                  <div><b>Track code:</b> {{ $track->code }}</div>
+                  <div><b>Description:</b> {{ Str::limit($track->description, 35) }}</div>
+                </div>
+                <div class="col-12 col-lg-6">
+                  <div><b>{{ ucfirst($activeStatus->slug) }} Date:</b> {{ $activeStatus->created_at }}</div>
+                  <div><b>Status:</b> {{ $activeStatus->title }}</div>
+                </div>
+                @if($track->user) 
+                  <div class="col-12 col-lg-12">
+                    <b>User:</b> {{ $track->user->name.' '.$track->user->lastname }}<br>
+                    <b>ID:</b> {{ $track->user->id_client }}
+                  </div>
+                @endif
               </div>
             </div>
 

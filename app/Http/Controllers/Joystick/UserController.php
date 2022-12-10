@@ -58,7 +58,7 @@ class UserController extends Controller
         $user->lastname = $request->lastname;
         $user->email = $request->email;
         $user->address = $request->address;
-        $user->balance = $request->balance;
+        // $user->balance = $request->balance;
         $user->is_customer = ($request->is_customer == 'on') ? 1 : 0;
         $user->is_worker = ($request->is_worker == 'on' OR $request->role_id) ? 1 : 0;
         $user->status = ($request->status == 'on') ? 1 : 0;

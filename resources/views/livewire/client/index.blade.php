@@ -59,40 +59,51 @@
       <div class="track-item mb-2">
 
         <?php $activeStatus = $track->statuses->last(); ?>
+        <div class="row">
+          <div class="col-10 col-lg-11">
+            <div class="border {{ $statusClasses[$activeStatus->slug]['card-color'] }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
+              <div class="row">
+                <div class="col-12 col-lg-5">
+                  <div><b>Трек-код:</b> {{ $track->code }}</div>
+                  <div><b>Описание:</b> {{ Str::limit($track->description, 35) }}</div>
+                </div>
+                <div class="col-9 col-lg-5">
+                  <div><b>Дата:</b> {{ $activeStatus->created_at }}</div>
+                  <div><b>Статус:</b> {{ $activeStatus->title }}</div>
+                </div>
+              </div>
+            </div>
 
-        <div class="border {{ $statusClasses[$activeStatus->slug]['card-color'] }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
-          <div class="row">
-            <div class="col-5"><b>Трек-код:</b> {{ $track->code }}</div>
-            <div class="col-5"><b>Дата:</b> {{ $activeStatus->created_at }}</div>
-            <div class="col-5"><b>Описание:</b> {{ Str::limit($track->description, 35) }}</div>
-            <div class="col-5"><b>Статус:</b> {{ $activeStatus->title }}</div>
+            <div class="collapse" id="collapse{{ $track->id }}">
+              <div class="border border-top-0 rounded-bottom p-3">
+                <section>
+                  <ul class="timeline-with-icons">
+                    @foreach($track->statuses()->orderByDesc('id')->get() as $status)
+
+                      @if($activeStatus->id == $status->id)
+                        <li class="timeline-item mb-2">
+                          <span class="timeline-icon bg-success"><i class="bi bi-check text-white"></i></span>
+                          <p class="text-success mb-0">{{ $status->title }}</p>
+                          <p class="text-success mb-0">{{ $status->created_at }}</p>
+                        </li>
+                        @continue
+                      @endif
+
+                      <li class="timeline-item mb-2">
+                        <span class="timeline-icon bg-secondary"><i class="bi bi-check text-white"></i></span>
+                        <p class="text-body mb-0">{{ $status->title }}</p>
+                        <p class="text-body mb-0">{{ $status->created_at }}</p>
+                      </li>
+                    @endforeach
+                  </ul>
+                  <p><b>Описание:</b> {{ $track->description }}</p>
+                </section>
+              </div>
+            </div>
           </div>
-        </div>
-
-        <div class="collapse" id="collapse{{ $track->id }}">
-          <div class="border border-top-0 rounded-bottom p-3">
-            <section>
-              <ul class="timeline-with-icons">
-                @foreach($track->statuses()->orderByDesc('id')->get() as $status)
-
-                  @if($activeStatus->id == $status->id)
-                    <li class="timeline-item mb-2">
-                      <span class="timeline-icon bg-success"><i class="bi bi-check text-white"></i></span>
-                      <p class="text-success mb-0">{{ $status->title }}</p>
-                      <p class="text-success mb-0">{{ $status->created_at }}</p>
-                    </li>
-                    @continue
-                  @endif
-
-                  <li class="timeline-item mb-2">
-                    <span class="timeline-icon bg-secondary"><i class="bi bi-check text-white"></i></span>
-                    <p class="text-body mb-0">{{ $status->title }}</p>
-                    <p class="text-body mb-0">{{ $status->created_at }}</p>
-                  </li>
-                @endforeach
-              </ul>
-              <p><b>Описание:</b> {{ $track->description }}</p>
-            </section>
+          <div class="col-2 col-lg-1 text-end">
+            <button wire:click="editTrack({{ $track->id }})" type="button" class="btn btn-outline-primary mb-1"><i class="bi bi-pen"></i></button>
+            <button onclick="return confirm('Удалить запись?') || event.stopImmediatePropagation()" wire:click="deleteTrack({{ $track->id }})" type="button" class="btn btn-outline-dark"><i class="bi bi-x-lg"></i></button>
           </div>
         </div>
       </div>
@@ -107,4 +118,30 @@
   <!-- Modal Add Track -->
   <livewire:client.add-track>
 
+  <!-- Modal Edit Track -->
+  <livewire:client.edit-track>
+
+  <script>
+    window.addEventListener('open-modal', event => {
+      var trackModal = new bootstrap.Modal(document.getElementById("modalEditTrack"), {});
+      trackModal.show();
+    })
+  </script>
 </div>
+
+@section('scripts')
+  <script type="text/javascript">
+    window.addEventListener('show-toast', event => {
+      if (event.detail.selector) {
+        const btnCloseModal = document.getElementById(event.detail.selector)
+        btnCloseModal.click()
+      }
+
+      const toast = new bootstrap.Toast(document.getElementById('liveToast'))
+      toast.show()
+
+      const toastBody = document.getElementById('toastBody')
+      toastBody.innerHTML = event.detail.message
+    })
+  </script>
+@endsection

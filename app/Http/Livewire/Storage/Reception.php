@@ -16,7 +16,7 @@ class Reception extends Component
     public $trackCode;
 
     protected $rules = [
-        'trackCode' => 'required|string|min:8|max:25',
+        'trackCode' => 'required|string|min:12|max:20',
     ];
 
     protected $listeners = [
@@ -25,6 +25,10 @@ class Reception extends Component
 
     public function mount()
     {
+        if (auth()->user()->roles->first()->name == 'storekeeper-last') {
+            return redirect($this->lang.'/storage/arrival');
+        }
+
         if (! Gate::allows('reception', auth()->user())) {
             abort(403);
         }
@@ -42,6 +46,17 @@ class Reception extends Component
             ->first();
 
         $track = Track::where('code', $this->trackCode)->first();
+
+        if (!$track) {
+            $newTrack = new Track;
+            $newTrack->user_id = null;
+            $newTrack->lang = $this->lang;
+            $newTrack->code = $this->trackCode;
+            $newTrack->description = '';
+            $newTrack->save();
+
+            $track = $newTrack;
+        }
 
         if ($track->status == $status->id) {
             $this->addError('trackCode', 'Track received');

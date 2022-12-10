@@ -9,7 +9,7 @@ return [
 		'low'	=> 'By low',
 	],
 
-	'sex' => [
+	'gender' => [
 		'man'	=> 'Man',
 		'woman'	=> 'Woman',
 	],
