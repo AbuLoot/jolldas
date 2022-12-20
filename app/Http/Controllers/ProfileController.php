@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules;
 
 use DB;
 use Auth;
 use Hash;
+use Str;
 
 use App\Models\User;
 use App\Models\Region;
@@ -71,22 +73,25 @@ class ProfileController extends Controller
     public function updateProfile(Request $request)
     {
         $this->validate($request, [
-            'lastname' => 'required|min:2|max:40',
-            'name' => 'required|min:2|max:40',
-            'email' => 'required|email|max:255',
-            'region_id' => 'required|numeric'
+            'name' => ['required', 'string', 'max:255'],
+            'lastname' => ['required', 'string', 'max:255'],
+            'tel' => ['required', 'string', 'max:15'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'id_client' => ['required', 'string', 'min:11', 'max:15'],
+            'region_id' => ['required', 'integer'],
+            'address' => ['required', 'string'],
         ]);
 
         $user = Auth::user();
 
         $user->name = $request->name;
         $user->lastname = $request->lastname;
-        $user->tel = $request->tel;
         $user->email = $request->email;
+        $user->tel = $request->tel;
+        $user->id_client = $request->id_client;
         $user->region_id = $request->region_id;
         $user->address = $request->address;
-        $user->id_client = $request->id_client;
-        $user->id_name = $request->id_name;
+        // $user->id_name = $request->id_name;
         $user->save();
 
         // $user->profile->birthday = $request->birthday;
@@ -105,19 +110,14 @@ class ProfileController extends Controller
     public function passwordUpdate(Request $request, $lang)
     {
         $this->validate($request, [
-            'email' => 'required|email|max:255',
-            'old_password' => 'required|min:6|max:255',
-            'password' => 'required|confirmed|min:6|max:255'
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = Auth::user();
 
         if ($user->email != $request->email) {
             return redirect()->back()->with('danger', 'Email не совпадает!');
-        }
-
-        if (Hash::check($request->old_password, $user->password)) {
-            return redirect()->back()->with('danger', 'Старый пароль не совпадает!');
         }
 
         $user->password = Hash::make($request->password);

@@ -51,13 +51,13 @@
           <label for="address">Адрес</label>
         </div>
         <div class="form-floating mb-3">
-          <input type="text" class="form-control rounded-3" name="id_client" id="id_client" value="{{ $user->id_client }}" placeholder="ID account: J7799..." required>
+          <input type="text" class="form-control rounded-3" name="id_client" id="id_client" value="{{ $user->id_client }}" placeholder="ID account: J7799...">
           <label for="id_client">ID account</label>
         </div>
-        <div class="form-floating mb-3">
+        <!-- <div class="form-floating mb-3">
           <input type="text" class="form-control rounded-3" name="id_name" id="id_name" value="{{ $user->id_name }}" placeholder="ID name Taobao, Alibaba...">
           <label for="id_name">ID name</label>
-        </div>
+        </div> -->
 
         <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Сохранить</button><br>
         <a href="/{{ $lang }}/profile/password/edit" class="w-100 mb-2 btn btn-lg rounded-3 btn-link">Изменить пароль</a>

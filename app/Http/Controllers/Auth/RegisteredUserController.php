@@ -48,15 +48,15 @@ class RegisteredUserController extends Controller
 
         $region = Region::find($request->region_id);
 
-        $id_client = 'J7799'.substr($region->slug, 0, 3).substr($request->tel, -5);
-        $id_client = Str::upper($id_client);
+        // $idClient = 'J7799'.substr($region->slug, 0, 3).substr($request->tel, -5);
+        // $idClient = Str::upper($idClient);
 
         $user = User::create([
             'name' => $request->name,
             'lastname' => $request->lastname,
             'email' => $request->email,
             'tel' => $request->tel,
-            'id_client' => $id_client,
+            // 'id_client' => $idClient,
             'region_id' => $request->region_id,
             'address' => $request->address,
             'password' => Hash::make($request->password),
