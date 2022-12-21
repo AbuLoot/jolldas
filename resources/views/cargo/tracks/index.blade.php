@@ -32,7 +32,7 @@
             <td>{{ $track->code }}</td>
             <td>{{ Str::limit($track->description, 35) }}</td>
             <?php $lastStatus = $track->statuses()->orderBy('created_at', 'desc')->first(); ?>
-            <td>{{ $lastStatus->created_at->format('Y-m-d') }}</td>
+            <td>{{ $lastStatus->pivot->created_at->format('Y-m-d') }}</td>
             <td>{{ $lastStatus->title }}</td>
             <td>{{ $track->lang }}</td>
             <td class="text-right">

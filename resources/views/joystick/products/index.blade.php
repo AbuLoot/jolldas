@@ -118,6 +118,7 @@
       </tbody>
     </table>
   </div>
+
   {{ $products->links() }}
 
   <!-- Modal Progress Bar -->

@@ -30,17 +30,6 @@
             </div>
 
             <div class="form-group">
-              <label for="old-password">{{ __('Old Password') }}:</label>
-              <input id="old-password" type="password" class="form-control{{ $errors->has('old_password') ? ' is-invalid' : '' }}" name="old_password" required>
-
-              @if ($errors->has('old-password'))
-                <span class="invalid-feedback" role="alert">
-                  <strong>{{ $errors->first('old-password') }}</strong>
-                </span>
-              @endif
-            </div>
-
-            <div class="form-group">
               <label for="password">{{ __('Password') }}:</label>
               <input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required>
 

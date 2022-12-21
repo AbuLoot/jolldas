@@ -13,7 +13,7 @@ class Track extends Model
 
     public function statuses()
     {
-        return $this->belongsToMany(Status::class, 'track_status');
+        return $this->belongsToMany(Status::class, 'track_status')->withPivot('created_at', 'updated_at');
     }
 
     public function user()

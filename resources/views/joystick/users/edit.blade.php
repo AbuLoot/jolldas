@@ -42,12 +42,16 @@
               <input type="tel" pattern="(\+?\d[- .]*){7,13}" class="form-control" name="tel" placeholder="Номер телефона*" value="{{ (old('tel')) ? old('tel') : $user->tel }}">
             </div>
             <div class="form-group">
-              <label>Адрес</label>
-              <input type="text" class="form-control" name="address" placeholder="Адрес*" value="{{ (old('address')) ? old('address') : $user->address }}">
+              <label>ID client</label>
+              <input type="text" class="form-control" name="id_client" maxlength="30" placeholder="ID client*" value="{{ (old('id_client')) ? old('id_client') : $user->id_client }}">
             </div>
             <div class="form-group">
-              <label>Баланс</label>
-              <input type="text" class="form-control" name="balance" maxlength="30" placeholder="Баланс*" value="{{ (old('balance')) ? old('balance') : $user->balance }}">
+              <label>ID name</label>
+              <input type="text" class="form-control" name="id_name" maxlength="30" placeholder="ID name*" value="{{ (old('id_name')) ? old('id_name') : $user->id_name }}">
+            </div>
+            <div class="form-group">
+              <label>Адрес</label>
+              <input type="text" class="form-control" name="address" placeholder="Адрес*" value="{{ (old('address')) ? old('address') : $user->address }}">
             </div>
             <div class="form-group">
               <label for="role_id">Роли:</label>
@@ -94,7 +98,7 @@
                 <option value=""></option>
                 <?php $traverse = function ($nodes, $prefix = null) use (&$traverse, $user) { ?>
                   <?php foreach ($nodes as $node) : ?>
-                    <option value="{{ $node->id }}" <?= ($node->id == $user->profile->region_id) ? 'selected' : ''; ?>>{{ PHP_EOL.$prefix.' '.$node->title }}</option>
+                    <option value="{{ $node->id }}" <?= ($node->id == $user->region_id) ? 'selected' : ''; ?>>{{ PHP_EOL.$prefix.' '.$node->title }}</option>
                     <?php $traverse($node->children, $prefix.'___'); ?>
                   <?php endforeach; ?>
                 <?php }; ?>

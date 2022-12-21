@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Joystick;
 
+use Auth;
 use Hash;
 
+use Illuminate\Validation\Rules;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -57,15 +59,19 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->lastname = $request->lastname;
         $user->email = $request->email;
+        $user->tel = $request->tel;
+        $user->id_client = $request->id_client;
+        $user->id_name = $request->id_name;
+        $user->region_id = $request->region_id;
         $user->address = $request->address;
         // $user->balance = $request->balance;
-        $user->is_customer = ($request->is_customer == 'on') ? 1 : 0;
-        $user->is_worker = ($request->is_worker == 'on' OR $request->role_id) ? 1 : 0;
+        // $user->is_customer = ($request->is_customer == 'on') ? 1 : 0;
+        // $user->is_worker = ($request->is_worker == 'on' OR $request->role_id) ? 1 : 0;
         $user->status = ($request->status == 'on') ? 1 : 0;
 
         if (is_null($request->role_id)) {
             $user->roles()->detach();
-            $user->is_worker = 0;
+            // $user->is_worker = 0;
         } else {
             $user->roles()->sync($request->role_id);
         }
@@ -78,7 +84,7 @@ class UserController extends Controller
             $profile->user_id = $user->id;
             $profile->region_id = $request->region_id;
             $profile->company_id = $request->company_id;
-            $profile->tel = $request->phone;
+            $profile->tel = $request->tel;
             $profile->birthday = $request->birthday;
             $profile->gender = $request->gender;
             $profile->about = $request->about;
@@ -116,19 +122,14 @@ class UserController extends Controller
     public function passwordUpdate(Request $request, $lang, $id)
     {
         $this->validate($request, [
-            'email' => 'required|email|max:255',
-            'old_password' => 'required|min:6|max:255',
-            'password' => 'required|confirmed|min:6|max:255'
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::findOrFail($id);
+        $user = Auth::user();
 
         if ($user->email != $request->email) {
             return redirect()->back()->with('danger', 'Email не совпадает!');
-        }
-
-        if (Hash::check($request->old_password, $user->password)) {
-            return redirect()->back()->with('danger', 'Старый пароль не совпадает!');
         }
 
         $user->password = Hash::make($request->password);

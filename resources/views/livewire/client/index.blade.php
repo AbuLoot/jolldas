@@ -58,7 +58,7 @@
     @foreach($tracks as $track)
       <div class="track-item mb-2">
 
-        <?php $activeStatus = $track->statuses->last(); ?>
+        <?php $activeStatus = $track->statuses->last();?>
         <div class="row">
           <div class="col-10 col-lg-11">
             <div class="border {{ $statusClasses[$activeStatus->slug]['card-color'] }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
@@ -68,7 +68,7 @@
                   <div><b>Описание:</b> {{ Str::limit($track->description, 35) }}</div>
                 </div>
                 <div class="col-9 col-lg-5">
-                  <div><b>Дата:</b> {{ $activeStatus->created_at }}</div>
+                  <div><b>Дата:</b> {{ $track->updated_at }}</div>
                   <div><b>Статус:</b> {{ $activeStatus->title }}</div>
                 </div>
               </div>
@@ -84,7 +84,7 @@
                         <li class="timeline-item mb-2">
                           <span class="timeline-icon bg-success"><i class="bi bi-check text-white"></i></span>
                           <p class="text-success mb-0">{{ $status->title }}</p>
-                          <p class="text-success mb-0">{{ $status->created_at }}</p>
+                          <p class="text-success mb-0">{{ $status->pivot->created_at }}</p>
                         </li>
                         @continue
                       @endif
@@ -92,7 +92,7 @@
                       <li class="timeline-item mb-2">
                         <span class="timeline-icon bg-secondary"><i class="bi bi-check text-white"></i></span>
                         <p class="text-body mb-0">{{ $status->title }}</p>
-                        <p class="text-body mb-0">{{ $status->created_at }}</p>
+                        <p class="text-body mb-0">{{ $status->pivot->created_at }}</p>
                       </li>
                     @endforeach
                   </ul>

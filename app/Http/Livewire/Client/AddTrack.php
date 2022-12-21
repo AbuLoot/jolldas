@@ -62,6 +62,11 @@ class AddTrack extends Component
         $this->track->status = $status->id;
         $this->track->save();
 
+        if ($this->track->statuses()->where('id', $status->id)->first()) {
+            $this->addError('track.code', 'Status added');
+            return;
+        }
+
         $trackStatus = new TrackStatus();
         $trackStatus->track_id = $this->track->id;
         $trackStatus->status_id = $status->id;

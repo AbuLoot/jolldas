@@ -5,7 +5,7 @@
 
       <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Track codes group</h4>
 
-      <form class="col-4 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
+      <form class="col-12 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
         <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Enter track code..." aria-label="Search">
       </form>
 

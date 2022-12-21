@@ -23,10 +23,10 @@
         @foreach($users as $user)
           <tr>
             <td>{{ $i++ }}</td>
-            <td>{{ $user->name }}</td>
+            <td>{{ $user->name.' '.$user->lastname }}</td>
             <td>{{ $user->email }}</td>
-            <td>{{ ($user->profile) ? $user->profile->tel : '' }}</td>
-            <td><?php if ($user->profile) echo $regions->firstWhere('id', $user->profile->region_id)->title; ?></td>
+            <td>{{ $user->tel }}</td>
+            <td>{{ $user->region->title }}</td>
             <td>
               @foreach($user->roles as $role)
                 {{ $role->name }}<br>

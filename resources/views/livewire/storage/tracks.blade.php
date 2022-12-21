@@ -4,7 +4,7 @@
 
       <h4 class="col-4 col-lg-4 mb-md-2 mb-lg-0">Tracks</h4>
 
-      <form class="col-4 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
+      <form class="col-8 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
         <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Enter track code..." aria-label="Search">
       </form>
 
@@ -52,7 +52,7 @@
                   <div><b>Description:</b> {{ Str::limit($track->description, 35) }}</div>
                 </div>
                 <div class="col-12 col-lg-5">
-                  <div><b>{{ ucfirst($activeStatus->slug) }} Date:</b> {{ $activeStatus->created_at }}</div>
+                  <div><b>{{ ucfirst($activeStatus->slug) }} Date:</b> {{ $activeStatus->pivot->created_at }}</div>
                   <div><b>Status:</b> {{ $activeStatus->title }}</div>
                 </div>
                 @if($track->user) 
@@ -74,7 +74,7 @@
                         <li class="timeline-item mb-2">
                           <span class="timeline-icon bg-success"><i class="bi bi-check text-white"></i></span>
                           <p class="text-success mb-0">{{ $status->title }}</p>
-                          <p class="text-success mb-0">{{ $status->created_at }}</p>
+                          <p class="text-success mb-0">{{ $status->pivot->created_at }}</p>
                         </li>
                         @continue
                       @endif
@@ -82,7 +82,7 @@
                       <li class="timeline-item mb-2">
                         <span class="timeline-icon bg-secondary"><i class="bi bi-check text-white"></i></span>
                         <p class="text-body mb-0">{{ $status->title }}</p>
-                        <p class="text-body mb-0">{{ $status->created_at }}</p>
+                        <p class="text-body mb-0">{{ $status->pivot->created_at }}</p>
                       </li>
                     @endforeach
                   </ul>
