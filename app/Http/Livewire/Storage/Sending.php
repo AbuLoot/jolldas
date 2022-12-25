@@ -40,7 +40,7 @@ class Sending extends Component
         $trackIds = ltrim($trackIds, '[');
         $ids = explode(',', $trackIds);
 
-        $this->trackCodes = Track::whereIn('id', $ids)->get();
+        $this->trackCodes = Track::whereIn('id', $ids)->orderByDesc('id')->get();
         $this->dispatchBrowserEvent('open-modal');
     }
 

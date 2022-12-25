@@ -2,6 +2,9 @@
   <div class="row">
     <div class="col-lg-5 col-md-7 col-sm-9 mx-auto">
 
+      <!-- Session Status -->
+      <x-auth-session-status class="mb-4" :status="session('status')" />
+
       <!-- Validation Errors -->
       <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
@@ -29,6 +32,10 @@
           </label>
         </div>
         <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Войти</button>
+
+        @if (Route::has('password.request'))
+          <a href="/verify-user" class="w-100 mb-2 btn btn-lg btn-link">{{ __('Забыли пароль?') }}</a>
+        @endif
       </form>
 
     </div>

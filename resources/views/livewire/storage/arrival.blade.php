@@ -106,7 +106,7 @@
                   <div class="col-6 col-md-4"><b>Sent: {{ $group['dateName'] }}</b></div>
                   <div class="col-12s col-md-4 text-end">
                     <button type="button" class="btn btn-primary btn-lg" wire:click="getTrackCodes('{{ $group['group']->pluck('id') }}')">Open</button>
-                    <button type="button" class="btn btn-success btn-lg" wire:click="toAccept('{{ $group['group']->pluck('id') }}')">Arrived</button>
+                    <button type="button" class="btn btn-success btn-lg" onclick="return confirm('Сonfirm action?') || event.stopImmediatePropagation()" wire:click="toAccept('{{ $group['group']->pluck('id') }}')">Arrived</button>
                   </div>
                 </div>
               </div>

@@ -6,6 +6,7 @@
   @include('components.alerts')
 
   <p class="text-right">
+    <a href="/{{ $lang }}/admin/users/password/{{ $user->id }}/edit" class="btn btn-default">Изменить пароль</a>
     <a href="/{{ $lang }}/admin/users" class="btn btn-primary"><i class="material-icons md-18">arrow_back</i></a>
   </p>
   <form action="{{ route('users.update', [$lang, $user->id]) }}" method="post" enctype="multipart/form-data">

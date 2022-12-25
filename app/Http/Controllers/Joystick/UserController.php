@@ -86,7 +86,7 @@ class UserController extends Controller
             $profile->company_id = $request->company_id;
             $profile->tel = $request->tel;
             $profile->birthday = $request->birthday;
-            $profile->gender = $request->gender;
+            $profile->gender = $request->gender ?? null;
             $profile->about = $request->about;
             $profile->is_debtor = ($request->debt_sum > 0) ? 1 : 0;
             $profile->debt_sum = $request->debt_sum;

@@ -43,8 +43,7 @@ class AddTrack extends Component
             $this->dispatchBrowserEvent('show-toast', [
                 'message' => 'Data added', 'selector' => 'closeAddTrack'
             ]);
-
-            exit();
+            return;
         }
 
         if ($existsTrack) {

@@ -8,6 +8,8 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Auth\VerifyUserController;
+use App\Http\Controllers\Auth\ChangePasswordController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -20,6 +22,13 @@ Route::middleware('guest')->group(function () {
                 ->name('login');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
+
+    // Custom
+    Route::get('verify-user', [VerifyUserController::class, 'view']);
+    Route::post('verify-user', [VerifyUserController::class, 'store']);
+
+    Route::get('change-password', [ChangePasswordController::class, 'view'])->middleware('verify.user');
+    Route::post('change-password', [ChangePasswordController::class, 'store'])->middleware('verify.user');
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
                 ->name('password.request');

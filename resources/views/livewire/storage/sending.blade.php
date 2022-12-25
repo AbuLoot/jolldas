@@ -26,16 +26,16 @@
       $twoWeekAgo   = now()->startOfWeek()->subWeek(3)->format('Y-m-d');
 
       // Grouped by date
-      $todayGroup         = $tracksGroup->where('created_at', '>', $yesterday.' 23:59:59')->where('created_at', '<=', now());
-      $yesterdayGroup     = $tracksGroup->where('created_at', '>', $yesterday)->where('created_at', '<', $today);
-      $twoDaysAgoGroup    = $tracksGroup->where('created_at', '>', $twoDaysAgo)->where('created_at', '<', $yesterday);
-      $threeDaysAgoGroup  = $tracksGroup->where('created_at', '>', $threeDaysAgo)->where('created_at', '<', $twoDaysAgo);
-      $fourDaysAgoGroup   = $tracksGroup->where('created_at', '>', $fourDaysAgo)->where('created_at', '<', $threeDaysAgo);
-      $fiveDaysAgoGroup   = $tracksGroup->where('created_at', '>', $fiveDaysAgo)->where('created_at', '<', $fourDaysAgo);
-      $sixDaysAgoGroup    = $tracksGroup->where('created_at', '>', $sixDaysAgo)->where('created_at', '<', $fiveDaysAgo);
-      $previousWeekGroup  = $tracksGroup->where('created_at', '>', $previousWeek)->where('created_at', '<', $sixDaysAgo);
-      $twoWeekAgoGroup    = $tracksGroup->where('created_at', '>', $twoWeekAgo)->where('created_at', '<', $previousWeek);
-      $prevTimeGroup      = $tracksGroup->where('created_at', '<', $twoWeekAgo);
+      $todayGroup         = $tracksGroup->where('updated_at', '>', $yesterday.' 23:59:59')->where('updated_at', '<=', now());
+      $yesterdayGroup     = $tracksGroup->where('updated_at', '>', $yesterday)->where('updated_at', '<', $today);
+      $twoDaysAgoGroup    = $tracksGroup->where('updated_at', '>', $twoDaysAgo)->where('updated_at', '<', $yesterday);
+      $threeDaysAgoGroup  = $tracksGroup->where('updated_at', '>', $threeDaysAgo)->where('updated_at', '<', $twoDaysAgo);
+      $fourDaysAgoGroup   = $tracksGroup->where('updated_at', '>', $fourDaysAgo)->where('updated_at', '<', $threeDaysAgo);
+      $fiveDaysAgoGroup   = $tracksGroup->where('updated_at', '>', $fiveDaysAgo)->where('updated_at', '<', $fourDaysAgo);
+      $sixDaysAgoGroup    = $tracksGroup->where('updated_at', '>', $sixDaysAgo)->where('updated_at', '<', $fiveDaysAgo);
+      $previousWeekGroup  = $tracksGroup->where('updated_at', '>', $previousWeek)->where('updated_at', '<', $sixDaysAgo);
+      $twoWeekAgoGroup    = $tracksGroup->where('updated_at', '>', $twoWeekAgo)->where('updated_at', '<', $previousWeek);
+      $prevTimeGroup      = $tracksGroup->where('updated_at', '<', $twoWeekAgo);
 
       $allTracksGroups = [
         'today' => [
@@ -100,7 +100,18 @@
     </ul>
 
     <div class="row">
-      <div class="col-12 col-sm-12">
+      <div class="col-12 col-sm-3">
+        <form wire:submit.prevent="toAccept">
+          <div class="form-floating mb-3">
+            <input wire:model="trackCode" type="text" class="form-control form-control-lg @error('trackCode') is-invalid @enderror" placeholder="Add track-code" id="trackCodeArea">
+            <label for="trackCodeArea">Enter track code</label>
+            @error('trackCode')<div class="invalid-feedback">{{ $message }}</div>@enderror
+          </div>
+
+          <button type="submit" id="toAccept" class="btn btn-primary btn-lg"><i class="bi bi-plus"></i> To accept</button>
+        </form>
+      </div>
+      <div class="col-12 col-sm-9">
 
         @foreach($allTracksGroups as $group)
           @if($group['group']->count())
