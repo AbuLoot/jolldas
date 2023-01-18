@@ -64,13 +64,16 @@
                   <div><b>Track code:</b> {{ $track->code }}</div>
                   <div><b>Description:</b> {{ Str::limit($track->description, 35) }}</div>
                 </div>
-                <div class="col-12 col-lg-5">
+                <div class="col-12 col-lg-4">
                   <div><b>{{ ucfirst($activeStatus->slug) }} Date:</b> {{ $activeStatus->created_at }}</div>
                   <div><b>Status:</b> {{ $activeStatus->title }}</div>
                 </div>
-                <div class="col-12 col-lg-2">
-                  <b>User:</b> {{ $track->user->name.' '.$track->user->lastname }}
-                </div>
+                @if($track->user) 
+                  <div class="col-12 col-lg-3">
+                    <b>User:</b> {{ $track->user->name.' '.$track->user->lastname }}<br>
+                    <b>ID:</b> {{ $track->user->id_client }}
+                  </div>
+                @endif
               </div>
             </div>
 

@@ -38,7 +38,7 @@ class VerifyUserController extends Controller
 
         $existsTrack = Track::query()
             ->where('user_id', $user->id)
-            ->where('code', $request->trackcode)
+            ->where('code', 'like', '%'.$request->trackcode.'%')
             ->first();
 
         if (!$existsTrack) {

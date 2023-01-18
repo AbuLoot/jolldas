@@ -14,7 +14,7 @@
         <br>
 
         <div class="form-floating mb-3">
-          <input type="email" class="form-control rounded-3" id="email" name="email" placeholder="name@example.com" required>
+          <input type="email" class="form-control rounded-3" id="email" name="email" value="{{ old('email') }}" placeholder="name@example.com" required>
           <label for="email">Email адрес</label>
         </div>
         <!-- <div class="form-floating mb-3">

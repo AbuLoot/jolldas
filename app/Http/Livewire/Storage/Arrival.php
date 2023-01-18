@@ -14,8 +14,13 @@ class Arrival extends Component
     public $lang;
     public $search;
     public $status;
+    public $trackCode;
     public $trackCodes = [];
     public $tracksGroup = [];
+
+    protected $rules = [
+        'trackCode' => 'required|string|min:10|max:20',
+    ];
 
     protected $listeners = [
         'newData' => '$refresh',
@@ -34,28 +39,46 @@ class Arrival extends Component
             ->first();
     }
 
-    public function getTrackCodes($trackIds = [])
+    public function getTracksIdByDate($dateFrom, $dateTo)
     {
-        $trackIds = rtrim($trackIds, ']');
-        $trackIds = ltrim($trackIds, '[');
-        $ids = explode(',', $trackIds);
+        $tracksGroup = $this->tracksGroup;
 
-        $this->trackCodes = Track::whereIn('id', $ids)->get();
+        $tracks = $tracksGroup->when($dateTo, function ($tracksGroup) use ($dateFrom, $dateTo) {
+
+                // If tracks added today
+                if ($dateTo == now()->format('Y-m-d H-i')) {
+                    return $tracksGroup->where('updated_at', '>', $dateFrom.' 23:59:59')->where('updated_at', '<=', now());
+                }
+
+                return $tracksGroup->where('updated_at', '>', $dateFrom)->where('updated_at', '<', $dateTo);
+
+            }, function ($tracksGroup) use ($dateFrom) {
+
+                return $tracksGroup->where('updated_at', '<', $dateFrom);
+            });
+
+        return $tracks->pluck('id')->toArray();
+    }
+
+    public function openGroupByDate($dateFrom, $dateTo)
+    {
+        $ids = $this->getTracksIdByDate($dateFrom, $dateTo);
+
+        $this->trackCodes = $this->tracksGroup->whereIn('id', $ids)->sortByDesc('id');
+
         $this->dispatchBrowserEvent('open-modal');
     }
 
-    public function toAccept($trackIds)
+    public function groupArrivedByDate($dateFrom, $dateTo)
     {
-        $trackIds = rtrim($trackIds, ']');
-        $trackIds = ltrim($trackIds, '[');
-        $ids = explode(',', $trackIds);
+        $ids = $this->getTracksIdByDate($dateFrom, $dateTo);
+
+        $tracks = $this->tracksGroup->whereIn('id', $ids);
 
         $status = Status::where('slug', 'arrived')
             ->orWhere('id', 5)
             ->select('id', 'slug')
             ->first();
-
-        $tracks = $this->tracksGroup->whereIn('id', $ids);
 
         // Creating Track Status
         $tracksStatus = [];
@@ -72,6 +95,54 @@ class Arrival extends Component
         Track::whereIn('id', $ids)->update(['status' => $status->id]);
     }
 
+    public function btnToArrive($trackCode)
+    {
+        $this->trackCode = $trackCode;
+        $this->toArrive();
+        $this->search = null;
+    }
+
+    public function toArrive()
+    {
+        $this->validate();
+
+        $status = Status::select('id', 'slug')
+            ->where('slug', 'arrived')
+            ->orWhere('id', 5)
+            ->first();
+
+        $track = Track::where('code', $this->trackCode)->first();
+
+        if (!$track) {
+            $newTrack = new Track;
+            $newTrack->user_id = null;
+            $newTrack->lang = $this->lang;
+            $newTrack->code = $this->trackCode;
+            $newTrack->description = '';
+            $newTrack->save();
+
+            $track = $newTrack;
+        }
+
+        if ($track->status >= $status->id) {
+            $this->addError('trackCode', 'Track arrived');
+            return;
+        }
+
+        $trackStatus = new TrackStatus();
+        $trackStatus->track_id = $track->id;
+        $trackStatus->status_id = $status->id;
+        $trackStatus->created_at = now();
+        $trackStatus->updated_at = now();
+        $trackStatus->save();
+
+        $track->status = $status->id;
+        $track->save();
+
+        $this->trackCode = null;
+        $this->dispatchBrowserEvent('area-focus');
+    }
+
     public function render()
     {
         // $tracks = Track::query()
@@ -82,7 +153,17 @@ class Arrival extends Component
 
         $this->tracksGroup = Track::where('status', $this->status->id)->get();
 
-        return view('livewire.storage.arrival')
+        $tracks = [];
+
+        if (strlen($this->search) >= 4) {
+            $tracks = Track::query()
+                ->orderByDesc('id')
+                ->where('status', $this->status->id)
+                ->where('code', 'like', '%'.$this->search.'%')
+                ->paginate(10);
+        }
+
+        return view('livewire.storage.arrival', ['tracks' => $tracks])
             ->layout('livewire.storage.layout');
     }
 }

@@ -16,7 +16,7 @@ class Reception extends Component
     public $trackCode;
 
     protected $rules = [
-        'trackCode' => 'required|string|min:12|max:20',
+        'trackCode' => 'required|string|min:10|max:20',
     ];
 
     protected $listeners = [
@@ -36,7 +36,7 @@ class Reception extends Component
         $this->lang = app()->getLocale();
     }
 
-    public function toAccept()
+    public function toReceive()
     {
         $this->validate();
 
@@ -60,6 +60,7 @@ class Reception extends Component
 
         if ($track->status >= $status->id) {
             $this->addError('trackCode', 'Track received');
+            $this->trackCode = null;
             return;
         }
 
@@ -81,7 +82,7 @@ class Reception extends Component
         $tracks = Track::query()
             ->orderByDesc('id')
             ->where('status', 2)
-            ->when((strlen($this->search) >= 5), function($query) {
+            ->when((strlen($this->search) >= 4), function($query) {
                 $query->where('code', 'like', '%'.$this->search.'%');
             })
             ->paginate(50);

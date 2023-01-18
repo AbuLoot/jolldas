@@ -103,7 +103,7 @@
           </div>
           <div class="col-2 col-lg-1 text-end">
             <button wire:click="editTrack({{ $track->id }})" type="button" class="btn btn-outline-primary mb-1"><i class="bi bi-pen"></i></button>
-            <button onclick="return confirm('Удалить запись?') || event.stopImmediatePropagation()" wire:click="deleteTrack({{ $track->id }})" type="button" class="btn btn-outline-dark"><i class="bi bi-x-lg"></i></button>
+            <!-- <button onclick="return confirm('Удалить запись?') || event.stopImmediatePropagation()" wire:click="deleteTrack({{ $track->id }})" type="button" class="btn btn-outline-dark"><i class="bi bi-x-lg"></i></button> -->
           </div>
         </div>
       </div>

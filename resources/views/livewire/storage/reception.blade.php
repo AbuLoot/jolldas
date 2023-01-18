@@ -17,20 +17,23 @@
         <a class="nav-link bg-light active" aria-current="page">Received</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/{{ $lang }}/storage/sending">To send</a>
+        <a class="nav-link" href="/{{ $lang }}/storage/sending">Send</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/{{ $lang }}/storage/arrival">Arrival</a>
       </li>
     </ul>
 
     <div class="row">
-      <div class="col-12 col-sm-3">
-        <form wire:submit.prevent="toAccept">
+      <div class="col-12 col-sm-3 mb-2">
+        <form wire:submit.prevent="toReceive">
           <div class="form-floating mb-3">
             <input wire:model="trackCode" type="text" class="form-control form-control-lg @error('trackCode') is-invalid @enderror" placeholder="Add track-code" id="trackCodeArea">
             <label for="trackCodeArea">Enter track code</label>
             @error('trackCode')<div class="invalid-feedback">{{ $message }}</div>@enderror
           </div>
 
-          <button type="submit" id="toAccept" class="btn btn-primary btn-lg"><i class="bi bi-plus"></i> To accept</button>
+          <button type="submit" id="toReceive" class="btn btn-primary btn-lg"><i class="bi bi-check2"></i> To receive</button>
         </form>
       </div>
 
@@ -59,8 +62,8 @@
               'item-color' => 'bg-muted',
             ],
           ];
-
         ?>
+
         @foreach($tracks as $track)
           <div class="track-item mb-2">
 

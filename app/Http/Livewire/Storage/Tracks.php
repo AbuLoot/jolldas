@@ -26,7 +26,7 @@ class Tracks extends Component
     public function render()
     {
         $tracks = Track::orderByDesc('id')
-            ->when((strlen($this->search) >= 5), function($query) {
+            ->when((strlen($this->search) >= 4), function($query) {
                 $query->where('code', 'like', '%'.$this->search.'%');
             })
             ->paginate(50);

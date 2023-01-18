@@ -40,6 +40,7 @@
           ];
 
         ?>
+
         @foreach($tracks as $track)
           <div class="track-item mb-2">
 
