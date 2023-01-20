@@ -75,7 +75,7 @@ class Arrival extends Component
 
         $tracks = $this->tracksGroup->whereIn('id', $ids);
 
-        $status = Status::where('slug', 'arrived')
+        $statusArrived = Status::where('slug', 'arrived')
             ->orWhere('id', 5)
             ->select('id', 'slug')
             ->first();
@@ -85,14 +85,14 @@ class Arrival extends Component
 
         foreach($tracks as $track) {
             $tracksStatus[] = [
-                'track_id' => $track->id, 'status_id' => $status->id, 'created_at' => now(), 'updated_at' => now(),
+                'track_id' => $track->id, 'status_id' => $statusArrived->id, 'created_at' => now(), 'updated_at' => now(),
             ];
         }
 
         TrackStatus::insert($tracksStatus);
 
         // Updating Track Status
-        Track::whereIn('id', $ids)->update(['status' => $status->id]);
+        Track::whereIn('id', $ids)->update(['status' => $statusArrived->id]);
     }
 
     public function btnToArrive($trackCode)
@@ -106,7 +106,7 @@ class Arrival extends Component
     {
         $this->validate();
 
-        $status = Status::select('id', 'slug')
+        $statusArrived = Status::select('id', 'slug')
             ->where('slug', 'arrived')
             ->orWhere('id', 5)
             ->first();
@@ -124,19 +124,19 @@ class Arrival extends Component
             $track = $newTrack;
         }
 
-        if ($track->status >= $status->id) {
+        if ($track->status >= $statusArrived->id) {
             $this->addError('trackCode', 'Track arrived');
             return;
         }
 
         $trackStatus = new TrackStatus();
         $trackStatus->track_id = $track->id;
-        $trackStatus->status_id = $status->id;
+        $trackStatus->status_id = $statusArrived->id;
         $trackStatus->created_at = now();
         $trackStatus->updated_at = now();
         $trackStatus->save();
 
-        $track->status = $status->id;
+        $track->status = $statusArrived->id;
         $track->save();
 
         $this->trackCode = null;

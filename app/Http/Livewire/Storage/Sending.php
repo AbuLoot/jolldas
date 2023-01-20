@@ -85,7 +85,7 @@ class Sending extends Component
 
         $tracks = $this->tracksGroup->whereIn('id', $ids);
 
-        $status = Status::where('slug', 'sent')
+        $statusSent = Status::where('slug', 'sent')
             ->orWhere('id', 4)
             ->select('id', 'slug')
             ->first();
@@ -93,10 +93,10 @@ class Sending extends Component
         // Creating Track Status
         $tracksStatus = [];
 
-        $tracks->each(function ($track) use (&$tracksStatus, $status) {
+        $tracks->each(function ($track) use (&$tracksStatus, $statusSent) {
             $tracksStatus[] = [
                 'track_id' => $track->id,
-                'status_id' => $status->id,
+                'status_id' => $statusSent->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -105,7 +105,7 @@ class Sending extends Component
         TrackStatus::insert($tracksStatus);
 
         // Updating Track Status
-        Track::whereIn('id', $ids)->update(['status' => $status->id]);
+        Track::whereIn('id', $ids)->update(['status' => $statusSent->id]);
     }
 
     public function btnToSend($trackCode)
@@ -119,7 +119,7 @@ class Sending extends Component
     {
         $this->validate();
 
-        $status = Status::select('id', 'slug')
+        $statusSent = Status::select('id', 'slug')
             ->where('slug', 'sent')
             ->orWhere('id', 4)
             ->first();
@@ -137,19 +137,19 @@ class Sending extends Component
             $track = $newTrack;
         }
 
-        if ($track->status >= $status->id) {
+        if ($track->status >= $statusSent->id) {
             $this->addError('trackCode', 'Track sent');
             return;
         }
 
         $trackStatus = new TrackStatus();
         $trackStatus->track_id = $track->id;
-        $trackStatus->status_id = $status->id;
+        $trackStatus->status_id = $statusSent->id;
         $trackStatus->created_at = now();
         $trackStatus->updated_at = now();
         $trackStatus->save();
 
-        $track->status = $status->id;
+        $track->status = $statusSent->id;
         $track->save();
 
         $this->trackCode = null;

@@ -34,6 +34,7 @@ use App\Http\Controllers\PageController as SiteController;
 // // Cargo Controllers
 use App\Http\Controllers\Cargo\TrackController;
 use App\Http\Controllers\Cargo\StatusController;
+use App\Http\Controllers\Cargo\TrackExtensionController;
 
 use App\Http\Livewire\Client\Index as Client;
 use App\Http\Livewire\Storage\Reception;
@@ -93,6 +94,8 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth', 'roles:admin|
         'languages' => LanguageController::class,
     ]);
 
+    Route::get('tracks-insert', [TrackExtensionController::class, 'insertTracks']);
+
     Route::get('categories-actions', [CategoryController::class, 'actionCategories']);
     Route::get('companies-actions', [CompanyController::class, 'actionCompanies']);
     Route::get('projects-actions', [ProjectController::class, 'actionProjects']);
@@ -116,7 +119,6 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth', 'roles:admin|
     Route::get('users/password/{id}/edit', [UserController::class, 'passwordEdit']);
     Route::put('users/password/{id}', [UserController::class, 'passwordUpdate']);
 });
-
 
 // Input Actions
 Route::get('search', [InputController::class, 'search']);

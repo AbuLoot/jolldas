@@ -40,7 +40,7 @@ class Reception extends Component
     {
         $this->validate();
 
-        $status = Status::select('id', 'slug')
+        $statusReceived = Status::select('id', 'slug')
             ->where('slug', 'received')
             ->orWhere('id', 2)
             ->first();
@@ -58,7 +58,7 @@ class Reception extends Component
             $track = $newTrack;
         }
 
-        if ($track->status >= $status->id) {
+        if ($track->status >= $statusReceived->id) {
             $this->addError('trackCode', 'Track received');
             $this->trackCode = null;
             return;
@@ -66,12 +66,12 @@ class Reception extends Component
 
         $trackStatus = new TrackStatus();
         $trackStatus->track_id = $track->id;
-        $trackStatus->status_id = $status->id;
+        $trackStatus->status_id = $statusReceived->id;
         $trackStatus->created_at = now();
         $trackStatus->updated_at = now();
         $trackStatus->save();
 
-        $track->status = $status->id;
+        $track->status = $statusReceived->id;
         $track->save();
 
         $this->dispatchBrowserEvent('area-focus');
