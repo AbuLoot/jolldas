@@ -2,6 +2,29 @@
 
 return [
 
+	'classes' => [
+	    'arrived' => [
+	      	'card-color' => 'bg-arrived',
+	      	'item-color' => 'bg-secondary',
+	    ],
+	    'sent' => [
+	      	'card-color' => 'bg-sent',
+	      	'item-color' => 'bg-secondary',
+	    ],
+	    'waiting' => [
+	      	'card-color' => 'bg-received',
+	      	'item-color' => 'bg-warning',
+	    ],
+	    'received' => [
+	      	'card-color' => 'bg-received',
+	      	'item-color' => 'bg-warning',
+	    ],
+	    'added' => [
+	      	'card-color' => 'bg-added',
+	      	'item-color' => 'bg-muted',
+	    ],
+	],
+
 	'data' => [
 	    '0' => [
 	    	'title' => 'Inactive',

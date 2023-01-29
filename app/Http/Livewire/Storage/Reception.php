@@ -59,7 +59,7 @@ class Reception extends Component
         }
 
         if ($track->status >= $statusReceived->id) {
-            $this->addError('trackCode', 'Track received');
+            $this->addError('trackCode', 'Track '.$this->trackCode.' received');
             $this->trackCode = null;
             return;
         }

@@ -39,17 +39,20 @@ class TrackExtensionController extends Controller
             ];
         });
 
-        try {
-            $resultInsert = TrackStatus::insert($unarrivedTracksStatus);
+        if ($unarrivedTracks->count() >= 1) {
 
-            $resultUpdate = Track::whereIn('id', $unarrivedTracks->pluck('id')->toArray())
-                ->update(['status' => $statusArrived->id]);
+            try {
+                $resultInsert = TrackStatus::insert($unarrivedTracksStatus);
 
-            if (!$resultInsert OR !$resultUpdate) {
-                throw new Exception("Error Processing Request", 1);
+                $resultUpdate = Track::whereIn('id', $unarrivedTracks->pluck('id')->toArray())
+                    ->update(['status' => $statusArrived->id]);
+
+                if (!$resultInsert OR !$resultUpdate) {
+                    throw new \Exception("Error Processing Request", 1);
+                }
+            } catch (\Exception $e) {
+                echo 'Error: '.$e->getMessage();
             }
-        } catch (Exception $e) {
-            echo 'Error: '.$e->getMessage();
         }
 
         // Create Tracks

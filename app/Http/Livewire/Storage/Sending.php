@@ -138,7 +138,8 @@ class Sending extends Component
         }
 
         if ($track->status >= $statusSent->id) {
-            $this->addError('trackCode', 'Track sent');
+            $this->addError('trackCode', 'Track '.$this->trackCode.' sent');
+            $this->trackCode = null;
             return;
         }
 

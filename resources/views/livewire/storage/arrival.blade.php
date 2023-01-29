@@ -102,29 +102,6 @@
         ],
       ];
 
-      $statusClasses = [
-        'arrived' => [
-          'card-color' => 'bg-arrived',
-          'item-color' => 'bg-secondary',
-        ],
-        'sent' => [
-          'card-color' => 'bg-sent',
-          'item-color' => 'bg-secondary',
-        ],
-        'waiting' => [
-          'card-color' => 'bg-received',
-          'item-color' => 'bg-warning',
-        ],
-        'received' => [
-          'card-color' => 'bg-received',
-          'item-color' => 'bg-warning',
-        ],
-        'added' => [
-          'card-color' => 'bg-added',
-          'item-color' => 'bg-muted',
-        ],
-      ];
-
     ?>
 
     @foreach($tracks as $track)
@@ -133,7 +110,7 @@
         <?php $activeStatus = $track->statuses->last(); ?>
         <div class="row">
           <div class="col-10 col-lg-10">
-            <div class="border {{ $statusClasses[$activeStatus->slug]['card-color'] }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
+            <div class="border {{ __('statuses.classes.'.$activeStatus->slug.'.card-color') }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
               <div class="row">
                 <div class="col-12 col-lg-5">
                   <div><b>Track code:</b> {{ $track->code }}</div>
@@ -181,7 +158,7 @@
           </div>
           <div class="col-2 col-lg-2 text-end">
             <div class="d-grid">
-              <button  wire:click="btnToArrive('{{ $track->code }}')" type="button" wire:loading.attr="disabled" class="btn btn-primary btn-lg"><i class="bi bi-check2-all"></i> <span class="d-none d-sm-inline">To arrive</span></button>
+              <button  wire:click="btnToArrive('{{ $track->code }}')" type="button" wire:loading.attr="disabled" class="btn btn-primary btn-lg-"><i class="bi bi-check2-all"></i> <span class="d-none d-sm-inline">To arrive</span></button>
             </div>
           </div>
         </div>
@@ -251,7 +228,7 @@
         <div class="modal-body">
           <div class="row">
             @foreach($trackCodes as $trackCode)
-              <div class="col-6"><b>Code:</b> {{ $trackCode->code }}</div>
+              <div class="col-6"><b>TC:</b> {{ $trackCode->code }}</div>
               <div class="col-6">{{ $trackCode->description }}</div>
             @endforeach
           </div>

@@ -63,8 +63,6 @@
           @endcan
         </ul>
 
-        <button type="button" class="btn btn-primary btn-lg d-block d-sm-none ms-md-auto" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-plus-circle-fill me-2"></i> Добавить трек</button>
-
         <div class="flex-shrink-0 dropdown ms-md-auto ps-3">
           <a href="#" class="d-block link-light text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-person-circle fs-4 text-white"></i>

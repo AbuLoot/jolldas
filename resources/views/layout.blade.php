@@ -48,6 +48,11 @@
               <a class="nav-link px-3" aria-current="page" href="/i/{{ $page->slug }}">{{ $page->title }}</a>
             </li>
           @endforeach
+          @auth
+            <li class="nav-item">
+              <a class="nav-link px-3" aria-current="page" href="/{{ $lang }}/client">Мои треки</a>
+            </li>
+          @endauth
         </ul>
         <div class="ms-auto">
           @include('components.auth-dropdown')

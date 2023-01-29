@@ -27,32 +27,6 @@
   </div>
 
   <div class="container">
-    <?php
-
-      $statusClasses = [
-        'arrived' => [
-          'card-color' => 'bg-arrived',
-          'item-color' => 'bg-secondary',
-        ],
-        'sent' => [
-          'card-color' => 'bg-sent',
-          'item-color' => 'bg-secondary',
-        ],
-        'waiting' => [
-          'card-color' => 'bg-received',
-          'item-color' => 'bg-warning',
-        ],
-        'received' => [
-          'card-color' => 'bg-received',
-          'item-color' => 'bg-warning',
-        ],
-        'added' => [
-          'card-color' => 'bg-added',
-          'item-color' => 'bg-muted',
-        ],
-      ];
-
-    ?>
 
   	<!-- Content -->
     @foreach($tracks as $track)
@@ -61,7 +35,7 @@
         <?php $activeStatus = $track->statuses->last();?>
         <div class="row">
           <div class="col-10 col-lg-11">
-            <div class="border {{ $statusClasses[$activeStatus->slug]['card-color'] }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
+            <div class="border {{ __('statuses.classes.'.$activeStatus->slug.'.card-color') }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
               <div class="row">
                 <div class="col-12 col-lg-5">
                   <div><b>Трек-код:</b> {{ $track->code }}</div>
