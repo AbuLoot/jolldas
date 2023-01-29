@@ -223,7 +223,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <div class="row">
+          <div class="row g-2">
             @foreach($trackCodes as $trackCode)
               <div class="col-6"><b>TC:</b> {{ $trackCode->code }}</div>
               <div class="col-6">{{ $trackCode->description }}</div>
