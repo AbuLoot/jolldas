@@ -8,18 +8,6 @@
   <div>
     <div class="col-md-4">
       <div class="well text-center">
-        <h3>Количество<br> товаров</h3>
-        <h2>{{ $count_products }}</h2>
-      </div> 
-    </div>
-    <div class="col-md-4">
-      <div class="well text-center">
-        <h3>Количество<br> заказов</h3>
-        <h2>{{ $count_orders }}</h2>
-      </div> 
-    </div>
-    <div class="col-md-4">
-      <div class="well text-center">
         <h3>Количество<br> заявок</h3>
         <h2>{{ $count_apps }}</h2>
       </div> 

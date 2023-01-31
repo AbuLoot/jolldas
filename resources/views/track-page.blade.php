@@ -27,38 +27,13 @@
   <div class="container my-3 my-lg-5">
 
       <div class="col-12 col-sm-12">
-        <?php
 
-          $statusClasses = [
-            'arrived' => [
-              'card-color' => 'bg-arrived',
-              'item-color' => 'bg-secondary',
-            ],
-            'sent' => [
-              'card-color' => 'bg-sent',
-              'item-color' => 'bg-secondary',
-            ],
-            'waiting' => [
-              'card-color' => 'bg-received',
-              'item-color' => 'bg-warning',
-            ],
-            'received' => [
-              'card-color' => 'bg-received',
-              'item-color' => 'bg-warning',
-            ],
-            'added' => [
-              'card-color' => 'bg-added',
-              'item-color' => 'bg-muted',
-            ],
-          ];
-
-        ?>
         @foreach($tracks as $track)
           <div class="track-item mb-2">
 
             <?php $activeStatus = $track->statuses->last(); ?>
 
-            <div class="border {{ $statusClasses[$activeStatus->slug]['card-color'] }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
+            <div class="border {{ __('statuses.classes.'.$activeStatus->slug.'.card-color') }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
               <div class="row">
                 <div class="col-12 col-lg-5">
                   <div><b>Track code:</b> {{ $track->code }}</div>
@@ -70,8 +45,8 @@
                 </div>
                 @if($track->user) 
                   <div class="col-12 col-lg-3">
-                    <b>User:</b> {{ $track->user->name.' '.$track->user->lastname }}<br>
-                    <b>ID:</b> {{ $track->user->id_client }}
+                    <b>User:</b> {{ $track->user->name.' '.\Str::limit($track->user->lastname, 1, '.') }}<br>
+                    <b>ID:</b> {{ \Str::limit($track->user->id_client, 8) }}<br>
                   </div>
                 @endif
               </div>

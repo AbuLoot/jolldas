@@ -22,7 +22,7 @@ class VerifyUserController extends Controller
             'tel' => ['required', 'string', 'max:15'],
             'region_id' => ['required', 'integer'],
             // 'id_client' => ['required', 'string', 'min:9', 'max:15'],
-            'trackcode' => ['required', 'string', 'min:9', 'max:20'],
+            // 'trackcode' => ['required', 'string', 'min:9', 'max:20'],
         ]);
 
         $user = User::query()
@@ -36,14 +36,14 @@ class VerifyUserController extends Controller
             return redirect()->back()->withInput()->with('warning', 'Данные не совпадает');
         }
 
-        $existsTrack = Track::query()
-            ->where('user_id', $user->id)
-            ->where('code', 'like', '%'.$request->trackcode.'%')
-            ->first();
+        // $existsTrack = Track::query()
+        //     ->where('user_id', $user->id)
+        //     ->where('code', 'like', '%'.$request->trackcode.'%')
+        //     ->first();
 
-        if (!$existsTrack) {
-            return redirect()->back()->withInput()->with('warning', 'Трек-код не совпадает');
-        }
+        // if (!$existsTrack) {
+        //     return redirect()->back()->withInput()->with('warning', 'Трек-код не совпадает');
+        // }
 
         $request->session()->put('verifiedUser', $user->id);
 

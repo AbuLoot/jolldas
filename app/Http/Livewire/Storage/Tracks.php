@@ -29,15 +29,18 @@ class Tracks extends Component
         $this->lang = app()->getLocale();
     }
 
-    public function resetFilter()
-    {
-        $this->tracksStatus = 0;
-        $this->sort = 'desc';
-    }
+    // public function resetFilter()
+    // {
+    //     $this->tracksStatus = 0;
+    //     $this->sort = 'desc';
+    // }
 
     public function applyFilter()
     {
-        // code...
+        // Don`t touch this function!
+
+        $this->search = null;
+        $this->resetPage();
     }
 
     public function render()
@@ -55,9 +58,9 @@ class Tracks extends Component
             ->when((strlen($this->search) >= 4), function($query) {
                 $query->where('code', 'like', '%'.$this->search.'%');
             })
-            ->when($this->tracksStatus != 0, function($query) use ($tracksStatus) {
-                $query->where('status', $tracksStatus);
-            })
+            // ->when($this->tracksStatus != 0, function($query) use ($tracksStatus) {
+            //     $query->where('status', $tracksStatus);
+            // })
             ->paginate(50);
 
         return view('livewire.storage.tracks', [

@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Joystick\Controller;
 
 use App\Models\App;
-use App\Models\Product;
-use App\Models\Order;
 use App\Models\User;
 use App\Models\Post;
 
@@ -18,11 +16,9 @@ class AdminController extends Controller
     {
         $count_apps = App::count();
         $count_users = User::count();
-        $count_orders = Order::count();
         $count_posts = Post::count();
-        $count_products = Product::count();
 
-    	return view('joystick.index', compact('count_apps', 'count_posts', 'count_users', 'count_orders', 'count_products'));
+    	return view('joystick.index', compact('count_apps', 'count_posts', 'count_users'));
     }
 
     public function filemanager()
