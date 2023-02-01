@@ -37,6 +37,13 @@ class EditTrack extends Component
     {
         $this->validate();
 
+        $existsTrack = Track::where('code', $this->track->code)->where('id', '!=', $this->track->id)->first();
+
+        if ($existsTrack) {
+            $this->addError('track.code', 'Track code exists');
+            return;
+        }
+
         $this->track->save();
 
         $this->track->code = null;

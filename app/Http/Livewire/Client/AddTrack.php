@@ -12,7 +12,7 @@ class AddTrack extends Component
 {
     public $lang;
     public $search;
-    public Track $track;
+    public $track;
 
     protected $rules = [
         'track.code' => 'required|string|min:12|max:20',
@@ -36,8 +36,7 @@ class AddTrack extends Component
             $existsTrack->description = $this->track->description;
             $existsTrack->save();
 
-            $this->track->code = null;
-            $this->track->description = null;
+            $this->track = new Track();
 
             $this->emitUp('newData');
             $this->dispatchBrowserEvent('show-toast', [
@@ -47,7 +46,8 @@ class AddTrack extends Component
         }
 
         if ($existsTrack) {
-            $this->addError('track.code', 'Track code exists');
+            $this->addError('track.code', 'Track code '.$this->track->code.' exists');
+            $this->track = new Track();
             return;
         }
 
@@ -63,6 +63,7 @@ class AddTrack extends Component
 
         if ($this->track->statuses()->where('id', $status->id)->first()) {
             $this->addError('track.code', 'Status added');
+            $this->track = new Track();
             return;
         }
 
@@ -71,8 +72,7 @@ class AddTrack extends Component
         $trackStatus->status_id = $status->id;
         $trackStatus->save();
 
-        $this->track->code = null;
-        $this->track->description = null;
+        $this->track = new Track();
 
         $this->emitUp('newData');
         $this->dispatchBrowserEvent('show-toast', [

@@ -101,11 +101,6 @@ Route::group(['prefix' => '{lang}', 'middleware' => 'auth'], function() {
     Route::put('profile', [ProfileController::class, 'updateProfile']);
     Route::get('profile/password/edit', [ProfileController::class, 'passwordEdit']);
     Route::put('profile/password', [ProfileController::class, 'passwordUpdate']);
-
-    Route::get('tracks', [ProfileController::class, 'myTracks']);
-    Route::get('statistics', [ProfileController::class, 'statistics']);
-
-    Route::resource('user-products', UserProductController::class);
 });
 
 // News

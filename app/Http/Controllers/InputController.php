@@ -44,7 +44,7 @@ class InputController extends Controller
     {
         $code = trim(strip_tags($request->code));
 
-        $tracks = Track::where('code', 'LIKE', $code.'%')->paginate(30);
+        $tracks = Track::where('code', $code)->get();
 
         return view('track-page', compact('code', 'tracks'));
     }

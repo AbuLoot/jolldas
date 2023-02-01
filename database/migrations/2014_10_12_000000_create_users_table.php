@@ -21,10 +21,11 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('tel');
-            $table->string('id_client');
-            $table->string('id_name');
+            $table->string('id_client')->nullable();
+            $table->string('id_name')->nullable();
             $table->integer('region_id');
             $table->string('address');
+            $table->integer('status')->default(1);
             $table->rememberToken();
             $table->timestamps();
         });
