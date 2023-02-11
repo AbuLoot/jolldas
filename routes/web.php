@@ -64,12 +64,14 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth', 'roles:admin|
         'tracks' => TrackController::class,
         'statuses' => StatusController::class,
 
+        // Content
         'pages' => PageController::class,
         'posts' => PostController::class,
         'sections' => SectionController::class,
         'modes' => ModeController::class,
         'apps' => AppController::class,
 
+        // Resources
         'companies' => CompanyController::class,
         'regions' => RegionController::class,
         'users' => UserController::class,
@@ -79,9 +81,7 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth', 'roles:admin|
     ]);
 
     Route::get('tracks-insert', [TrackExtensionController::class, 'insertTracks']);
-
     Route::get('companies-actions', [CompanyController::class, 'actionCompanies']);
-
     Route::get('users/password/{id}/edit', [UserController::class, 'passwordEdit']);
     Route::put('users/password/{id}', [UserController::class, 'passwordUpdate']);
 });
@@ -101,6 +101,35 @@ Route::group(['prefix' => '{lang}', 'middleware' => 'auth'], function() {
     Route::put('profile', [ProfileController::class, 'updateProfile']);
     Route::get('profile/password/edit', [ProfileController::class, 'passwordEdit']);
     Route::put('profile/password', [ProfileController::class, 'passwordUpdate']);
+});
+
+Route::get('send-mails', function() {
+
+        // Email subject
+        $subject = "Тестовая новая заявка";
+
+        // Email content
+        $content = "<h2>Subject</h2>";
+        $content .= "<b>Имя: name</b><br>";
+        $content .= "<b>Номер: phone</b><br>";
+        $content .= "<b>Email: email</b><br>";
+        $content .= "<b>Текст: message</b><br>";
+        $content .= "<b>Дата: " . date('Y-m-d') . "</b><br>";
+        $content .= "<b>Время: " . date('G:i') . "</b>";
+
+        $headers = "From: info@autorex.kz \r\n" .
+                   "MIME-Version: 1.0" . "\r\n" . 
+                   "Content-type: text/html; charset=UTF-8" . "\r\n";
+
+        // Send the email
+        if (mail('autorexcom@gmail.com, issayev.adilet@gmail.com, biotic.company@gmail.com', $subject, $content, $headers)) {
+            $status = 'Ваша заявка принята. Спасибо!';
+        }
+        else {
+            $status = 'Произошла ошибка.';
+        }
+
+        dd($status);
 });
 
 // News

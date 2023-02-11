@@ -33,11 +33,12 @@ class Index extends Component
 
     public function render()
     {
-        $tracks = Track::orderBy('id', 'desc')
-            ->where('user_id', auth()->user()->id)
+        $tracks = Track::where('user_id', auth()->user()->id)
+            ->orderBy('id', 'desc')
             ->when((strlen($this->search) >= 2), function($query) {
                 $query->where('code', 'like', '%'.$this->search.'%')
-                    ->orWhere('description', 'like', '%'.$this->search.'%');
+                    ->orWhere('description', 'like', '%'.$this->search.'%')
+                    ->where('user_id', auth()->user()->id);
             })
             ->paginate(50);
 

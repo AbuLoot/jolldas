@@ -9,6 +9,8 @@ use App\Models\Track;
 use App\Models\Status;
 use App\Models\TrackStatus;
 
+use App\Jobs\SendEmail;
+
 class Arrival extends Component
 {
     public $lang;
@@ -82,17 +84,27 @@ class Arrival extends Component
 
         // Creating Track Status
         $tracksStatus = [];
+        $tracksEmail = [];
 
         foreach($tracks as $track) {
             $tracksStatus[] = [
                 'track_id' => $track->id, 'status_id' => $statusArrived->id, 'created_at' => now(), 'updated_at' => now(),
             ];
+
+            if (isset($track->user->email) && !in_array($track->user->email, $tracksEmail)) {
+                $tracksEmail[] = $track->user->email;
+            }
         }
+
+        $textEmails = collect($tracksEmail)->implode(', ');
 
         TrackStatus::insert($tracksStatus);
 
         // Updating Track Status
         Track::whereIn('id', $ids)->update(['status' => $statusArrived->id]);
+
+        // $sendEmailJobs = new SendEmail($textEmails);
+        // $sendEmailJobs->dispatch();
     }
 
     public function btnToArrive($trackCode)

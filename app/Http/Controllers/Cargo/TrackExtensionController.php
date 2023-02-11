@@ -25,6 +25,8 @@ class TrackExtensionController extends Controller
             $trackCodes[] = trim($line);
         }
 
+        fclose($fh);
+
         // Update Unarrived Tracks
         $unarrivedTracks = Track::whereIn('code', $trackCodes)->where('status', '!=', '5')->get();
         $unarrivedTracksCode = $unarrivedTracks->pluck('code');
@@ -76,8 +78,6 @@ class TrackExtensionController extends Controller
             $trackStatus->updated_at = now();
             $trackStatus->save();
         }
-
-        fclose($fh);
 
         dd($unarrivedTracksCode, $unarrivedTracksStatus, $nonexistentTracksCode, $newTrack);
     }
