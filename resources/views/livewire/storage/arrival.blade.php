@@ -158,7 +158,7 @@
           </div>
           <div class="col-2 col-lg-2 text-end">
             <div class="d-grid">
-              <button  wire:click="btnToArrive('{{ $track->code }}')" type="button" wire:loading.attr="disabled" class="btn btn-primary btn-lg-"><i class="bi bi-check2-all"></i> <span class="d-none d-sm-inline">To arrive</span></button>
+              <button wire:click="btnToArrive('{{ $track->code }}')" type="button" wire:loading.attr="disabled" class="btn btn-primary btn-lg-"><i class="bi bi-check2-all"></i> <span class="d-none d-sm-inline">To arrive</span></button>
             </div>
           </div>
         </div>
@@ -181,7 +181,7 @@
       <div class="col-12 col-sm-3 mb-2">
         <form wire:submit.prevent="toArrive">
           <div class="form-floating mb-3">
-            <input wire:model="trackCode" type="text" class="form-control form-control-lg @error('trackCode') is-invalid @enderror" placeholder="Add track-code" id="trackCodeArea">
+            <input wire:model.defer="trackCode" type="text" class="form-control form-control-lg @error('trackCode') is-invalid @enderror" placeholder="Add track-code" id="trackCodeArea">
             <label for="trackCodeArea">Enter track code</label>
             @error('trackCode')<div class="invalid-feedback">{{ $message }}</div>@enderror
           </div>

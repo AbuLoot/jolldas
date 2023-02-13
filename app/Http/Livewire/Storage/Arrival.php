@@ -84,26 +84,26 @@ class Arrival extends Component
 
         // Creating Track Status
         $tracksStatus = [];
-        $tracksEmail = [];
+        $tracksUsers = [];
 
         foreach($tracks as $track) {
             $tracksStatus[] = [
                 'track_id' => $track->id, 'status_id' => $statusArrived->id, 'created_at' => now(), 'updated_at' => now(),
             ];
 
-            if (isset($track->user->email) && !in_array($track->user->email, $tracksEmail)) {
-                $tracksEmail[] = $track->user->email;
+            if (isset($track->user->email) && !in_array($track->user->id, $tracksUsers)) {
+                $tracksUsers[] = $track->user->id;
             }
         }
 
-        $textEmails = collect($tracksEmail)->implode(', ');
+        // $textUsersId = collect($tracksUsers)->implode(', ');
 
         TrackStatus::insert($tracksStatus);
 
         // Updating Track Status
         Track::whereIn('id', $ids)->update(['status' => $statusArrived->id]);
 
-        // $sendEmailJobs = new SendEmail($textEmails);
+        // $sendEmailJobs = new SendEmail($tracksUsers);
         // $sendEmailJobs->dispatch();
     }
 
@@ -151,6 +151,39 @@ class Arrival extends Component
 
         $track->status = $statusArrived->id;
         $track->save();
+
+        if (isset($track->user->email)) {
+            SendEmail::dispatch($track->user);
+        }
+
+        if (isset($track->user->email) && $track->user->email == 'asdasdasd') {
+            // dd($track->user);
+            // $sendEmailJobs = new SendEmail($track->user);
+            // $sendEmailJobs->dispatch();
+
+            // Email subject
+            $subject = "Новые обновления на вашем аккаунте";
+
+            // Email content
+            $content = "<!DOCTYPE html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>Новые обновления на вашем аккаунте</title></head><body>";
+            $content .= "<h1>Cargo Jolldas</h1>";
+            $content .= "<h2>Новые поступления на склад</h2>";
+            $content .= "<h3>Дата прибытия: ".date('Y-m-d')."<br>Время прибытия: ".date('G:i')."</h3>";
+            $content .= "<p><a href='https://jolldas.kz/'>www.jolldas.kz</a></p>";
+            $content .= "</body></html>";
+
+            $headers = "From: serv@jolldas.kz \r\n" .
+                       "MIME-Version: 1.0" . "\r\n" . 
+                       "Content-type: text/html; charset=UTF-8" . "\r\n";
+
+            // Send the email
+            if (mail($track->user, $subject, $content, $headers)) {
+                $status = 'Ваша заявка принята. Спасибо!';
+            }
+            else {
+                $status = 'Произошла ошибка.';
+            }
+        }
 
         $this->trackCode = null;
         $this->dispatchBrowserEvent('area-focus');

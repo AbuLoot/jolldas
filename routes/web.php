@@ -103,35 +103,6 @@ Route::group(['prefix' => '{lang}', 'middleware' => 'auth'], function() {
     Route::put('profile/password', [ProfileController::class, 'passwordUpdate']);
 });
 
-Route::get('send-mails', function() {
-
-        // Email subject
-        $subject = "Тестовая новая заявка";
-
-        // Email content
-        $content = "<h2>Subject</h2>";
-        $content .= "<b>Имя: name</b><br>";
-        $content .= "<b>Номер: phone</b><br>";
-        $content .= "<b>Email: email</b><br>";
-        $content .= "<b>Текст: message</b><br>";
-        $content .= "<b>Дата: " . date('Y-m-d') . "</b><br>";
-        $content .= "<b>Время: " . date('G:i') . "</b>";
-
-        $headers = "From: info@autorex.kz \r\n" .
-                   "MIME-Version: 1.0" . "\r\n" . 
-                   "Content-type: text/html; charset=UTF-8" . "\r\n";
-
-        // Send the email
-        if (mail('autorexcom@gmail.com, issayev.adilet@gmail.com, biotic.company@gmail.com', $subject, $content, $headers)) {
-            $status = 'Ваша заявка принята. Спасибо!';
-        }
-        else {
-            $status = 'Произошла ошибка.';
-        }
-
-        dd($status);
-});
-
 // News
 Route::get('i/news', [BlogController::class, 'posts']);
 Route::get('i/news/{page}', [BlogController::class, 'postSingle']);
