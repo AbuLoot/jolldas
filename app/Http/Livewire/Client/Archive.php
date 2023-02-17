@@ -6,11 +6,10 @@ use Livewire\Component;
 
 use App\Models\Track;
 
-class Index extends Component
+class Archive extends Component
 {
     public $lang;
     public $search;
-    public Track $track;
 
     protected $listeners = [
         'newData' => '$refresh',
@@ -21,25 +20,15 @@ class Index extends Component
         $this->lang = app()->getLocale();
     }
 
-    public function editTrack($id)
+    public function toggleTrack($id)
     {
-        $this->emit('editTrack', $id);
-    }
-
-    public function deleteTrack($id)
-    {
-        Track::destroy('id', $id);
-    }
-
-    public function archiveTrack($id)
-    {
-        Track::where('id', $id)->update(['state' => 0]);
+        Track::where('id', $id)->update(['state' => 1]);
     }
 
     public function render()
     {
         $tracks = Track::where('user_id', auth()->user()->id)
-            ->where('state', 1)
+            ->where('state', 0)
             ->orderBy('id', 'desc')
             ->when((strlen($this->search) >= 2), function($query) {
                 $query->where('code', 'like', '%'.$this->search.'%')
@@ -48,7 +37,7 @@ class Index extends Component
             })
             ->paginate(50);
 
-        return view('livewire.client.index', ['tracks' => $tracks])
+        return view('livewire.client.archive', ['tracks' => $tracks])
             ->layout('livewire.client.layout');
     }
 }

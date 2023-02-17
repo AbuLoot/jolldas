@@ -17,18 +17,19 @@ use App\Http\Controllers\Joystick\RoleController;
 use App\Http\Controllers\Joystick\PermissionController;
 use App\Http\Controllers\Joystick\LanguageController;
 
-// // Site Controllers
+// Site Controllers
 use App\Http\Controllers\InputController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController as BlogController;
 use App\Http\Controllers\PageController as SiteController;
 
-// // Cargo Controllers
+// Cargo Controllers
 use App\Http\Controllers\Cargo\TrackController;
 use App\Http\Controllers\Cargo\StatusController;
 use App\Http\Controllers\Cargo\TrackExtensionController;
 
 use App\Http\Livewire\Client\Index as Client;
+use App\Http\Livewire\Client\Archive;
 use App\Http\Livewire\Storage\Reception;
 use App\Http\Livewire\Storage\Sending;
 use App\Http\Livewire\Storage\Arrival;
@@ -38,7 +39,8 @@ use App\Http\Livewire\Storage\Tracks;
 Route::redirect('client', '/'.app()->getLocale().'/client');
 Route::group(['prefix' => '/{lang}/client', 'middleware' => ['auth']], function () {
     Route::get('/', Client::class);
-    Route::get('/tracks', Client::class);
+    Route::get('tracks', Client::class);
+    Route::get('archive', Archive::class);
 });
 
 // Storage Livewire Routes

@@ -44,10 +44,10 @@
           </li>
           @auth
             <li class="nav-item">
-              <a class="nav-link px-3" href="/{{ $lang }}/client">Мои треки</a>
+              <a class="nav-link px-3" href="/{{ $lang }}/profile">Мой аккаунт</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link px-3" href="/{{ $lang }}/profile">Мой аккаунт</a>
+              <a class="nav-link px-3" href="/{{ $lang }}/client">Мои треки</a>
             </li>
           @endauth
         </ul>

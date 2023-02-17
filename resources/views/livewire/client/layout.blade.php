@@ -44,10 +44,13 @@
             <a class="nav-link px-3" aria-current="page" href="/"><i class="bi bi-house-fill text-white"></i></a>
           </li>
           <li class="nav-item">
+            <a class="nav-link px-3" href="/{{ $lang }}/profile">Мой аккаунт</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link px-3" href="/{{ $lang }}/client">Мои треки</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link px-3" href="/{{ $lang }}/profile">Мой аккаунт</a>
+            <a class="nav-link px-3" href="/{{ $lang }}/client/archive">Мой архив</a>
           </li>
         </ul>
 
@@ -59,8 +62,9 @@
           </a>
           <ul class="dropdown-menu dropdown-menu-end text-small shadow">
             <div class="text-muted px-3 py-1">{{ Auth::user()->name . ' ' . Auth::user()->lastname }}</div>
-            <li><a class="dropdown-item py-2" href="/{{ $lang }}/client">Мои треки</a></li>
             <li><a class="dropdown-item py-2" href="/{{ $lang }}/profile">Мой аккаунт</a></li>
+            <li><a class="dropdown-item py-2" href="/{{ $lang }}/client">Мои треки</a></li>
+            <li><a class="dropdown-item py-2" href="/{{ $lang }}/client/archive">Мой архив</a></li>
             <li><hr class="dropdown-divider"></li>
             <li>
               <form method="POST" action="/logout">

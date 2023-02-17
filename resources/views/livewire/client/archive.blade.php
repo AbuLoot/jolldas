@@ -1,19 +1,14 @@
 <div>
-	<div class="px-3 py-3 border-bottom mb-3">
-		<div class="container d-flex flex-wrap justify-content-between align-items-center">
+  <div class="px-3 py-3 border-bottom mb-3">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center">
 
-		  <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Трек посылки</h4>
+      <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Архив треков</h4>
 
-		  <form class="col-8 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
-			  <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Введите трек код..." aria-label="Search">
-		  </form>
+      <form class="col-12 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
+        <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Введите трек код..." aria-label="Search">
+      </form>
 
-		  <div class="col-4 col-lg-4 text-end ms-md-auto ms-lg-0">
-  			<button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalAddTrack">
-          <i class="bi bi-plus-circle-fill me-sm-2"></i> <span class="d-none d-sm-inline">Добавить трек</span>
-        </button>
-		  </div>
-		</div>
+    </div>
   </div>
 
   <!-- Toast notification -->
@@ -28,7 +23,7 @@
 
   <div class="container">
 
-  	<!-- Content -->
+    <!-- Content -->
     @foreach($tracks as $track)
       <div class="track-item mb-2">
 
@@ -76,12 +71,7 @@
             </div>
           </div>
           <div class="col-2 col-lg-1 text-end">
-            <button wire:click="editTrack({{ $track->id }})" type="button" class="btn btn-outline-primary mb-1"><i class="bi bi-pen"></i></button>
-            @if($track->status == 1)
-              <button onclick="return confirm('Удалить запись?') || event.stopImmediatePropagation()" wire:click="deleteTrack({{ $track->id }})" type="button" class="btn btn-outline-dark"><i class="bi bi-x-lg"></i></button>
-            @else
-              <button onclick="return confirm('Убрать в архив?') || event.stopImmediatePropagation()" wire:click="archiveTrack({{ $track->id }})" type="button" class="btn btn-outline-dark"><i class="bi bi-archive"></i></button>
-            @endif
+            <button wire:click="toggleTrack({{ $track->id }})" type="button" class="btn btn-outline-primary mb-1"><i class="bi bi-toggle2-on"></i></button>
           </div>
         </div>
       </div>

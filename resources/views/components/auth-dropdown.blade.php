@@ -8,8 +8,9 @@
     </a>
     <ul class="dropdown-menu dropdown-menu-end text-small shadow">
       <div class="text-muted px-3 py-1">{{ Auth::user()->name . ' ' . Auth::user()->lastname }}</div>
-      <li><a class="dropdown-item py-2" href="/{{ $lang }}/client">Мои треки</a></li>
       <li><a class="dropdown-item py-2" href="/{{ $lang }}/profile">Мой аккаунт</a></li>
+      <li><a class="dropdown-item py-2" href="/{{ $lang }}/client">Мои треки</a></li>
+      <li><a class="dropdown-item py-2" href="/{{ $lang }}/client/archive">Мой архив</a></li>
       <li><hr class="dropdown-divider"></li>
       <li>
         <form method="POST" action="/logout">
