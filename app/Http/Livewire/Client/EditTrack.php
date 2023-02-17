@@ -44,7 +44,11 @@ class EditTrack extends Component
             return;
         }
 
-        $this->track->save();
+        if ($this->track->status == 1 || $this->track->slug == 'added') {
+            $this->track->save();
+        } else {
+            Track::where('id', $this->track->id)->update(['description' => $this->track->description]);
+        }
 
         $this->track->code = null;
         $this->track->description = null;

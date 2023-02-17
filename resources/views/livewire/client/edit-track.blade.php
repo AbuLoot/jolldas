@@ -11,11 +11,7 @@
           <div class="modal-body">
             <div class="mb-3">
               <label for="code" class="form-label">Трек номер</label>              
-              @if(isset($track) && $track->status > 1)
-                <input type="text" class="form-control form-control-lg" id="code" value="{{ $track->code }}" disabled>
-              @else
-                <input wire:model.defer="track.code" type="text" class="form-control form-control-lg @error('track.code') is-invalid @enderror" id="code">
-              @endif
+              <input wire:model.defer="track.code" type="text" class="form-control form-control-lg" id="code" @if(isset($track) && $track->status > 1) disabled @endif>
               @error('track.code')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
             <div class="mb-3">
