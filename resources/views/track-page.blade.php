@@ -37,10 +37,10 @@
               <div class="row">
                 <div class="col-12 col-lg-5">
                   <div><b>Track code:</b> {{ $track->code }}</div>
-                  <div><b>Description:</b> {{ Str::limit($track->description, 35) }}</div>
+                  <div><b>Description:</b> {{ Str::limit($track->description, 5) }}</div>
                 </div>
                 <div class="col-12 col-lg-4">
-                  <div><b>{{ ucfirst($activeStatus->slug) }} Date:</b> {{ $activeStatus->created_at }}</div>
+                  <div><b>{{ ucfirst($activeStatus->slug) }} Date:</b> {{ $track->updated_at }}</div>
                   <div><b>Status:</b> {{ $activeStatus->title }}</div>
                 </div>
                 @if($track->user) 
@@ -62,7 +62,7 @@
                         <li class="timeline-item mb-2">
                           <span class="timeline-icon bg-success"><i class="bi bi-check text-white"></i></span>
                           <p class="text-success mb-0">{{ $status->title }}</p>
-                          <p class="text-success mb-0">{{ $status->created_at }}</p>
+                          <p class="text-success mb-0">{{ $status->pivot->created_at }}</p>
                         </li>
                         @continue
                       @endif
@@ -70,11 +70,11 @@
                       <li class="timeline-item mb-2">
                         <span class="timeline-icon bg-secondary"><i class="bi bi-check text-white"></i></span>
                         <p class="text-body mb-0">{{ $status->title }}</p>
-                        <p class="text-body mb-0">{{ $status->created_at }}</p>
+                        <p class="text-body mb-0">{{ $status->pivot->created_at }}</p>
                       </li>
                     @endforeach
                   </ul>
-                  <p><b>Description:</b> {{ $track->description }}</p>
+                  <p><b>Description:</b> {{ Str::limit($track->description, 5) }}</p>
                 </section>
               </div>
             </div>

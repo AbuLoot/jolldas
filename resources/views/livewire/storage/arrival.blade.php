@@ -250,7 +250,7 @@
 
 @section('scripts')
   <script type="text/javascript">
-    // Toast Script
+    // Focus Script
     window.addEventListener('area-focus', event => {
 
       var areaEl = document.getElementById('trackCodeArea');

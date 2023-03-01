@@ -26,7 +26,6 @@ class SendMailNotification implements ShouldQueue
     public function __construct($emails)
     {
         $this->emails = $emails;
-        dd($this->emails);
     }
 
     /**
