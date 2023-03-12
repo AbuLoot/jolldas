@@ -17,6 +17,7 @@
         "laravel/tinker": "^2.5",
         "livewire/livewire": "^2.10",
         "picqer/php-barcode-generator": "^2.2",
+        "rap2hpoutre/fast-excel": "^5.1",
         "teamtnt/laravel-scout-tntsearch-driver": "^12.1"
     },
     "require-dev": {

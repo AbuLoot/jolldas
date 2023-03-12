@@ -82,7 +82,10 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth', 'roles:admin|
         'languages' => LanguageController::class,
     ]);
 
-    Route::get('tracks-insert', [TrackExtensionController::class, 'insertTracks']);
+    Route::get('reception-tracks', [TrackExtensionController::class, 'receptionTracks']);
+    Route::get('arrival-tracks', [TrackExtensionController::class, 'arrivalTracks']);
+    Route::post('upload-tracks', [TrackExtensionController::class, 'uploadTracks']);
+
     Route::get('companies-actions', [CompanyController::class, 'actionCompanies']);
     Route::get('users/password/{id}/edit', [UserController::class, 'passwordEdit']);
     Route::put('users/password/{id}', [UserController::class, 'passwordUpdate']);

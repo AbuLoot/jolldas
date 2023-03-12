@@ -18,6 +18,7 @@
       $now          = now();
       $today        = $now->copy()->format('Y-m-d');
       $yesterday    = $now->copy()->subDay(1)->format('Y-m-d');
+      
       $twoDaysAgo   = $now->copy()->subDay(2)->format('Y-m-d');
       $threeDaysAgo = $now->copy()->subDay(3)->format('Y-m-d');
       $fourDaysAgo  = $now->copy()->subDay(4)->format('Y-m-d');
@@ -28,7 +29,7 @@
 
       // Grouped by date
       $todayGroup         = $tracksGroup->where('updated_at', '>', $yesterday.' 23:59:59')->where('updated_at', '<=', now());
-      $yesterdayGroup     = $tracksGroup->where('updated_at', '>', $yesterday)->where('updated_at', '<', $today);
+      $yesterdayGroup     = $tracksGroup->where('updated_at', '>=', $yesterday)->where('updated_at', '<', $today);
       $twoDaysAgoGroup    = $tracksGroup->where('updated_at', '>', $twoDaysAgo)->where('updated_at', '<', $yesterday);
       $threeDaysAgoGroup  = $tracksGroup->where('updated_at', '>', $threeDaysAgo)->where('updated_at', '<', $twoDaysAgo);
       $fourDaysAgoGroup   = $tracksGroup->where('updated_at', '>', $fourDaysAgo)->where('updated_at', '<', $threeDaysAgo);

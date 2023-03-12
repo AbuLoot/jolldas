@@ -2,8 +2,12 @@
 
 namespace App\Http\Livewire\Storage;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
+use Livewire\WithFileUploads;
+
+use Rap2hpoutre\FastExcel\FastExcel;
 
 use App\Models\Track;
 use App\Models\Status;
@@ -11,9 +15,12 @@ use App\Models\TrackStatus;
 
 class Reception extends Component
 {
+    use WithFileUploads;
+
     public $lang;
     public $search;
     public $trackCode;
+    public $tracksDoc;
 
     protected $rules = [
         'trackCode' => 'required|string|min:10|max:20',
@@ -75,6 +82,22 @@ class Reception extends Component
         $track->save();
 
         $this->dispatchBrowserEvent('area-focus');
+    }
+
+    public function uploadDoc(Request $request)
+    {
+        $this->validate([
+            'tracksDoc' => 'required|mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        ]);
+
+        // dd($request->file('tracksDoc'));
+
+        $tracksDoc = (new FastExcel)->import('tracksDoc', function($line) {
+            dd($line);
+            // return = [
+                // 'code' => 
+            // ];
+        });
     }
 
     public function render()
