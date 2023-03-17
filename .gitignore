@@ -1,6 +1,7 @@
 /node_modules
 /public/hot
 /public/storage
+/public/files
 /public/file-manager/tracks
 /storage/*.key
 /vendor
