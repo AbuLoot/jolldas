@@ -36,19 +36,24 @@
           <button type="submit" id="toReceive" class="btn btn-primary btn-lg mb-2"><i class="bi bi-check2"></i> To receive</button>
         </form>
 
-        <!-- <form action="/{{ $lang }}/admin/upload-tracks" method="post" enctype="multipart/form-data">
-          @csrf
-          <div class="mb-3">
-            <label class="form-label" for="tracksDocArea">Uploading document</label>
-            <input type="file" name="tracksDoc" class="form-control form-control-lg @error('tracksDoc') is-invalid @enderror" placeholder="Add tracks doc" id="tracksDocArea" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.oasis.opendocument.spreadsheet,application/vnd.ms-excel">
-            @error('tracksDoc')<div class="invalid-feedback">{{ $message }}</div>@enderror
-          </div>
+        <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalUploadDoc">Upload</button>
 
-          <button type="submit" id="uploadDoc" class="btn btn-primary btn-lg"><i class="bi bi-file-earmark-arrow-up-fill"></i> Upload doc</button>
-        </form>  -->
       </div>
 
       <div class="col-12 col-sm-9">
+
+        @if (session('result'))
+          <div class="alert alert-info">
+            <h4>Total tracks count: {{ session('result')['totalTracksCount'] }}pcs</h4>
+            <h4>Received tracks count: {{ session('result')['receivedTracksCount'] }}pcs</h4>
+            <h4>Existent tracks count: {{ session('result')['existentTracksCount'] }}pcs</h4>
+            <?php session()->forget('result'); ?>
+            <div>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          </div>
+        @endif
+
         @foreach($tracks as $track)
           <div class="track-item mb-2">
 
@@ -109,6 +114,31 @@
     <nav aria-label="Page navigation">
       {{ $tracks->links() }}
     </nav>
+  </div>
+
+  <div class="modal fade" id="modalUploadDoc" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form action="/{{ $lang }}/admin/upload-tracks" method="post" enctype="multipart/form-data">
+          @csrf
+          <input type="hidden" name="storageStage" value="reception">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="modalLabel">Uploading Track Codes</h1>
+            <button type="button" id="closeUploadDoc" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label" for="tracksDocArea">Select document</label>
+              <input type="file" name="tracksDoc" class="form-control form-control-lg @error('tracksDoc') is-invalid @enderror" placeholder="Add tracks doc" id="tracksDocArea" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.oasis.opendocument.spreadsheet,application/vnd.oasis.opendocument.spreadsheet,application/vnd.ms-excel">
+              @error('tracksDoc')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" id="uploadDoc" class="btn btn-primary btn-lg"><i class="bi bi-file-earmark-arrow-up-fill"></i> Upload doc</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 
 </div>

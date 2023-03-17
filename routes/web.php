@@ -97,7 +97,6 @@ Route::get('search-track', [InputController::class, 'searchTrack']);
 Route::get('search-ajax', [InputController::class, 'searchAjax']);
 Route::post('send-app', [InputController::class, 'sendApp']);
 
-
 // User Profile
 Route::group(['prefix' => '{lang}', 'middleware' => 'auth'], function() {
 
