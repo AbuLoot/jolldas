@@ -27,7 +27,17 @@
     @foreach($tracks as $track)
       <div class="track-item mb-2">
 
-        <?php $activeStatus = $track->statuses->last();?>
+        <?php
+          $activeStatus = $track->statuses->last();
+
+          $arrivalRegion = null;
+
+          if ($activeStatus->slug == 'arrival' OR $activeStatus->id == 5) {
+
+            $arrivalRegion = $track->regions->last()->title ?? __('statuses.regions.title');
+            $arrivalRegion = '('.$arrivalRegion.', Казахстан)';
+          }
+        ?>
         <div class="row">
           <div class="col-10 col-lg-11">
             <div class="border {{ __('statuses.classes.'.$activeStatus->slug.'.card-color') }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
@@ -38,7 +48,7 @@
                 </div>
                 <div class="col-9 col-lg-5">
                   <div><b>Дата:</b> {{ $track->updated_at }}</div>
-                  <div><b>Статус:</b> {{ $activeStatus->title }}</div>
+                  <div><b>Статус:</b> {{ $activeStatus->title }} {{ $arrivalRegion }}</div>
                 </div>
               </div>
             </div>
@@ -52,7 +62,7 @@
                       @if($activeStatus->id == $status->id)
                         <li class="timeline-item mb-2">
                           <span class="timeline-icon bg-success"><i class="bi bi-check text-white"></i></span>
-                          <p class="text-success mb-0">{{ $status->title }}</p>
+                          <p class="text-success mb-0">{{ $status->title }} {{ $arrivalRegion }}</p>
                           <p class="text-success mb-0">{{ $status->pivot->created_at }}</p>
                         </li>
                         @continue

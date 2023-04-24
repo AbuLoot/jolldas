@@ -25,6 +25,10 @@ return [
 	    ],
 	],
 
+	'regions' => [
+		'title' => 'Almaty',
+	],
+
 	'data' => [
 	    '0' => [
 	    	'title' => 'Inactive',

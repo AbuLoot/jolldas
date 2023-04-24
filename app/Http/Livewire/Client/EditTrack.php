@@ -17,7 +17,7 @@ class EditTrack extends Component
     protected $listeners = ['editTrack' => 'editTrack'];
 
     protected $rules = [
-        'track.code' => 'required|string|min:12|max:20',
+        'track.code' => 'required|string|min:10|max:20',
         'track.description' => 'required|string|max:1000',
     ];
 

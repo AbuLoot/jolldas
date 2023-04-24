@@ -28,4 +28,9 @@ class Region extends Model
     {
         return $this->hasOne('App\Models\Profile');
     }
+
+    // public function tracks()
+    // {
+    //     return $this->belongsToMany(Track::class);
+    // }
 }

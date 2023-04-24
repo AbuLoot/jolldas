@@ -3,8 +3,10 @@
 namespace App\Http\Livewire\Storage;
 
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
+use App\Models\Region;
 use App\Models\Track;
 use App\Models\Status;
 use App\Models\TrackStatus;
@@ -16,9 +18,11 @@ class Arrival extends Component
     public $lang;
     public $search;
     public $status;
+    public $region;
+    public $mode = 'list';
     public $trackCode;
     public $trackCodes = [];
-    public $tracksGroup = [];
+    public $allSentTracks = [];
 
     protected $rules = [
         'trackCode' => 'required|string|min:10|max:20',
@@ -39,24 +43,29 @@ class Arrival extends Component
             ->where('slug', 'sent')
             ->orWhere('id', 4)
             ->first();
+
+        if (!Cache::has('region')) {
+            $region = Region::where('slug', 'kazakhstan')->orWhere('id', 1)->first();
+            Cache::put('region', $region);
+        }
     }
 
     public function getTracksIdByDate($dateFrom, $dateTo)
     {
-        $tracksGroup = $this->tracksGroup;
+        $sentTracks = $this->allSentTracks;
 
-        $tracks = $tracksGroup->when($dateTo, function ($tracksGroup) use ($dateFrom, $dateTo) {
+        $tracks = $sentTracks->when($dateTo, function ($sentTracks) use ($dateFrom, $dateTo) {
 
                 // If tracks added today
                 if ($dateTo == now()->format('Y-m-d H-i')) {
-                    return $tracksGroup->where('updated_at', '>', $dateFrom.' 23:59:59')->where('updated_at', '<=', now());
+                    return $sentTracks->where('updated_at', '>', $dateFrom.' 23:59:59')->where('updated_at', '<=', now());
                 }
 
-                return $tracksGroup->where('updated_at', '>', $dateFrom)->where('updated_at', '<', $dateTo);
+                return $sentTracks->where('updated_at', '>', $dateFrom)->where('updated_at', '<', $dateTo);
 
-            }, function ($tracksGroup) use ($dateFrom) {
+            }, function ($sentTracks) use ($dateFrom) {
 
-                return $tracksGroup->where('updated_at', '<', $dateFrom);
+                return $sentTracks->where('updated_at', '<', $dateFrom);
             });
 
         return $tracks->pluck('id')->toArray();
@@ -66,7 +75,7 @@ class Arrival extends Component
     {
         $ids = $this->getTracksIdByDate($dateFrom, $dateTo);
 
-        $this->trackCodes = $this->tracksGroup->whereIn('id', $ids)->sortByDesc('id');
+        $this->trackCodes = $this->allSentTracks->whereIn('id', $ids)->sortByDesc('id');
 
         $this->dispatchBrowserEvent('open-modal');
     }
@@ -75,7 +84,7 @@ class Arrival extends Component
     {
         $ids = $this->getTracksIdByDate($dateFrom, $dateTo);
 
-        $tracks = $this->tracksGroup->whereIn('id', $ids);
+        $tracks = $this->allSentTracks->whereIn('id', $ids);
 
         $statusArrived = Status::where('slug', 'arrived')
             ->orWhere('id', 5)
@@ -142,6 +151,7 @@ class Arrival extends Component
         $trackStatus = new TrackStatus();
         $trackStatus->track_id = $track->id;
         $trackStatus->status_id = $statusArrived->id;
+        $trackStatus->region_id = $this->region->id;
         $trackStatus->created_at = now();
         $trackStatus->updated_at = now();
         $trackStatus->save();
@@ -157,15 +167,27 @@ class Arrival extends Component
         $this->dispatchBrowserEvent('area-focus');
     }
 
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
+    }
+
+    public function setRegionId($id)
+    {
+        $region = Region::find($id);
+        Cache::put('region', $region);
+    }
+
     public function render()
     {
-        // $tracks = Track::query()
-        //     ->whereHas('statuses', function($query) {
-        //         return $query->where('slug', 'sent');
-        //     })
-        //     ->paginate(30);
+        if ($this->mode == 'list') {
+            $sentTracks = Track::query()->where('status', $this->status->id)->paginate(50);
+        } else {
+            $sentTracks = Track::query()->where('status', $this->status->id)->get();
+            $this->allSentTracks = $sentTracks;
+        }
 
-        $this->tracksGroup = Track::where('status', $this->status->id)->get();
+        $this->region = Cache::get('region');
 
         $tracks = [];
 
@@ -177,7 +199,11 @@ class Arrival extends Component
                 ->paginate(10);
         }
 
-        return view('livewire.storage.arrival', ['tracks' => $tracks])
+        return view('livewire.storage.arrival', [
+                'tracks' => $tracks,
+                'sentTracks' => $sentTracks,
+                'regions' => Region::descendantsAndSelf(1)->toTree(),
+            ])
             ->layout('livewire.storage.layout');
     }
 }

@@ -33,9 +33,6 @@
         </div>
         <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Войти</button>
         @if (Route::has('password.request'))
-          <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('password.request') }}">
-            {{ __('Forgot your password?') }}
-          </a>
           <a href="/verify-user" class="w-100 mb-2 btn btn-lg btn-link">{{ __('Забыли пароль?') }}</a>
         @endif
       </form>

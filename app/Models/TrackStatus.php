@@ -14,5 +14,6 @@ class TrackStatus extends Model
     protected $fillable = [
         'track_id',
         'status_id',
+        'region_id',
     ];
 }

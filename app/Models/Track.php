@@ -13,7 +13,12 @@ class Track extends Model
 
     public function statuses()
     {
-        return $this->belongsToMany(Status::class, 'track_status')->withPivot('created_at', 'updated_at');
+        return $this->belongsToMany(Status::class, 'track_status')->withPivot('region_id', 'created_at', 'updated_at');
+    }
+
+    public function regions()
+    {
+        return $this->belongsToMany(Region::class, 'track_status', 'track_id', 'region_id');
     }
 
     public function user()

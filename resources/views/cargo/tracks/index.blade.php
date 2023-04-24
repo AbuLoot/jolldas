@@ -32,8 +32,9 @@
             <td>{{ $track->code }}</td>
             <td>{{ Str::limit($track->description, 35) }}</td>
             <?php $lastStatus = $track->statuses()->orderBy('created_at', 'desc')->first(); ?>
+            <?php $regionTitle = $track->regions->last()->title ?? __('statuses.regions.title'); ?>
             <td>{{ $lastStatus->pivot->created_at->format('Y-m-d') }}</td>
-            <td>{{ $lastStatus->title }}</td>
+            <td>{{ $lastStatus->title }} ({{ $regionTitle }}, Казахстан)</td>
             <td>{{ $track->lang }}</td>
             <td class="text-right">
               <a class="btn btn-link btn-xs" href="{{ route('tracks.edit', [$lang, $track->id]) }}" title="Редактировать"><i class="material-icons md-18">mode_edit</i></a>

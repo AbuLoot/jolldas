@@ -25,9 +25,6 @@ body {
 .bg-received { background-color: #ffcd39 !important; }
 .bg-sent { background-color: #3dd5f3 !important; }
 .bg-arrived { background-color: #4dd4ac !important; }
-body {
-  min-height: 600px;
-}
 .bg-green-jd { background-color: #479f76 !important; }
 
 
