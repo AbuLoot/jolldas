@@ -3,7 +3,7 @@
   <div class="px-3 py-3 border-bottom mb-3">
     <div class="container d-flex flex-wrap justify-content-between align-items-center">
 
-      <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Track codes group</h4>
+      <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Track codes</h4>
 
       <form class="col-12 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
         <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Enter track code..." aria-label="Search">
@@ -101,9 +101,6 @@
             <label for="trackCodeArea">Enter track code</label>
             @error('trackCode')<div class="invalid-feedback">{{ $message }}</div>@enderror
           </div>
-          <?php // $kz = $regions->where('slug', 'kazakhstan')->descendants; 
-          // dd($regions);
-           ?>
           <div class="btn-group mb-2" role="group" aria-label="Button group with nested dropdown">
             <div class="btn-group" role="group">
               <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">

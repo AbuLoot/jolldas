@@ -32,7 +32,7 @@
 
           $arrivalRegion = null;
 
-          if ($activeStatus->slug == 'arrival' OR $activeStatus->id == 5) {
+          if ($activeStatus->slug == 'arrived' OR $activeStatus->id == 5) {
 
             $arrivalRegion = $track->regions->last()->title ?? __('statuses.regions.title');
             $arrivalRegion = '('.$arrivalRegion.', Казахстан)';

@@ -181,9 +181,9 @@ class Arrival extends Component
     public function render()
     {
         if ($this->mode == 'list') {
-            $sentTracks = Track::query()->where('status', $this->status->id)->paginate(50);
+            $sentTracks = Track::query()->where('status', $this->status->id)->orderByDesc('id')->paginate(50);
         } else {
-            $sentTracks = Track::query()->where('status', $this->status->id)->get();
+            $sentTracks = Track::query()->where('status', $this->status->id)->orderByDesc('id')->get();
             $this->allSentTracks = $sentTracks;
         }
 
