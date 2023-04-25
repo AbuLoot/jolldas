@@ -16,6 +16,7 @@ class CreateTrackStatusTable extends Migration
         Schema::create('track_status', function (Blueprint $table) {
             $table->bigInteger('track_id')->unsigned();
             $table->integer('status_id')->unsigned();
+            $table->integer('region_id')->unsigned();
             $table->timestamps();
 
             $table->foreign('track_id')->references('id')->on('tracks')->onDelete('cascade');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cargo;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 use Rap2hpoutre\FastExcel\FastExcel;
 
@@ -159,10 +160,13 @@ class TrackExtensionController extends Controller
 
         $arrivedTracks = $existentTracks->where('status', '>=', $statusArrived->id);
 
-        $unarrivedTracks->each(function ($item, $key) use (&$unarrivedTracksStatus, $statusArrived) {
+        $region = Cache::get('region');
+
+        $unarrivedTracks->each(function ($item, $key) use (&$unarrivedTracksStatus, $statusArrived, $region) {
             $unarrivedTracksStatus[] = [
                 'track_id' => $item->id,
                 'status_id' => $statusArrived->id,
+                'region_id' => $region->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -203,6 +207,7 @@ class TrackExtensionController extends Controller
             $trackStatus = new TrackStatus();
             $trackStatus->track_id = $newTrack->id;
             $trackStatus->status_id = $statusArrived->id;
+            $trackStatus->region_id = $region->id;
             $trackStatus->created_at = now();
             $trackStatus->updated_at = now();
             $trackStatus->save();

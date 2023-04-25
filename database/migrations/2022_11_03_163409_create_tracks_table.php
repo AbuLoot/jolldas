@@ -20,6 +20,7 @@ class CreateTracksTable extends Migration
             $table->string('description');
             $table->char('lang', 4);
             $table->integer('status')->default(1);
+            $table->integer('state')->default(1);
             $table->timestamps();
         });
     }
