@@ -87,6 +87,8 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth', 'roles:admin|
     Route::post('upload-tracks', [TrackExtensionController::class, 'uploadTracks']);
 
     Route::get('companies-actions', [CompanyController::class, 'actionCompanies']);
+    Route::get('users/search/user', [UserController::class, 'search']);
+    // Route::get('users/search-ajax', [UserController::class, 'searchAjax']);
     Route::get('users/password/{id}/edit', [UserController::class, 'passwordEdit']);
     Route::put('users/password/{id}', [UserController::class, 'passwordUpdate']);
 });

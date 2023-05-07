@@ -44,9 +44,9 @@ class Arrival extends Component
             ->orWhere('id', 4)
             ->first();
 
-        if (!Cache::has('region')) {
+        if (!Cache::has('jRegion')) {
             $region = Region::where('slug', 'kazakhstan')->orWhere('id', 1)->first();
-            Cache::put('region', $region);
+            Cache::put('jRegion', $region);
         }
     }
 
@@ -175,7 +175,7 @@ class Arrival extends Component
     public function setRegionId($id)
     {
         $region = Region::find($id);
-        Cache::put('region', $region);
+        Cache::put('jRegion', $region);
     }
 
     public function render()
@@ -187,7 +187,7 @@ class Arrival extends Component
             $this->allSentTracks = $sentTracks;
         }
 
-        $this->region = Cache::get('region');
+        $this->region = Cache::get('jRegion');
 
         $tracks = [];
 

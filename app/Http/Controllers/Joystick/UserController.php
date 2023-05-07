@@ -29,6 +29,45 @@ class UserController extends Controller
         return view('joystick.users.index', compact('users', 'regions'));
     }
 
+    public function search(Request $request)
+    {
+        $text = trim(strip_tags($request->text));
+        $regionId = $request->region_id ?? 0;
+
+        $users = User::query()
+            ->when($regionId >= 1, function($query) use ($regionId) {
+                $query->where('region_id', $regionId);
+            })
+            ->when(strlen($text) >= 2, function($query) use ($text) {
+                $query->where('name', 'like', $text.'%');
+                $query->orWhere('lastname', 'like', $text.'%');
+                $query->orWhere('email', 'like', $text.'%');
+                $query->orWhere('tel', 'like', '%'.$text.'%');
+            })
+            ->paginate(50);
+
+        $users->appends([
+            'region_id' => $request->region_id,
+        ]);
+
+        $regions = Region::get();
+        return view('joystick.users.index', compact('users', 'regions'));
+    }
+
+    public function searchAjax(Request $request)
+    {
+        $text = trim(strip_tags($request->text));
+
+        if (auth()->user()->roles()->firstWhere('name', 'admin')) {
+            $products = Product::search($text)->where('in_company_id', $this->companyId)->orderBy('updated_at','desc')->take(50)->get();
+        }
+        else {
+            $products = Product::search($text)->where('in_company_id', $this->companyId)->where('user_id', auth()->user()->id)->orderBy('updated_at','desc')->take(50)->get();
+        }
+
+        return response()->json($products);
+    }
+
     public function edit($lang, $id)
     {
         $user = User::findOrFail($id);

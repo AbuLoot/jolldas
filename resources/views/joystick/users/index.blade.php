@@ -5,6 +5,38 @@
 
   @include('components.alerts')
 
+  <div class="row">
+    <div class="col-md-5">
+      <form action="/{{ $lang }}/admin/users/search/user" method="get">
+        <div class="input-group input-search">
+          <input type="search" class="form-control input-xs typeahead-goods" name="text" placeholder="Поиск...">
+
+          <div class="input-group-btn">
+            <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <?php $regionTitle = 'Регионы';  ?>
+              {{  (isset($_GET['region_id'])) ? $regions->firstWhere('id', $_GET['region_id'])->title : $regionTitle }} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right dropdown-menu-category">
+              <li><a href="/{{ $lang }}/admin/users"><b>Все регионы</b></a></li>
+              <?php $traverse = function ($nodes, $prefix = null) use (&$traverse, $lang) { ?>
+                <?php foreach ($nodes as $node) : ?>
+                  <li>
+                    <a href="#">
+                      <label><input type="radio" name="region_id" value="{{ $node->id }}"> {{ PHP_EOL.$prefix.' '.$node->title }}</label>
+                    </a>
+                  </li>
+                  <?php $traverse($node->children, $prefix.'___'); ?>
+                <?php endforeach; ?>
+              <?php }; ?>
+              <?php $traverse($regions->toTree()); ?>
+            </ul>
+          </div>
+        </div>
+      </form><br>
+    </div>
+  </div>
+
   <div class="table-responsive">
     <table class="table table-striped table-condensed">
       <thead>
