@@ -167,13 +167,16 @@
 
     <ul class="nav nav-tabs mb-3">
       <li class="nav-item">
-        <a class="nav-link" href="/{{ $lang }}/storage">Received</a>
+        <a class="nav-link" href="/{{ $lang }}/storage">Reception</a>
       </li>
       <li class="nav-item">
         <a class="nav-link bg-light active" aria-current="page">Send</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/{{ $lang }}/storage/arrival">Arrival</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/{{ $lang }}/storage/giving">Giving</a>
       </li>
     </ul>
 

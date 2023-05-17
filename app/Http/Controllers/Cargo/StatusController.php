@@ -12,7 +12,7 @@ class StatusController extends Controller
 {
     public function index()
     {
-        $statuses = Status::orderBy('id', 'desc')->get();
+        $statuses = Status::get();
 
         return view('cargo.statuses.index', compact('statuses'));
     }

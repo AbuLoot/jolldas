@@ -30,12 +30,20 @@
         <?php
           $activeStatus = $track->statuses->last();
 
-          $arrivalRegion = null;
+          $arrivalOrGivenRegion = null;
+          $givenIcon = [
+            'added' => null,
+            'received' => null,
+            'sent' => null,
+            'waiting' => null,
+            'arrived' => null,
+            'given' => '<i class="bi bi-person-check-fill"></i>',
+          ];
 
-          if ($activeStatus->slug == 'arrived' OR $activeStatus->id == 5) {
+          if (in_array($activeStatus->slug, ['arrived', 'given']) OR in_array($activeStatus->id, [5, 6])) {
 
-            $arrivalRegion = $track->regions->last()->title ?? __('statuses.regions.title');
-            $arrivalRegion = '('.$arrivalRegion.', Казахстан)';
+            $arrivalOrGivenRegion = $track->regions->last()->title ?? __('statuses.regions.title');
+            $arrivalOrGivenRegion = '('.$arrivalOrGivenRegion.', Казахстан)';
           }
         ?>
         <div class="row">
@@ -48,7 +56,7 @@
                 </div>
                 <div class="col-9 col-lg-5">
                   <div><b>Дата:</b> {{ $track->updated_at }}</div>
-                  <div><b>Статус:</b> {{ $activeStatus->title }} {{ $arrivalRegion }}</div>
+                  <div><b>Статус: {!! $givenIcon[$activeStatus->slug] !!}</b> {{ $activeStatus->title }} {{ $arrivalOrGivenRegion }}</div>
                 </div>
               </div>
             </div>
@@ -62,7 +70,7 @@
                       @if($activeStatus->id == $status->id)
                         <li class="timeline-item mb-2">
                           <span class="timeline-icon bg-success"><i class="bi bi-check text-white"></i></span>
-                          <p class="text-success mb-0">{{ $status->title }} {{ $arrivalRegion }}</p>
+                          <p class="text-success mb-0">{{ $status->title }} {{ $arrivalOrGivenRegion }}</p>
                           <p class="text-success mb-0">{{ $status->pivot->created_at }}</p>
                         </li>
                         @continue

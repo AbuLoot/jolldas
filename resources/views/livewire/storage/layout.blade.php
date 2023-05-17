@@ -61,6 +61,11 @@
               <a class="nav-link px-3" href="/{{ $lang }}/storage/arrival">Arrival</a>
             </li>
           @endcan
+          @can('giving', Auth::user())
+            <li class="nav-item">
+              <a class="nav-link px-3" href="/{{ $lang }}/storage/giving">Giving</a>
+            </li>
+          @endcan
         </ul>
 
         <div class="flex-shrink-0 dropdown ms-md-auto ps-3">

@@ -60,5 +60,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('arrival', function(User $user) {
             return $user->roles->first()->permissions->pluck('name')->contains('arrival');
         });
+
+        Gate::define('giving', function(User $user) {
+            return $user->roles->first()->permissions->pluck('name')->contains('giving');
+        });
     }
 }

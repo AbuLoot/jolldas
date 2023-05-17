@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Cargo;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Cache;
 
 use Rap2hpoutre\FastExcel\FastExcel;
 
@@ -40,6 +39,9 @@ class TrackExtensionController extends Controller
         }
         elseif ($request->storageStage == 'arrival') {
             $result = $this->toArriveTracks($trackCodes);
+        }
+        elseif ($request->storageStage == 'giving') {
+            $result = $this->toGiveTracks($trackCodes);
         }
 
         Storage::delete('files/'.$docName);
@@ -160,7 +162,7 @@ class TrackExtensionController extends Controller
 
         $arrivedTracks = $existentTracks->where('status', '>=', $statusArrived->id);
 
-        $region = Cache::get('region');
+        $region = session()->get('jRegion');
 
         $unarrivedTracks->each(function ($item, $key) use (&$unarrivedTracksStatus, $statusArrived, $region) {
             $unarrivedTracksStatus[] = [
@@ -217,6 +219,80 @@ class TrackExtensionController extends Controller
             'totalTracksCount' => $trackCodes->count(),
             'arrivedTracksCount' => $unarrivedTracks->count() + $nonexistentTracks->count(),
             'existentTracksCount' => $arrivedTracks->count(),
+        ];
+    }
+
+    public function toGiveTracks($trackCodes)
+    {
+        $statusGiven = Status::where('slug', 'given')
+            ->orWhere('id', 6)
+            ->select('id', 'slug')
+            ->first();
+
+        // Track::whereIn('code', $trackCodes)->where('status', '<', $statusGiven->id)->get();
+        $existentTracks = Track::where('status', '<=', $statusGiven->id)->whereIn('code', $trackCodes)->get();
+        $ungivenTracks = $existentTracks->where('status', '<', $statusGiven->id);
+        $ungivenTracksStatus = [];
+
+        $givenTracks = $existentTracks->where('status', '>=', $statusGiven->id);
+
+        $region = session()->get('jRegion');
+
+        $ungivenTracks->each(function ($item, $key) use (&$ungivenTracksStatus, $statusGiven, $region) {
+            $ungivenTracksStatus[] = [
+                'track_id' => $item->id,
+                'status_id' => $statusGiven->id,
+                'region_id' => $region->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        });
+
+        // Update Ungiven Tracks
+        if ($ungivenTracks->count() >= 1) {
+
+            try {
+                $resultInsert = TrackStatus::insert($ungivenTracksStatus);
+
+                $resultUpdate = Track::whereIn('id', $ungivenTracks->pluck('id')->toArray())
+                    ->update(['status' => $statusGiven->id]);
+
+                if (!$resultInsert OR !$resultUpdate) {
+                    throw new \Exception("Error Processing Request", 1);
+                }
+            } catch (\Exception $e) {
+                echo 'Error: '.$e->getMessage();
+            }
+        }
+
+        $allGivenTracks = $givenTracks->merge($ungivenTracks);
+
+        $nonexistentTracks = collect($trackCodes)->diff($allGivenTracks->pluck('code'));
+
+        // Create Tracks
+        foreach($nonexistentTracks as $code) {
+
+            $newTrack = new Track;
+            $newTrack->user_id = null;
+            $newTrack->lang = $this->lang;
+            $newTrack->code = $code;
+            $newTrack->description = '';
+            $newTrack->status  = $statusGiven->id;
+            $newTrack->save();
+
+            $trackStatus = new TrackStatus();
+            $trackStatus->track_id = $newTrack->id;
+            $trackStatus->status_id = $statusGiven->id;
+            $trackStatus->region_id = $region->id;
+            $trackStatus->created_at = now();
+            $trackStatus->updated_at = now();
+            $trackStatus->save();
+        }
+
+        return [
+            'totalTracksCount' => $trackCodes->count(),
+            'givenTracksCount' => $ungivenTracks->count() + $nonexistentTracks->count(),
+            'existentTracksCount' => $givenTracks->count(),
         ];
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Http\Livewire\Storage;
 
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 use App\Models\Region;
@@ -44,9 +43,9 @@ class Arrival extends Component
             ->orWhere('id', 4)
             ->first();
 
-        if (!Cache::has('jRegion')) {
-            $region = Region::where('slug', 'kazakhstan')->orWhere('id', 1)->first();
-            Cache::put('jRegion', $region);
+        if (!session()->has('jRegion')) {
+            $region = auth()->user()->region()->first() ?? Region::where('slug', 'kazakhstan')->orWhere('id', 1)->first();
+            session()->put('jRegion', $region);
         }
     }
 
@@ -175,7 +174,7 @@ class Arrival extends Component
     public function setRegionId($id)
     {
         $region = Region::find($id);
-        Cache::put('jRegion', $region);
+        session()->put('jRegion', $region);
     }
 
     public function render()
@@ -187,7 +186,8 @@ class Arrival extends Component
             $this->allSentTracks = $sentTracks;
         }
 
-        $this->region = Cache::get('jRegion');
+        $this->region = session()->get('jRegion');
+        $this->setRegionId = session()->get('jRegion')->id;
 
         $tracks = [];
 
