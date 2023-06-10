@@ -52,6 +52,10 @@
           <label for="address">Адрес</label>
         </div>
         <div class="form-floating mb-3">
+          <input type="text" class="form-control rounded-3" name="id_client" id="id_client" value="{{ old('id_client') }}" placeholder="ID account: J7799...">
+          <label for="id_client">ID account</label>
+        </div>
+        <div class="form-floating mb-3">
           <input type="password" class="form-control rounded-3" name="password" id="password" placeholder="Введите пароль" required>
           <label for="password">Введите пароль</label>
         </div>
