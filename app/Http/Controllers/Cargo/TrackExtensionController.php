@@ -86,7 +86,9 @@ class TrackExtensionController extends Controller
             ->select('id', 'slug')
             ->first();
 
-        $existentTracks = Track::where('status', '<>', $statusReceived->id)->whereIn('code', $trackCodes)->get();
+        $uniqueTrackCodes = collect($trackCodes)->unique();
+
+        $existentTracks = Track::whereIn('code', $uniqueTrackCodes)->get();
         $unreceivedTracks = $existentTracks->where('status', '<', $statusReceived->id);
         $unreceivedTracksStatus = [];
 
@@ -155,8 +157,10 @@ class TrackExtensionController extends Controller
             ->select('id', 'slug')
             ->first();
 
+        $uniqueTrackCodes = collect($trackCodes)->unique();
+
         // Track::whereIn('code', $trackCodes)->where('status', '<', $statusArrived->id)->get();
-        $existentTracks = Track::where('status', '<=', $statusArrived->id)->whereIn('code', $trackCodes)->get();
+        $existentTracks = Track::where('status', '<=', $statusArrived->id)->whereIn('code', $uniqueTrackCodes)->get();
         $unarrivedTracks = $existentTracks->where('status', '<', $statusArrived->id);
         $unarrivedTracksStatus = [];
 
@@ -229,8 +233,10 @@ class TrackExtensionController extends Controller
             ->select('id', 'slug')
             ->first();
 
+        $uniqueTrackCodes = collect($trackCodes)->unique();
+
         // Track::whereIn('code', $trackCodes)->where('status', '<', $statusGiven->id)->get();
-        $existentTracks = Track::where('status', '<=', $statusGiven->id)->whereIn('code', $trackCodes)->get();
+        $existentTracks = Track::where('status', '<=', $statusGiven->id)->whereIn('code', $uniqueTrackCodes)->get();
         $ungivenTracks = $existentTracks->where('status', '<', $statusGiven->id);
         $ungivenTracksStatus = [];
 
