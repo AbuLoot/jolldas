@@ -127,7 +127,7 @@
       </div>
       <div class="col-12 col-sm-8">
 
-        @if (session('result'))
+        @if(session('result'))
           <div class="alert alert-info">
             <h4>Total tracks count: {{ session('result')['totalTracksCount'] }}pcs</h4>
             <h4>Given tracks count: {{ session('result')['givenTracksCount'] }}pcs</h4>
@@ -141,7 +141,6 @@
 
         @foreach($arrivedTracks as $track)
           <div class="track-item mb-2">
-
             <?php
               $activeStatus = $track->statuses->last();
               $arrivedRegion = $track->regions->last()->title ?? __('statuses.regions.title');

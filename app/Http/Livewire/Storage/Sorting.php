@@ -14,9 +14,9 @@ class Sorting extends Component
 {
     public $lang;
     public $search;
-    public $status;
     public $region;
     public $mode = 'list';
+    public $prevStatuses = [];
     public $trackCode;
     public $trackCodes = [];
     public $allSentTracks = [];
@@ -36,10 +36,10 @@ class Sorting extends Component
         }
 
         $this->lang = app()->getLocale();
-        $this->status = Status::select('id', 'slug')
-            ->where('slug', 'sent')
-            ->orWhere('id', 3)
-            ->first();
+        $this->prevStatuses = Status::select('id', 'slug')
+            ->whereIn('slug', ['reception', 'sent'])
+            ->orWhere('id', [2, 3])
+            ->get();
 
         if (!session()->has('jRegion')) {
             $region = auth()->user()->region()->first() ?? Region::where('slug', 'kazakhstan')->orWhere('id', 1)->first();
@@ -112,7 +112,7 @@ class Sorting extends Component
     {
         $this->trackCode = $trackCode;
         $this->toSort();
-        $this->search = null;
+        // $this->search = null;
     }
 
     public function toSort()
@@ -172,9 +172,9 @@ class Sorting extends Component
     public function render()
     {
         if ($this->mode == 'list') {
-            $sentTracks = Track::query()->where('status', $this->status->id)->orderByDesc('id')->paginate(50);
+            $sentTracks = Track::query()->whereIn('status', $this->prevStatuses->pluck('id'))->orderByDesc('id')->paginate(50);
         } else {
-            $sentTracks = Track::query()->where('status', $this->status->id)->orderByDesc('id')->get();
+            $sentTracks = Track::query()->whereIn('status', $this->prevStatuses->pluck('id'))->orderByDesc('id')->get();
             $this->allSentTracks = $sentTracks;
         }
 
@@ -186,7 +186,7 @@ class Sorting extends Component
         if (strlen($this->search) >= 4) {
             $tracks = Track::query()
                 ->orderByDesc('id')
-                ->where('status', $this->status->id)
+                ->whereIn('status', $this->prevStatuses->pluck('id'))
                 ->where('code', 'like', '%'.$this->search.'%')
                 ->paginate(10);
         }
