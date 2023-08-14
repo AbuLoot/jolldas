@@ -129,7 +129,7 @@
           </div>
         </form>
 
-        <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalUploadDoc">Upload</button>
+        <!-- <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalUploadDoc">Upload</button> -->
 
       </div>
       <div class="col-12 col-sm-8">
