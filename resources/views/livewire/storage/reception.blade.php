@@ -20,6 +20,9 @@
         <a class="nav-link" href="/{{ $lang }}/storage/sending">Send</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="/{{ $lang }}/storage/sorting"><i class="bi bi-dpad"></i> Sorting</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="/{{ $lang }}/storage/arrival">Arrival</a>
       </li>
       <li class="nav-item">

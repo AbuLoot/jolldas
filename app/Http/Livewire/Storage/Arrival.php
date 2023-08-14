@@ -21,7 +21,7 @@ class Arrival extends Component
     public $mode = 'list';
     public $trackCode;
     public $trackCodes = [];
-    public $allSentTracks = [];
+    public $allSortedTracks = [];
 
     protected $rules = [
         'trackCode' => 'required|string|min:10|max:20',
@@ -39,7 +39,7 @@ class Arrival extends Component
 
         $this->lang = app()->getLocale();
         $this->status = Status::select('id', 'slug')
-            ->where('slug', 'sent')
+            ->where('slug', 'sorted')
             ->orWhere('id', 4)
             ->first();
 
@@ -51,20 +51,20 @@ class Arrival extends Component
 
     public function getTracksIdByDate($dateFrom, $dateTo)
     {
-        $sentTracks = $this->allSentTracks;
+        $sortedTracks = $this->allSortedTracks;
 
-        $tracks = $sentTracks->when($dateTo, function ($sentTracks) use ($dateFrom, $dateTo) {
+        $tracks = $sortedTracks->when($dateTo, function ($sortedTracks) use ($dateFrom, $dateTo) {
 
                 // If tracks added today
                 if ($dateTo == now()->format('Y-m-d H-i')) {
-                    return $sentTracks->where('updated_at', '>', $dateFrom.' 23:59:59')->where('updated_at', '<=', now());
+                    return $sortedTracks->where('updated_at', '>', $dateFrom.' 23:59:59')->where('updated_at', '<=', now());
                 }
 
-                return $sentTracks->where('updated_at', '>', $dateFrom)->where('updated_at', '<', $dateTo);
+                return $sortedTracks->where('updated_at', '>', $dateFrom)->where('updated_at', '<', $dateTo);
 
-            }, function ($sentTracks) use ($dateFrom) {
+            }, function ($sortedTracks) use ($dateFrom) {
 
-                return $sentTracks->where('updated_at', '<', $dateFrom);
+                return $sortedTracks->where('updated_at', '<', $dateFrom);
             });
 
         return $tracks->pluck('id')->toArray();
@@ -74,7 +74,7 @@ class Arrival extends Component
     {
         $ids = $this->getTracksIdByDate($dateFrom, $dateTo);
 
-        $this->trackCodes = $this->allSentTracks->whereIn('id', $ids)->sortByDesc('id');
+        $this->trackCodes = $this->allSortedTracks->whereIn('id', $ids)->sortByDesc('id');
 
         $this->dispatchBrowserEvent('open-modal');
     }
@@ -83,7 +83,7 @@ class Arrival extends Component
     {
         $ids = $this->getTracksIdByDate($dateFrom, $dateTo);
 
-        $tracks = $this->allSentTracks->whereIn('id', $ids);
+        $tracks = $this->allSortedTracks->whereIn('id', $ids);
 
         $statusArrived = Status::where('slug', 'arrived')
             ->orWhere('id', 5)
@@ -116,7 +116,7 @@ class Arrival extends Component
     {
         $this->trackCode = $trackCode;
         $this->toArrive();
-        $this->search = null;
+        // $this->search = null;
     }
 
     public function toArrive()
@@ -180,10 +180,10 @@ class Arrival extends Component
     public function render()
     {
         if ($this->mode == 'list') {
-            $sentTracks = Track::query()->where('status', $this->status->id)->orderByDesc('id')->paginate(50);
+            $sortedTracks = Track::query()->where('status', $this->status->id)->orderByDesc('id')->paginate(50);
         } else {
-            $sentTracks = Track::query()->where('status', $this->status->id)->orderByDesc('id')->get();
-            $this->allSentTracks = $sentTracks;
+            $sortedTracks = Track::query()->where('status', $this->status->id)->orderByDesc('id')->get();
+            $this->allSortedTracks = $sortedTracks;
         }
 
         $this->region = session()->get('jRegion');
@@ -201,7 +201,7 @@ class Arrival extends Component
 
         return view('livewire.storage.arrival', [
                 'tracks' => $tracks,
-                'sentTracks' => $sentTracks,
+                'sortedTracks' => $sortedTracks,
                 'regions' => Region::descendantsAndSelf(1)->toTree(),
             ])
             ->layout('livewire.storage.layout');

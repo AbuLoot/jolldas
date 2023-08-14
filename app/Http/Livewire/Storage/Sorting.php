@@ -5,19 +5,21 @@ namespace App\Http\Livewire\Storage;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 
+use App\Models\Region;
 use App\Models\Track;
 use App\Models\Status;
 use App\Models\TrackStatus;
 
-class Sending extends Component
+class Sorting extends Component
 {
     public $lang;
     public $search;
     public $status;
+    public $region;
     public $mode = 'list';
     public $trackCode;
     public $trackCodes = [];
-    public $allReceivedTracks = [];
+    public $allSentTracks = [];
 
     protected $rules = [
         'trackCode' => 'required|string|min:10|max:20',
@@ -29,43 +31,38 @@ class Sending extends Component
 
     public function mount()
     {
-        if (! Gate::allows('sending', auth()->user())) {
+        if (! Gate::allows('sorting', auth()->user())) {
             abort(403);
         }
 
         $this->lang = app()->getLocale();
         $this->status = Status::select('id', 'slug')
-            ->where('slug', 'received')
-            ->orWhere('id', 2)
+            ->where('slug', 'sent')
+            ->orWhere('id', 3)
             ->first();
-    }
 
-    public function getTrackCodesById($trackIds = [])
-    {
-        $trackIds = rtrim($trackIds, ']');
-        $trackIds = ltrim($trackIds, '[');
-        $ids = explode(',', $trackIds);
-
-        $this->trackCodes = Track::whereIn('id', $ids)->get();
-        $this->dispatchBrowserEvent('open-modal');
+        if (!session()->has('jRegion')) {
+            $region = auth()->user()->region()->first() ?? Region::where('slug', 'kazakhstan')->orWhere('id', 1)->first();
+            session()->put('jRegion', $region);
+        }
     }
 
     public function getTracksIdByDate($dateFrom, $dateTo)
     {
-        $tracksGroup = $this->allReceivedTracks;
+        $sentTracks = $this->allSentTracks;
 
-        $tracks = $tracksGroup->when($dateTo, function ($tracksGroup) use ($dateFrom, $dateTo) {
+        $tracks = $sentTracks->when($dateTo, function ($sentTracks) use ($dateFrom, $dateTo) {
 
                 // If tracks added today
                 if ($dateTo == now()->format('Y-m-d H-i')) {
-                    return $tracksGroup->where('updated_at', '>', $dateFrom.' 23:59:59')->where('updated_at', '<=', now());
+                    return $sentTracks->where('updated_at', '>', $dateFrom.' 23:59:59')->where('updated_at', '<=', now());
                 }
 
-                return $tracksGroup->where('updated_at', '>', $dateFrom)->where('updated_at', '<', $dateTo);
+                return $sentTracks->where('updated_at', '>', $dateFrom)->where('updated_at', '<', $dateTo);
 
-            }, function ($tracksGroup) use ($dateFrom) {
+            }, function ($sentTracks) use ($dateFrom) {
 
-                return $tracksGroup->where('updated_at', '<', $dateFrom);
+                return $sentTracks->where('updated_at', '<', $dateFrom);
             });
 
         return $tracks->pluck('id')->toArray();
@@ -75,54 +72,56 @@ class Sending extends Component
     {
         $ids = $this->getTracksIdByDate($dateFrom, $dateTo);
 
-        $this->trackCodes = $this->allReceivedTracks->whereIn('id', $ids)->sortByDesc('id');
+        $this->trackCodes = $this->allSentTracks->whereIn('id', $ids)->sortByDesc('id');
 
         $this->dispatchBrowserEvent('open-modal');
     }
 
-    public function sendGroupByDate($dateFrom, $dateTo)
+    public function groupSortedByDate($dateFrom, $dateTo)
     {
         $ids = $this->getTracksIdByDate($dateFrom, $dateTo);
 
-        $tracks = $this->allReceivedTracks->whereIn('id', $ids);
+        $tracks = $this->allSentTracks->whereIn('id', $ids);
 
-        $statusSent = Status::where('slug', 'sent')
-            ->orWhere('id', 3)
+        $statusSorted = Status::where('slug', 'sorted')
+            ->orWhere('id', 4)
             ->select('id', 'slug')
             ->first();
 
         // Creating Track Status
         $tracksStatus = [];
+        $tracksUsers = [];
 
-        $tracks->each(function ($track) use (&$tracksStatus, $statusSent) {
+        foreach($tracks as $track) {
             $tracksStatus[] = [
-                'track_id' => $track->id,
-                'status_id' => $statusSent->id,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'track_id' => $track->id, 'status_id' => $statusSorted->id, 'created_at' => now(), 'updated_at' => now(),
             ];
-        });
+
+            if (isset($track->user->email) && !in_array($track->user->email, $tracksUsers)) {
+                $tracksUsers[] = $track->user->email;
+            }
+        }
 
         TrackStatus::insert($tracksStatus);
 
         // Updating Track Status
-        Track::whereIn('id', $ids)->update(['status' => $statusSent->id]);
+        Track::whereIn('id', $ids)->update(['status' => $statusSorted->id]);
     }
 
-    public function btnToSend($trackCode)
+    public function btnToSort($trackCode)
     {
         $this->trackCode = $trackCode;
-        $this->toSend();
+        $this->toSort();
         $this->search = null;
     }
 
-    public function toSend()
+    public function toSort()
     {
         $this->validate();
 
-        $statusSent = Status::select('id', 'slug')
-            ->where('slug', 'sent')
-            ->orWhere('id', 3)
+        $statusSorted = Status::select('id', 'slug')
+            ->where('slug', 'sorted')
+            ->orWhere('id', 4)
             ->first();
 
         $track = Track::where('code', $this->trackCode)->first();
@@ -138,20 +137,21 @@ class Sending extends Component
             $track = $newTrack;
         }
 
-        if ($track->status >= $statusSent->id) {
-            $this->addError('trackCode', 'Track '.$this->trackCode.' sent');
+        if ($track->status >= $statusSorted->id) {
+            $this->addError('trackCode', 'Track '.$this->trackCode.' sorted');
             $this->trackCode = null;
             return;
         }
 
         $trackStatus = new TrackStatus();
         $trackStatus->track_id = $track->id;
-        $trackStatus->status_id = $statusSent->id;
+        $trackStatus->status_id = $statusSorted->id;
+        $trackStatus->region_id = $this->region->id;
         $trackStatus->created_at = now();
         $trackStatus->updated_at = now();
         $trackStatus->save();
 
-        $track->status = $statusSent->id;
+        $track->status = $statusSorted->id;
         $track->save();
 
         $this->trackCode = null;
@@ -163,14 +163,23 @@ class Sending extends Component
         $this->mode = $mode;
     }
 
+    public function setRegionId($id)
+    {
+        $region = Region::find($id);
+        session()->put('jRegion', $region);
+    }
+
     public function render()
     {
         if ($this->mode == 'list') {
-            $receivedTracks = Track::query()->where('status', $this->status->id)->orderByDesc('id')->paginate(50);
+            $sentTracks = Track::query()->where('status', $this->status->id)->orderByDesc('id')->paginate(50);
         } else {
-            $receivedTracks = Track::query()->where('status', $this->status->id)->get();
-            $this->allReceivedTracks = $receivedTracks;
+            $sentTracks = Track::query()->where('status', $this->status->id)->orderByDesc('id')->get();
+            $this->allSentTracks = $sentTracks;
         }
+
+        $this->region = session()->get('jRegion');
+        $this->setRegionId = session()->get('jRegion')->id;
 
         $tracks = [];
 
@@ -182,9 +191,10 @@ class Sending extends Component
                 ->paginate(10);
         }
 
-        return view('livewire.storage.sending', [
+        return view('livewire.storage.sorting', [
                 'tracks' => $tracks,
-                'receivedTracks' => $receivedTracks,
+                'sentTracks' => $sentTracks,
+                'regions' => Region::descendantsAndSelf(1)->toTree(),
             ])
             ->layout('livewire.storage.layout');
     }

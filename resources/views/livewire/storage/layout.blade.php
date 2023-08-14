@@ -56,6 +56,11 @@
               <a class="nav-link px-3" href="/{{ $lang }}/storage/sending">Sending</a>
             </li>
           @endcan
+          @can('sorting', Auth::user())
+            <li class="nav-item">
+              <a class="nav-link px-3" href="/{{ $lang }}/storage/sorting">Sorting</a>
+            </li>
+          @endcan
           @can('arrival', Auth::user())
             <li class="nav-item">
               <a class="nav-link px-3" href="/{{ $lang }}/storage/arrival">Arrival</a>

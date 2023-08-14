@@ -16,11 +16,7 @@
     @foreach($tracks as $track)
       <div class="track-item mb-2">
 
-        <?php
-          $activeStatus = $track->statuses->last();
-          $sortedRegion = $track->regions->last()->title ?? __('statuses.regions.title');
-          $sortedRegion = '('.$sortedRegion.', Казахстан)';
-        ?>
+        <?php $activeStatus = $track->statuses->last(); ?>
         <div class="row">
           <div class="col-10 col-lg-10">
             <div class="border {{ __('statuses.classes.'.$activeStatus->slug.'.card-color') }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
@@ -31,7 +27,7 @@
                 </div>
                 <div class="col-12 col-lg-4">
                   <div><b>{{ ucfirst($activeStatus->slug) }} Date:</b> {{ $activeStatus->pivot->created_at }}</div>
-                  <div><b>Status:</b> {{ $activeStatus->title }} {{ $sortedRegion }}</div>
+                  <div><b>Status:</b> {{ $activeStatus->title }}</div>
                 </div>
                 @if($track->user) 
                   <div class="col-12 col-lg-3">
@@ -71,7 +67,7 @@
           </div>
           <div class="col-2 col-lg-2 text-end">
             <div class="d-grid">
-              <button wire:click="btnToArrive('{{ $track->code }}')" type="button" wire:loading.attr="disabled" class="btn btn-primary btn-lg-"><i class="bi bi-check2-all"></i> <span class="d-none d-sm-inline">To arrive</span></button>
+              <button wire:click="btnToSort('{{ $track->code }}')" type="button" wire:loading.attr="disabled" class="btn btn-primary btn-lg-"><i class="bi bi-dpad"></i> <span class="d-none d-sm-inline">To sort</span></button>
             </div>
           </div>
         </div>
@@ -85,18 +81,21 @@
       <li class="nav-item">
         <a class="nav-link" href="/{{ $lang }}/storage/sending">Send</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/{{ $lang }}/storage/sorting"><i class="bi bi-dpad"></i> Sorting</a>
-      </li>
       <li class="nav-item dropdown">
-        <?php $icons = ['list' => 'card-checklist', 'group' => 'collection']; ?>
+        <a class="nav-link bg-light active" area-current="page"><i class="bi bi-dpad"></i> Sorting</a>
+      </li>
+      <?php $icons = ['list' => 'card-checklist', 'group' => 'collection']; ?>
+      <!-- <li class="nav-item dropdown">
         <a class="nav-link bg-light active dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
-          <i class="bi bi-{{ $icons[$mode] }}"></i> Arrival
+          <i class="bi bi-{{ $icons[$mode] }}"></i> Sorting
         </a>
         <ul class="dropdown-menu">
           <li><a wire:click="setMode('list')" class="dropdown-item" href="#"><i class="bi bi-card-checklist"></i> List tracks</a></li>
           <li><a wire:click="setMode('group')" class="dropdown-item" href="#"><i class="bi bi-collection"></i> Group tracks</a></li>
         </ul>
+      </li> -->
+      <li class="nav-item">
+        <a class="nav-link" href="/{{ $lang }}/storage/arrival">Arrival</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/{{ $lang }}/storage/giving">Giving</a>
@@ -105,7 +104,7 @@
 
     <div class="row">
       <div class="col-12 col-sm-4 mb-2">
-        <form wire:submit.prevent="toArrive">
+        <form wire:submit.prevent="toSort">
           <div class="form-floating mb-3">
             <input wire:model.defer="trackCode" type="text" class="form-control form-control-lg @error('trackCode') is-invalid @enderror" placeholder="Add track-code" id="trackCodeArea">
             <label for="trackCodeArea">Enter track code</label>
@@ -126,7 +125,7 @@
                 <?php $traverse($regions); ?>
               </ul>
             </div>
-            <button type="submit" id="toArrive" wire:loading.attr="disabled" class="btn btn-primary btn-lg"><i class="bi bi-check2-all"></i> To arrive</button>
+            <button type="submit" id="toSort" wire:loading.attr="disabled" class="btn btn-primary btn-lg"><i class="bi bi-dpad"></i> To sort</button>
           </div>
         </form>
 
@@ -162,16 +161,16 @@
             $twoWeekAgo   = $now->copy()->startOfWeek()->subWeek(3)->format('Y-m-d');
 
             // Grouped by date
-            $todayGroup         = $sortedTracks->where('updated_at', '>', $yesterday.' 23:59:59')->where('updated_at', '<=', now());
-            $yesterdayGroup     = $sortedTracks->where('updated_at', '>=', $yesterday)->where('updated_at', '<', $today);
-            $twoDaysAgoGroup    = $sortedTracks->where('updated_at', '>', $twoDaysAgo)->where('updated_at', '<', $yesterday);
-            $threeDaysAgoGroup  = $sortedTracks->where('updated_at', '>', $threeDaysAgo)->where('updated_at', '<', $twoDaysAgo);
-            $fourDaysAgoGroup   = $sortedTracks->where('updated_at', '>', $fourDaysAgo)->where('updated_at', '<', $threeDaysAgo);
-            $fiveDaysAgoGroup   = $sortedTracks->where('updated_at', '>', $fiveDaysAgo)->where('updated_at', '<', $fourDaysAgo);
-            $sixDaysAgoGroup    = $sortedTracks->where('updated_at', '>', $sixDaysAgo)->where('updated_at', '<', $fiveDaysAgo);
-            $previousWeekGroup  = $sortedTracks->where('updated_at', '>', $previousWeek)->where('updated_at', '<', $sixDaysAgo);
-            $twoWeekAgoGroup    = $sortedTracks->where('updated_at', '>', $twoWeekAgo)->where('updated_at', '<', $previousWeek);
-            $prevTimeGroup      = $sortedTracks->where('updated_at', '<', $twoWeekAgo);
+            $todayGroup         = $sentTracks->where('updated_at', '>', $yesterday.' 23:59:59')->where('updated_at', '<=', now());
+            $yesterdayGroup     = $sentTracks->where('updated_at', '>=', $yesterday)->where('updated_at', '<', $today);
+            $twoDaysAgoGroup    = $sentTracks->where('updated_at', '>', $twoDaysAgo)->where('updated_at', '<', $yesterday);
+            $threeDaysAgoGroup  = $sentTracks->where('updated_at', '>', $threeDaysAgo)->where('updated_at', '<', $twoDaysAgo);
+            $fourDaysAgoGroup   = $sentTracks->where('updated_at', '>', $fourDaysAgo)->where('updated_at', '<', $threeDaysAgo);
+            $fiveDaysAgoGroup   = $sentTracks->where('updated_at', '>', $fiveDaysAgo)->where('updated_at', '<', $fourDaysAgo);
+            $sixDaysAgoGroup    = $sentTracks->where('updated_at', '>', $sixDaysAgo)->where('updated_at', '<', $fiveDaysAgo);
+            $previousWeekGroup  = $sentTracks->where('updated_at', '>', $previousWeek)->where('updated_at', '<', $sixDaysAgo);
+            $twoWeekAgoGroup    = $sentTracks->where('updated_at', '>', $twoWeekAgo)->where('updated_at', '<', $previousWeek);
+            $prevTimeGroup      = $sentTracks->where('updated_at', '<', $twoWeekAgo);
 
             $allTracksGroups = [
               'today' => [
@@ -240,16 +239,16 @@
           @foreach($allTracksGroups as $group)
             @if($group['group']->count())
               <div class="tracks-group mb-2">
-                <div class="border bg-sorted rounded p-2">
+                <div class="border bg-sent rounded p-2">
                   <div class="row">
                     <div class="col-6 col-md-3">
                       <div><b>Date:</b> {{ $group['dateFrom'] }}</div>
                       <div><b>Count:</b> {{ $group['group']->count() }}pcs</div>
                     </div>
-                    <div class="col-6 col-md-4"><b>Sorted: {{ $group['dateName'] }}</b></div>
+                    <div class="col-6 col-md-4"><b>Sent: {{ $group['dateName'] }}</b></div>
                     <div class="col-12 col-md-5 text-end">
                       <button type="button" wire:click="openGroupByDate('{{ $group['dateFrom'] }}', '{{ $group['dateTo'] }}')" wire:loading.attr="disabled" class="btn btn-primary btn-lg">Open</button>
-                      <button type="button" wire:click="groupArrivedByDate('{{ $group['dateFrom'] }}', '{{ $group['dateTo'] }}')" wire:loading.attr="disabled" onclick="return confirm('Сonfirm action?') || event.stopImmediatePropagation()" class="btn btn-success btn-lg"><i class="bi bi-check2-all"></i> Group arrived</button>
+                      <button type="button" wire:click="groupArrivedByDate('{{ $group['dateFrom'] }}', '{{ $group['dateTo'] }}')" wire:loading.attr="disabled" onclick="return confirm('Сonfirm action?') || event.stopImmediatePropagation()" class="btn btn-success btn-lg"><i class="bi bi-dpad"></i> Group arrived</button>
                     </div>
                   </div>
                 </div>
@@ -257,13 +256,10 @@
             @endif
           @endforeach
         @else
-          @foreach($sortedTracks as $track)
+          @foreach($sentTracks as $track)
             <div class="track-item mb-2">
-              <?php
-                $activeStatus = $track->statuses->last();
-                $sortedRegion = $track->regions->last()->title ?? __('statuses.regions.title');
-                $sortedRegion = '('.$sortedRegion.', Казахстан)';
-              ?>
+
+              <?php $activeStatus = $track->statuses->last(); ?>
               <div class="border {{ __('statuses.classes.'.$activeStatus->slug.'.card-color') }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
                 <div class="row">
                   <div class="col-12 col-lg-6">
@@ -272,7 +268,7 @@
                   </div>
                   <div class="col-12 col-lg-6">
                     <div><b>{{ ucfirst($activeStatus->slug) }} Date:</b> {{ $activeStatus->pivot->created_at }}</div>
-                    <div><b>Status:</b> {{ $activeStatus->title }} {{ $sortedRegion }}</div>
+                    <div><b>Status:</b> {{ $activeStatus->title }}</div>
                   </div>
                   @if($track->user) 
                     <div class="col-12 col-lg-12">
@@ -313,7 +309,7 @@
           @endforeach
           <br>
           <nav aria-label="Page navigation">
-            {{ $sortedTracks->links() }}
+            {{ $sentTracks->links() }}
           </nav>
         @endif
       </div>

@@ -15,6 +15,10 @@ return [
 	      	'card-color' => 'bg-sent',
 	      	'item-color' => 'bg-secondary',
 	    ],
+	    'sorted' => [
+	      	'card-color' => 'bg-sorted',
+	      	'item-color' => 'bg-secondary',
+	    ],
 	    'waiting' => [
 	      	'card-color' => 'bg-received',
 	      	'item-color' => 'bg-warning',

@@ -15,8 +15,11 @@
   <div class="container">
     @foreach($tracks as $track)
       <div class="track-item mb-2">
-
-        <?php $activeStatus = $track->statuses->last(); ?>
+        <?php
+          $activeStatus = $track->statuses->last();
+          $arrivedRegion = $track->regions->last()->title ?? __('statuses.regions.title');
+          $arrivedRegion = '('.$arrivedRegion.', Казахстан)';
+        ?>
         <div class="row">
           <div class="col-10 col-lg-10">
             <div class="border {{ __('statuses.classes.'.$activeStatus->slug.'.card-color') }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
@@ -27,7 +30,7 @@
                 </div>
                 <div class="col-12 col-lg-4">
                   <div><b>{{ ucfirst($activeStatus->slug) }} Date:</b> {{ $activeStatus->pivot->created_at }}</div>
-                  <div><b>Status:</b> {{ $activeStatus->title }}</div>
+                  <div><b>Status:</b> {{ $activeStatus->title }} {{ $arrivedRegion }}</div>
                 </div>
                 @if($track->user) 
                   <div class="col-12 col-lg-3">
@@ -80,6 +83,9 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/{{ $lang }}/storage/sending">Send</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/{{ $lang }}/storage/sorting"><i class="bi bi-dpad"></i> Sorting</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/{{ $lang }}/storage/arrival">Arrival</a>
@@ -136,7 +142,11 @@
         @foreach($arrivedTracks as $track)
           <div class="track-item mb-2">
 
-            <?php $activeStatus = $track->statuses->last(); ?>
+            <?php
+              $activeStatus = $track->statuses->last();
+              $arrivedRegion = $track->regions->last()->title ?? __('statuses.regions.title');
+              $arrivedRegion = '('.$arrivedRegion.', Казахстан)';
+            ?>
             <div class="border {{ __('statuses.classes.'.$activeStatus->slug.'.card-color') }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
               <div class="row">
                 <div class="col-12 col-lg-6">
@@ -145,7 +155,7 @@
                 </div>
                 <div class="col-12 col-lg-6">
                   <div><b>{{ ucfirst($activeStatus->slug) }} Date:</b> {{ $activeStatus->pivot->created_at }}</div>
-                  <div><b>Status:</b> {{ $activeStatus->title }}</div>
+                  <div><b>Status:</b> {{ $activeStatus->title }} {{ $arrivedRegion }}</div>
                 </div>
                 @if($track->user) 
                   <div class="col-12 col-lg-12">

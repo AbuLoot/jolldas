@@ -32,6 +32,7 @@ use App\Http\Livewire\Client\Index as Client;
 use App\Http\Livewire\Client\Archive;
 use App\Http\Livewire\Storage\Reception;
 use App\Http\Livewire\Storage\Sending;
+use App\Http\Livewire\Storage\Sorting;
 use App\Http\Livewire\Storage\Arrival;
 use App\Http\Livewire\Storage\Giving;
 use App\Http\Livewire\Storage\Tracks;
@@ -46,10 +47,11 @@ Route::group(['prefix' => '/{lang}/client', 'middleware' => ['auth']], function 
 
 // Storage Livewire Routes
 Route::redirect('storage', '/'.app()->getLocale().'/storage');
-Route::group(['prefix' => '/{lang}/storage', 'middleware' => ['auth', 'roles:admin|storekeeper-first|storekeeper-last']], function () {
+Route::group(['prefix' => '/{lang}/storage', 'middleware' => ['auth', 'roles:admin|storekeeper-first|storekeeper-sorter|storekeeper-last']], function () {
     Route::get('/', Reception::class);
     Route::get('reception', Reception::class);
     Route::get('sending', Sending::class);
+    Route::get('sorting', Sorting::class);
     Route::get('arrival', Arrival::class);
     Route::get('giving', Giving::class);
     Route::get('tracks', Tracks::class);
