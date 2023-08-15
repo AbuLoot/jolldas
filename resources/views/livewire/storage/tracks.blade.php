@@ -37,7 +37,7 @@
                 'given' => '<i class="bi bi-person-check-fill"></i>',
               ];
 
-              if (in_array($activeStatus->slug, ['sorted', 'arrived', 'given']) OR in_array($activeStatus->id, [5, 6])) {
+              if (in_array($activeStatus->slug, ['sorted', 'arrived', 'given']) OR in_array($activeStatus->id, [4, 5, 6])) {
 
                 $sortedOrArrivalOrGivenRegion = $track->regions->last()->title ?? __('statuses.regions.title');
                 $sortedOrArrivalOrGivenRegion = '('.$sortedOrArrivalOrGivenRegion.', Казахстан)';

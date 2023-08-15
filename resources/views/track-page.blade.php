@@ -34,12 +34,12 @@
             <?php
               $activeStatus = $track->statuses->last();
 
-              $arrivalRegion = null;
+              $sortedOrArrivalOrGivenRegion = null;
 
-              if ($activeStatus->slug == 'arrived' OR $activeStatus->id == 5) {
+              if (in_array($activeStatus->slug, ['sorted', 'arrived', 'given']) OR in_array($activeStatus->id, [4, 5, 6])) {
 
-                $arrivalRegion = $track->regions->last()->title ?? __('statuses.regions.title');
-                $arrivalRegion = '('.$arrivalRegion.', Казахстан)';
+                $sortedOrArrivalOrGivenRegion = $track->regions->last()->title ?? __('statuses.regions.title');
+                $sortedOrArrivalOrGivenRegion = '('.$sortedOrArrivalOrGivenRegion.', Казахстан)';
               }
             ?>
             <div class="border {{ __('statuses.classes.'.$activeStatus->slug.'.card-color') }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
@@ -50,7 +50,7 @@
                 </div>
                 <div class="col-12 col-lg-4">
                   <div><b>{{ ucfirst($activeStatus->slug) }} Date:</b> {{ $track->updated_at }}</div>
-                  <div><b>Status:</b> {{ $activeStatus->title }} {{ $arrivalRegion }}</div>
+                  <div><b>Status:</b> {{ $activeStatus->title }} {{ $sortedOrArrivalOrGivenRegion }}</div>
                 </div>
                 @if($track->user) 
                   <div class="col-12 col-lg-3">
@@ -70,7 +70,7 @@
                       @if($activeStatus->id == $status->id)
                         <li class="timeline-item mb-2">
                           <span class="timeline-icon bg-success"><i class="bi bi-check text-white"></i></span>
-                          <p class="text-success mb-0">{{ $status->title }} {{ $arrivalRegion }}</p>
+                          <p class="text-success mb-0">{{ $status->title }} {{ $sortedOrArrivalOrGivenRegion }}</p>
                           <p class="text-success mb-0">{{ $status->pivot->created_at }}</p>
                         </li>
                         @continue
