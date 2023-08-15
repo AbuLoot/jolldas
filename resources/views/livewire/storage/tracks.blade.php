@@ -1,17 +1,17 @@
 <div>
   <div class="px-3 py-3 border-bottom mb-3">
     <div class="container d-flex flex-wrap justify-content-between align-items-center">
+      <!-- <div class="row"> -->
+        <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Tracks</h4>
 
-      <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Tracks</h4>
+        <form class="col-10 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
+          <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Enter track code..." aria-label="Search">
+        </form>
 
-      <form class="col-12 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
-        <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Enter track code..." aria-label="Search">
-      </form>
-
-      <div class="col-4 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto text-end">
-        <button type="button" class="btn btn-outline-primary btn-lg" data-bs-toggle="modal" data-bs-target="#filters" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Фильтр"><i class="bi bi-funnel-fill"></i> <span class="d-none d-sm-inline">Filters</span></button>
-      </div>
-
+        <div class="col-2 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto text-end">
+          <button type="button" class="btn btn-outline-primary btn-lg" data-bs-toggle="modal" data-bs-target="#filters" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Фильтр"><i class="bi bi-funnel-fill"></i> <span class="d-none d-sm-inline">Filters</span></button>
+        </div>
+      <!-- </div> -->
     </div>
   </div>
 
@@ -26,7 +26,6 @@
             <?php
               $activeStatus = $track->statuses->last();
 
-              $sortedOrArrivalOrGivenRegion = null;
               $givenIcon = [
                 'added' => null,
                 'received' => null,
@@ -36,6 +35,8 @@
                 'arrived' => null,
                 'given' => '<i class="bi bi-person-check-fill"></i>',
               ];
+
+              $sortedOrArrivalOrGivenRegion = null;
 
               if (in_array($activeStatus->slug, ['sorted', 'arrived', 'given']) OR in_array($activeStatus->id, [4, 5, 6])) {
 
