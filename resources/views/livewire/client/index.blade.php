@@ -31,7 +31,6 @@
   	<!-- Content -->
     @foreach($tracks as $track)
       <div class="track-item mb-2">
-
         <?php
           $activeStatus = $track->statuses->last();
 

@@ -30,20 +30,22 @@
         <?php
           $activeStatus = $track->statuses->last();
 
-          $arrivalOrGivenRegion = null;
           $givenIcon = [
             'added' => null,
             'received' => null,
             'sent' => null,
+            'sorted' => null,
             'waiting' => null,
             'arrived' => null,
             'given' => '<i class="bi bi-person-check-fill"></i>',
           ];
 
-          if (in_array($activeStatus->slug, ['arrived', 'given']) OR in_array($activeStatus->id, [5, 6])) {
+          $sortedOrArrivalOrGivenRegion = null;
 
-            $arrivalOrGivenRegion = $track->regions->last()->title ?? __('statuses.regions.title');
-            $arrivalOrGivenRegion = '('.$arrivalOrGivenRegion.', Казахстан)';
+          if (in_array($activeStatus->slug, ['sorted', 'arrived', 'given']) OR in_array($activeStatus->id, [4, 5, 6])) {
+
+            $sortedOrArrivalOrGivenRegion = $track->regions->last()->title ?? __('statuses.regions.title');
+            $sortedOrArrivalOrGivenRegion = '('.$sortedOrArrivalOrGivenRegion.', Казахстан)';
           }
         ?>
         <div class="row">
@@ -56,7 +58,7 @@
                 </div>
                 <div class="col-9 col-lg-5">
                   <div><b>Дата:</b> {{ $track->updated_at }}</div>
-                  <div><b>Статус: {!! $givenIcon[$activeStatus->slug] !!}</b> {{ $activeStatus->title }} {{ $arrivalOrGivenRegion }}</div>
+                  <div><b>Статус: {!! $givenIcon[$activeStatus->slug] !!}</b> {{ $activeStatus->title }} {{ $sortedOrArrivalOrGivenRegion }}</div>
                 </div>
               </div>
             </div>
@@ -70,7 +72,7 @@
                       @if($activeStatus->id == $status->id)
                         <li class="timeline-item mb-2">
                           <span class="timeline-icon bg-success"><i class="bi bi-check text-white"></i></span>
-                          <p class="text-success mb-0">{{ $status->title }} {{ $arrivalOrGivenRegion }}</p>
+                          <p class="text-success mb-0">{{ $status->title }} {{ $sortedOrArrivalOrGivenRegion }}</p>
                           <p class="text-success mb-0">{{ $status->pivot->created_at }}</p>
                         </li>
                         @continue
