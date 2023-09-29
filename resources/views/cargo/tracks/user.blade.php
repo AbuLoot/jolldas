@@ -2,23 +2,27 @@
 
 @section('content')
 
-  <h2 class="page-header">Трек коды
-    @if(isset($_GET['text']))<small>Результаты по запросу: <b>{{ $_GET['text'] }}</b></small>@endif
+  <h2 class="page-header">
+    <a href="/{{ $lang }}/admin/users/{{ $user->id }}/edit">{{ $user->name.' '.$user->lastname }}</a>
   </h2>
 
   @include('components.alerts')
 
   <div class="row">
     <div class="col-md-5">
-      <form action="/{{ $lang }}/admin/tracks/search/tracks" method="get">
-        <div class="input-group input-search">
-          <input type="search" class="form-control input-xs" name="text" placeholder="Поиск...">
-
-          <div class="input-group-btn">
-            <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
-          </div>
+      <div class="row">
+        <div class="col-md-6">
+          <h4>ID: {{ $user->id_client }}</h4>
         </div>
-      </form>
+        <div class="col-md-6">
+          <select class="form-control" name="status_id" hx-get="/{{ $lang }}/admin/tracks/user/{{ $user->id }}" hx-target="#tracks">
+            <option value="0">Все статусы</option>
+            <?php foreach ($statuses as $status) : ?>
+              <option value="{{ $status->id }}"> {{ $status->title }}</option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+      </div>
       <br>
     </div>
     <div class="col-md-7">
@@ -33,7 +37,6 @@
       <thead>
         <tr class="active">
           <td>№</td>
-          <td>Пользователь</td>
           <td>Track-code</td>
           <td>Описание</td>
           <td>Дата</td>
@@ -42,7 +45,7 @@
           <td class="text-right">Функции</td>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="tracks">
         <?php $i = 1; ?>
         @foreach ($tracks as $track)
           <?php
@@ -58,11 +61,6 @@
           ?>
           <tr>
             <td>{{ $i++ }}</td>
-            <td>
-              @if($track->user)
-                <a href="/{{ $lang }}/admin/tracks/user/{{ $track->user->id }}">{{ $track->user->name.' '.$track->user->lastname }}</a>
-              @endif
-            </td>
             <td>{{ $track->code }}</td>
             <td>{{ Str::limit($track->description, 35) }}</td>
             <td>{{ $activeStatus->pivot->created_at->format('Y-m-d') }}</td>

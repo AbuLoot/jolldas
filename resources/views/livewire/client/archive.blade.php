@@ -1,5 +1,5 @@
 <div>
-  <div class="px-3 py-3 border-bottom mb-3">
+  <div class="py-3 border-bottom mb-3">
     <div class="container d-flex flex-wrap justify-content-between align-items-center">
 
       <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Архив треков</h4>
@@ -67,7 +67,7 @@
               <div class="border border-top-0 rounded-bottom p-3">
                 <section>
                   <ul class="timeline-with-icons">
-                    @foreach($track->statuses()->orderByDesc('id')->get() as $status)
+                    @foreach($track->statuses()->orderByPivot('created_at', 'desc')->get() as $status)
 
                       @if($activeStatus->id == $status->id)
                         <li class="timeline-item mb-2">

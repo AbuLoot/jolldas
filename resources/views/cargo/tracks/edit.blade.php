@@ -18,7 +18,25 @@
             {!! csrf_field() !!}
             <div class="form-group">
               <label for="user_id">Пользователь</label>
-              <input type="text" class="form-control" id="user_id" name="user_id" value="@if($track->user) {{ $track->user->name . ' ' . $track->user->lastname }} @endif" disabled>
+              @if($track->user)
+                <div class="input-group">
+                  <input type="text" class="form-control" id="user_id" name="user_id" value="{{ $track->user->name . ' ' . $track->user->lastname }}" disabled>
+                  <div class="input-group-btn">
+                    <a href="/{{ $lang }}/admin/tracks/{{ $track->id }}/unpin-user" class="btn btn-default"><span class="material-icons md-18" data-toggle="tooltip" data-placement="bottom" title="Открепить пользователя">close</span></a>
+                  </div>
+                </div>
+              @else
+                <div style="position: relative;">
+                  <input type="text" class="form-control" id="user_id" name="text" placeholder="Поиск пользователя"
+                    hx-get="/{{ $lang }}/admin/tracks/{{ $track->id }}/search/users"
+                    hx-trigger="keyup changed delay:500ms"
+                    hx-target="#dropdown-users">
+
+                  <div class="input-group-items open" id="dropdown-users">
+                    <!-- Users -->
+                  </div>
+                </div>
+              @endif
             </div>
             <div class="form-group">
               <label for="code">Трек код</label>
@@ -50,6 +68,20 @@
               </select>
             </div>
             <div class="form-group">
+              <?php $regionId = $track->statuses->last()->pivot->region_id; ?>
+              <label for="region_id">Регионы</label>
+              <select id="region_id" name="region_id" class="form-control">
+                <option value=""></option>
+                <?php $traverse = function ($nodes, $prefix = null) use (&$traverse, $regionId) { ?>
+                  <?php foreach ($nodes as $node) : ?>
+                    <option value="{{ $node->id }}" <?= ($node->id == $regionId) ? 'selected' : ''; ?>>{{ PHP_EOL.$prefix.' '.$node->title }}</option>
+                    <?php $traverse($node->children, $prefix.'___'); ?>
+                  <?php endforeach; ?>
+                <?php }; ?>
+                <?php $traverse($regions); ?>
+              </select>
+            </div>
+            <div class="form-group">
               <button type="submit" class="btn btn-success"><i class="material-icons">save</i></button>
             </div>
           </form>
@@ -57,4 +89,12 @@
       </div>
     </div>
   </div>
+@endsection
+
+@section('scripts')
+  <script>
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+  </script>
 @endsection

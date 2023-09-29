@@ -40,7 +40,7 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'tel' => ['required', 'string', 'max:15', 'unique:users'],
+            'tel' => ['required', 'string', 'min:8', 'max:15', 'unique:users'],
             'region_id' => ['required', 'integer'],
             'address' => ['required', 'string'],
             'id_client' => ['required', 'string', 'min:10', 'max:20'],

@@ -1,6 +1,6 @@
 <div>
 
-  <div class="px-3 py-3 border-bottom mb-3">
+  <div class="py-3 border-bottom mb-3">
     <div class="container d-flex flex-wrap justify-content-between align-items-center">
 
       <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Track codes</h4>
@@ -42,7 +42,7 @@
               <div class="border border-top-0 rounded-bottom p-3">
                 <section>
                   <ul class="timeline-with-icons">
-                    @foreach($track->statuses()->orderByDesc('id')->get() as $status)
+                    @foreach($track->statuses()->orderByPivot('created_at', 'desc')->get() as $status)
 
                       @if($activeStatus->id == $status->id)
                         <li class="timeline-item mb-2">
@@ -75,31 +75,41 @@
     @endforeach
 
     <ul class="nav nav-tabs mb-3">
-      <li class="nav-item">
-        <a class="nav-link" href="/{{ $lang }}/storage">Reception</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/{{ $lang }}/storage/sending">Send</a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link bg-light active" area-current="page"><i class="bi bi-dpad"></i> Sorting</a>
-      </li>
-      <?php $icons = ['list' => 'card-checklist', 'group' => 'collection']; ?>
-      <!-- <li class="nav-item dropdown">
-        <a class="nav-link bg-light active dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
-          <i class="bi bi-{{ $icons[$mode] }}"></i> Sorting
-        </a>
-        <ul class="dropdown-menu">
-          <li><a wire:click="setMode('list')" class="dropdown-item" href="#"><i class="bi bi-card-checklist"></i> List tracks</a></li>
-          <li><a wire:click="setMode('group')" class="dropdown-item" href="#"><i class="bi bi-collection"></i> Group tracks</a></li>
-        </ul>
-      </li> -->
-      <li class="nav-item">
-        <a class="nav-link" href="/{{ $lang }}/storage/arrival">Arrival</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/{{ $lang }}/storage/giving">Giving</a>
-      </li>
+      @can('reception', Auth::user())
+        <li class="nav-item">
+          <a class="nav-link" href="/{{ $lang }}/storage">Reception</a>
+        </li>
+      @endcan
+      @can('sending', Auth::user())
+        <li class="nav-item">
+          <a class="nav-link" href="/{{ $lang }}/storage/sending">Send</a>
+        </li>
+      @endcan
+      @can('sorting', Auth::user())
+        <li class="nav-item dropdown">
+          <a class="nav-link bg-light active" area-current="page"><i class="bi bi-dpad"></i> Sorting</a>
+        </li>
+        <?php $icons = ['list' => 'card-checklist', 'group' => 'collection']; ?>
+        <!-- <li class="nav-item dropdown">
+          <a class="nav-link bg-light active dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+            <i class="bi bi-{{ $icons[$mode] }}"></i> Sorting
+          </a>
+          <ul class="dropdown-menu">
+            <li><a wire:click="setMode('list')" class="dropdown-item" href="#"><i class="bi bi-card-checklist"></i> List tracks</a></li>
+            <li><a wire:click="setMode('group')" class="dropdown-item" href="#"><i class="bi bi-collection"></i> Group tracks</a></li>
+          </ul>
+        </li> -->
+      @endcan
+      @can('arrival', Auth::user())
+        <li class="nav-item">
+          <a class="nav-link" href="/{{ $lang }}/storage/arrival">Arrival</a>
+        </li>
+      @endcan
+      @can('giving', Auth::user())
+        <li class="nav-item">
+          <a class="nav-link" href="/{{ $lang }}/storage/giving">Giving</a>
+        </li>
+      @endcan
     </ul>
 
     <div class="row">
@@ -134,7 +144,7 @@
       </div>
       <div class="col-12 col-sm-8">
 
-        @if (session('result'))
+        @if(session('result'))
           <div class="alert alert-info">
             <h4>Total tracks count: {{ session('result')['totalTracksCount'] }}pcs</h4>
             <h4>Arrived tracks count: {{ session('result')['arrivedTracksCount'] }}pcs</h4>
@@ -283,7 +293,7 @@
                 <div class="border border-top-0 rounded-bottom p-3">
                   <section>
                     <ul class="timeline-with-icons">
-                      @foreach($track->statuses()->orderByDesc('id')->get() as $status)
+                      @foreach($track->statuses()->orderByPivot('created_at', 'desc')->get() as $status)
 
                         @if($activeStatus->id == $status->id)
                           <li class="timeline-item mb-2">

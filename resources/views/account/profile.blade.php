@@ -16,19 +16,19 @@
         <table class="table">
           <tbody>
             <tr>
-              <th>Tel</th>
+              <th>Телефон</th>
               <td>{{ $user->tel }}</td>
             </tr>
             <tr>
-              <th scope="col">Region</th>
+              <th scope="col">Регион</th>
               <td scope="col">{{ $user->region->title }}</td>
             </tr>
             <tr>
-              <th>Address</th>
+              <th>Адрес</th>
               <td>{{ $user->address }}</td>
             </tr>
             <tr>
-              <th>ID client</th>
+              <th>ID клиента</th>
               <td>{{ $user->id_client }}</td>
             </tr>
           </tbody>

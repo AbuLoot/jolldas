@@ -15,7 +15,7 @@
       <li>
         <form method="POST" action="/logout">
           @csrf
-          <a class="dropdown-item py-2" href="#" onclick="event.preventDefault(); this.closest('form').submit();">Logout</a>
+          <a class="dropdown-item py-2" href="#" onclick="event.preventDefault(); this.closest('form').submit();">Выйти</a>
         </form>
       </li>
     </ul>

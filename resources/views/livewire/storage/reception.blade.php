@@ -1,5 +1,5 @@
 <div>
-  <div class="px-3 py-3 border-bottom mb-3">
+  <div class="py-3 border-bottom mb-3">
     <div class="container d-flex flex-wrap justify-content-between align-items-center">
 
       <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Track codes</h4>
@@ -13,21 +13,31 @@
 
   <div class="container">
     <ul class="nav nav-tabs mb-3">
-      <li class="nav-item">
-        <a class="nav-link bg-light active" aria-current="page">Reception</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/{{ $lang }}/storage/sending">Send</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/{{ $lang }}/storage/sorting"><i class="bi bi-dpad"></i> Sorting</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/{{ $lang }}/storage/arrival">Arrival</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/{{ $lang }}/storage/giving">Giving</a>
-      </li>
+      @can('reception', Auth::user())
+        <li class="nav-item">
+          <a class="nav-link bg-light active" aria-current="page">Reception</a>
+        </li>
+      @endcan
+      @can('sending', Auth::user())
+        <li class="nav-item">
+          <a class="nav-link" href="/{{ $lang }}/storage/sending">Send</a>
+        </li>
+      @endcan
+      @can('sorting', Auth::user())
+        <li class="nav-item">
+          <a class="nav-link" href="/{{ $lang }}/storage/sorting"><i class="bi bi-dpad"></i> Sorting</a>
+        </li>
+      @endcan
+      @can('arrival', Auth::user())
+        <li class="nav-item">
+          <a class="nav-link" href="/{{ $lang }}/storage/arrival">Arrival</a>
+        </li>
+      @endcan
+      @can('giving', Auth::user())
+        <li class="nav-item">
+          <a class="nav-link" href="/{{ $lang }}/storage/giving">Giving</a>
+        </li>
+      @endcan
     </ul>
 
     <div class="row">
@@ -88,7 +98,7 @@
               <div class="border border-top-0 rounded-bottom p-3">
                 <section>
                   <ul class="timeline-with-icons">
-                    @foreach($track->statuses()->orderByDesc('id')->get() as $status)
+                    @foreach($track->statuses()->orderByPivot('created_at', 'desc')->get() as $status)
 
                       @if($activeStatus->id == $status->id)
                         <li class="timeline-item mb-2">

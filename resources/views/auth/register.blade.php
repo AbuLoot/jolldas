@@ -21,12 +21,12 @@
           <div class="col">
             <div class="form-floating mb-3">
               <input type="text" name="lastname" class="form-control rounded-3" id="lastname" placeholder="Отчество" value="{{ old('lastname') }}" required>
-              <label for="lastname">Отчество</label>
+              <label for="lastname">Отчество или Фамилия</label>
             </div>
           </div>
         </div>
         <div class="form-floating mb-3">
-          <input type="tel" class="form-control rounded-3" name="tel" id="tel" placeholder="Номер телефона" value="{{ old('tel') }}" required>
+          <input type="tel" pattern="(\+?\d[- .]*){8,15}" class="form-control rounded-3" name="tel" id="tel" placeholder="Номер телефона" value="{{ old('tel') }}" required>
           <label for="tel">Номер телефона</label>
         </div>
         <div class="form-floating mb-3">

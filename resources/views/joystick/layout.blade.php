@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="/joystick/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/joystick/css/admin.css" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
     @yield('head')
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->

@@ -21,7 +21,7 @@
           <div class="col">
             <div class="form-floating mb-3">
               <input type="text" name="lastname" class="form-control rounded-3" id="lastname" value="{{ $user->lastname }}" placeholder="Отчество" required>
-              <label for="lastname">Отчество</label>
+              <label for="lastname">Отчество или Фамилия</label>
             </div>
           </div>
         </div>

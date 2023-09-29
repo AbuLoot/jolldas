@@ -86,6 +86,12 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth', 'roles:admin|
         'languages' => LanguageController::class,
     ]);
 
+    Route::get('tracks/search/tracks', [TrackController::class, 'search']);
+    Route::get('tracks/{id}/search/users', [TrackController::class, 'searchUsers']);
+    Route::get('tracks/{id}/pin-user/{userId}', [TrackController::class, 'pinUser']);
+    Route::get('tracks/{id}/unpin-user', [TrackController::class, 'unpinUser']);
+    Route::get('tracks/user/{id}', [TrackController::class, 'tracksUser']);
+
     Route::get('reception-tracks', [TrackExtensionController::class, 'receptionTracks']);
     Route::get('arrival-tracks', [TrackExtensionController::class, 'arrivalTracks']);
     Route::post('upload-tracks', [TrackExtensionController::class, 'uploadTracks']);

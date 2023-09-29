@@ -23,7 +23,7 @@
                 <?php foreach ($nodes as $node) : ?>
                   <li>
                     <a href="#">
-                      <label><input type="radio" name="region_id" value="{{ $node->id }}"> {{ PHP_EOL.$prefix.' '.$node->title }}</label>
+                      <input type="radio" name="region_id" value="{{ $node->id }}"> {{ PHP_EOL.$prefix.' '.$node->title }}
                     </a>
                   </li>
                   <?php $traverse($node->children, $prefix.'___'); ?>

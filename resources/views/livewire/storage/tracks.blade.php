@@ -1,17 +1,15 @@
 <div>
-  <div class="px-3 py-3 border-bottom mb-3">
+  <div class="py-3 border-bottom mb-3">
     <div class="container d-flex flex-wrap justify-content-between align-items-center">
-      <!-- <div class="row"> -->
-        <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Tracks</h4>
+      <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Tracks</h4>
 
-        <form class="col-10 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
-          <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Enter track code..." aria-label="Search">
-        </form>
+      <form class="col-10 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
+        <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Enter track code..." aria-label="Search">
+      </form>
 
-        <div class="col-2 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto text-end">
-          <button type="button" class="btn btn-outline-primary btn-lg" data-bs-toggle="modal" data-bs-target="#filters" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Фильтр"><i class="bi bi-funnel-fill"></i> <span class="d-none d-sm-inline">Filters</span></button>
-        </div>
-      <!-- </div> -->
+      <div class="col-2 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto text-end">
+        <button type="button" class="btn btn-outline-primary btn-lg" data-bs-toggle="modal" data-bs-target="#filters" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Фильтр"><i class="bi bi-funnel-fill"></i> <span class="d-none d-sm-inline">Filters</span></button>
+      </div>
     </div>
   </div>
 
@@ -69,7 +67,7 @@
               <div class="border border-top-0 rounded-bottom p-3">
                 <section>
                   <ul class="timeline-with-icons">
-                    @foreach($track->statuses()->orderByDesc('id')->get() as $status)
+                    @foreach($track->statuses()->orderByPivot('created_at', 'desc')->get() as $status)
 
                       @if($activeStatus->id == $status->id)
                         <li class="timeline-item mb-2">
@@ -113,14 +111,28 @@
         </div>
         <div class="modal-body">
           <form wire:submit.prevent="applyFilter">
-            
+
             <div class="mb-3">
               <label for="statuses" class="form-label">Sorting by statuses</label><br>
               <select wire:model.defer="tracksStatus" class="form-select form-select-lg" id="statuses" aria-label="Default select example">
-                  <option value="0">All</option>
+                <option value="0">All</option>
                 @foreach($statuses as $status)
                   <option value="{{ $status->id }}">{{ ucfirst($status->slug) }}</option>
                 @endforeach
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="regions" class="form-label">Sorting by regions</label><br>
+              <select wire:model.defer="tracksRegion" class="form-select form-select-lg" id="regions" aria-label="Default select example">
+                <option value="0">All</option>
+                <?php $traverse = function ($nodes, $prefix = null) use (&$traverse) { ?>
+                  <?php foreach ($nodes as $node) : ?>
+                    <option value="{{ $node->id }}">{{ PHP_EOL.$prefix.' '.$node->title }}</option>
+                    <?php $traverse($node->children, $prefix.'___'); ?>
+                  <?php endforeach; ?>
+                <?php }; ?>
+                <?php $traverse($regions); ?>
               </select>
             </div>
 

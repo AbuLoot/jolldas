@@ -44,6 +44,19 @@
               </select>
             </div>
             <div class="form-group">
+              <label for="region_id">Регионы</label>
+              <select id="region_id" name="region_id" class="form-control">
+                <option value=""></option>
+                <?php $traverse = function ($nodes, $prefix = null) use (&$traverse) { ?>
+                  <?php foreach ($nodes as $node) : ?>
+                    <option value="{{ $node->id }}">{{ PHP_EOL.$prefix.' '.$node->title }}</option>
+                    <?php $traverse($node->children, $prefix.'___'); ?>
+                  <?php endforeach; ?>
+                <?php }; ?>
+                <?php $traverse($regions); ?>
+              </select>
+            </div>
+            <div class="form-group">
               <button type="submit" class="btn btn-success"><i class="material-icons">save</i></button>
             </div>
           </form>

@@ -2,12 +2,14 @@
 
 namespace App\Http\Livewire\Storage;
 
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 use App\Models\Track;
 use App\Models\Status;
 use App\Models\TrackStatus;
+use App\Models\Region;
 
 class Tracks extends Component
 {
@@ -18,6 +20,7 @@ class Tracks extends Component
     public $lang;
     public $search;
     public $tracksStatus = 0;
+    public $tracksRegion = 0;
     public $sort = 'desc';
 
     protected $listeners = [
@@ -46,8 +49,10 @@ class Tracks extends Component
     public function render()
     {
         $statuses = Status::get();
+        $regions = Region::get();
 
         $tracksStatus = $this->tracksStatus;
+        $tracksRegion = $this->tracksRegion;
 
         $tracksCount = Track::when($this->tracksStatus != 0, function($query) use ($tracksStatus) {
                 $query->where('status', $tracksStatus);
@@ -61,12 +66,18 @@ class Tracks extends Component
             ->when($this->tracksStatus != 0, function($query) use ($tracksStatus) {
                 $query->where('status', $tracksStatus);
             })
+            ->when($this->tracksRegion != 0, function($query) use ($tracksRegion) {
+                $query->whereHas('statuses', function(Builder $subQuery) use ($tracksRegion) {
+                    $subQuery->where('region_id', $tracksRegion);
+                });
+            })
             ->paginate(50);
 
         return view('livewire.storage.tracks', [
                 'tracks' => $tracks,
                 'tracksCount' => $tracksCount,
                 'statuses' => $statuses,
+                'regions' => $regions,
             ])
             ->layout('livewire.storage.layout');
     }

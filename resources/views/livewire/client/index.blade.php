@@ -1,19 +1,29 @@
 <div>
-	<div class="px-3 py-3 border-bottom mb-3">
-		<div class="container d-flex flex-wrap justify-content-between align-items-center">
+  <div class="py-3 border-bottom mb-3">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center">
 
-		  <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Трек посылки</h4>
+      <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Трек посылки</h4>
 
-		  <form class="col-8 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
-			  <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Введите трек код..." aria-label="Search">
-		  </form>
+      <form class="col-10 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
+        <div class="input-group">
+          <input wire:model="search" type="search" class="form-control form-control-lg w-75" placeholder="Введите трек код..." aria-label="Search">
 
-		  <div class="col-4 col-lg-4 text-end ms-md-auto ms-lg-0">
-  			<button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalAddTrack">
+          <select wire:model="statusId" class="form-select w-25">
+            <option value="0">Все</option>
+            @foreach($statuses as $status)
+              <option value="{{ $status->id }}">{{ $status->title }}</option>
+            @endforeach
+          </select>
+        </div>
+      </form>
+
+      <div class="col-2 col-lg-4 text-end ms-md-auto ms-lg-0">
+        <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalAddTrack">
           <i class="bi bi-plus-circle-fill me-sm-2"></i> <span class="d-none d-sm-inline">Добавить трек</span>
         </button>
-		  </div>
-		</div>
+      </div>
+
+    </div>
   </div>
 
   <!-- Toast notification -->
@@ -27,8 +37,7 @@
   </div>
 
   <div class="container">
-
-  	<!-- Content -->
+    <!-- Content -->
     @foreach($tracks as $track)
       <div class="track-item mb-2">
         <?php
@@ -71,7 +80,7 @@
               <div class="border border-top-0 rounded-bottom p-3">
                 <section>
                   <ul class="timeline-with-icons">
-                    @foreach($track->statuses()->orderByDesc('id')->get() as $status)
+                    @foreach($track->statuses()->orderByPivot('created_at', 'desc')->get() as $status)
 
                       @if($activeStatus->id == $status->id)
                         <li class="timeline-item mb-2">
@@ -99,7 +108,7 @@
             @if($track->status == 1)
               <button onclick="return confirm('Удалить запись?') || event.stopImmediatePropagation()" wire:click="deleteTrack({{ $track->id }})" type="button" class="btn btn-outline-dark"><i class="bi bi-x-lg"></i></button>
             @else
-              <button onclick="return confirm('Убрать в архив?') || event.stopImmediatePropagation()" wire:click="archiveTrack({{ $track->id }})" type="button" class="btn btn-outline-dark"><i class="bi bi-archive"></i></button>
+              <button wire:click="archiveTrack({{ $track->id }})" type="button" class="btn btn-outline-dark"><i class="bi bi-archive"></i></button>
             @endif
           </div>
         </div>
@@ -112,11 +121,26 @@
     </nav>
   </div>
 
+
   <!-- Modal Add Track -->
   <livewire:client.add-track>
 
   <!-- Modal Edit Track -->
   <livewire:client.edit-track>
+
+  <!-- Modal Agreement -->
+  @if(Auth::user()->status == 'test')
+
+    <div class="container">
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgreement">
+        Подписать договор
+      </button>
+    </div>
+
+    <livewire:client.sign-an-agreement>
+
+    <br>
+  @endif
 
   <script>
     window.addEventListener('open-modal', event => {

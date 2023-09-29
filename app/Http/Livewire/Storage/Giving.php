@@ -96,6 +96,10 @@ class Giving extends Component
 
     public function setRegionId($id)
     {
+        if (! Gate::allows('setting-regions', auth()->user())) {
+            abort(403);
+        }
+
         $region = Region::find($id);
         session()->put('jRegion', $region);
     }
