@@ -71,8 +71,13 @@
             @can('viewAny', App\Models\Page::class)<li @if(Request::is($lang.'/admin/pages*')) class="active" @endif><a href="/{{ $lang }}/admin/pages"><i class="material-icons md-20">content_copy</i> Страницы</a></li>@endcan
             @can('viewAny', App\Models\Post::class)<li @if(Request::is($lang.'/admin/posts*')) class="active" @endif><a href="/{{ $lang }}/admin/posts"><i class="material-icons md-20">create</i> Новости</a></li>@endcan
             @can('viewAny', App\Models\Section::class)<li @if(Request::is($lang.'/admin/sections*')) class="active" @endif> <a href="/{{ $lang }}/admin/sections"><i class="material-icons md-20">dashboard</i> Разделы</a> </li>@endcan
+            @can('viewAny', App\Models\Category::class)<li @if(Request::is($lang.'/admin/categories*')) class="active" @endif><a href="/{{ $lang }}/admin/categories"><i class="material-icons md-20">category</i> Категории</a></li>@endcan
+            @can('viewAny', App\Models\Product::class)<li @if(Request::is($lang.'/admin/products*')) class="active" @endif><a href="/{{ $lang }}/admin/products"><i class="material-icons md-20">store</i> Продукты</a></li>@endcan
             @can('allow-filemanager', Auth::user())<li @if(Request::is($lang.'/admin/frame-filemanager*')) class="active" @endif><a href="/{{ $lang }}/admin/frame-filemanager"><i class="material-icons md-20">folder</i> Файловый менеджер</a></li>@endcan
             @can('viewAny', App\Models\Mode::class)<li @if(Request::is($lang.'/admin/modes*')) class="active" @endif><a href="/{{ $lang }}/admin/modes"><i class="material-icons md-20">style</i> Режимы</a></li>@endcan
+            @can('viewAny', App\Models\Option::class)<li @if(Request::is($lang.'/admin/options*')) class="active" @endif><a href="/{{ $lang }}/admin/options"><i class="material-icons md-20">label_outline</i> Опции</a></li>@endcan
+            <?php $ordersCount = App\Models\Order::where('status', '!=', 3)->count(); ?>
+            @can('viewAny', App\Models\Order::class)<li @if(Request::is($lang.'/admin/orders*')) class="active" @endif><a href="/{{ $lang }}/admin/orders"><i class="material-icons md-20">shopping_cart</i> Заказы <span class="badge">{{ $ordersCount }}</span></a></li>@endcan
             @can('viewAny', App\Models\App::class)<li @if(Request::is($lang.'/admin/apps*')) class="active" @endif><a href="/{{ $lang }}/admin/apps"><i class="material-icons md-20">send</i> Заявки</a></li>@endcan
           </ul>
 
@@ -80,6 +85,7 @@
           <ul class="nav nav-sidebar collapse in" id="sidebarResources">
             @can('viewAny', App\Models\Region::class)<li @if(Request::is($lang.'/admin/regions*')) class="active" @endif><a href="/{{ $lang }}/admin/regions"><i class="material-icons md-20">map</i> Регионы</a></li>@endcan
             @can('viewAny', App\Models\Language::class)<li @if(Request::is($lang.'/admin/languages*')) class="active" @endif><a href="/{{ $lang }}/admin/languages"><i class="material-icons md-20">language</i> Языки</a></li>@endcan
+            @can('viewAny', App\Models\Currency::class)<li @if(Request::is($lang.'/admin/currencies*')) class="active" @endif><a href="/{{ $lang }}/admin/currencies"><i class="material-icons md-20">attach_money</i> Валюты</a></li>@endcan
             @can('viewAny', App\Models\Company::class)<li @if(Request::is($lang.'/admin/companies*')) class="active" @endif><a href="/{{ $lang }}/admin/companies"><i class="material-icons md-20">business</i> Компании</a></li>@endcan
             @can('viewAny', App\Models\User::class)<li @if(Request::is($lang.'/admin/users*')) class="active" @endif><a href="/{{ $lang }}/admin/users"><i class="material-icons md-20">people_outline</i> Пользователи</a></li>@endcan
             @can('viewAny', App\Models\Role::class)<li @if(Request::is($lang.'/admin/roles*')) class="active" @endif><a href="/{{ $lang }}/admin/roles"><i class="material-icons md-20">accessibility</i> Роли</a></li>@endcan

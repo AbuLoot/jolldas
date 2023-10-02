@@ -7,10 +7,18 @@ use App\Http\Controllers\Joystick\AdminController;
 use App\Http\Controllers\Joystick\PageController;
 use App\Http\Controllers\Joystick\PostController;
 use App\Http\Controllers\Joystick\SectionController;
+use App\Http\Controllers\Joystick\CategoryController;
+use App\Http\Controllers\Joystick\ProductController;
+use App\Http\Controllers\Joystick\ProductExtensionController;
+use App\Http\Controllers\Joystick\BannerController;
 use App\Http\Controllers\Joystick\AppController;
-
+use App\Http\Controllers\Joystick\OrderController;
+use App\Http\Controllers\Joystick\OptionController;
 use App\Http\Controllers\Joystick\ModeController;
+use App\Http\Controllers\Joystick\ProjectController;
+use App\Http\Controllers\Joystick\ProjectIndexController;
 use App\Http\Controllers\Joystick\CompanyController;
+use App\Http\Controllers\Joystick\CurrencyController;
 use App\Http\Controllers\Joystick\RegionController;
 use App\Http\Controllers\Joystick\UserController;
 use App\Http\Controllers\Joystick\RoleController;
@@ -19,6 +27,9 @@ use App\Http\Controllers\Joystick\LanguageController;
 
 // Site Controllers
 use App\Http\Controllers\InputController;
+use App\Http\Controllers\MarketController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController as BlogController;
 use App\Http\Controllers\PageController as SiteController;
@@ -74,11 +85,19 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth', 'roles:admin|
         'pages' => PageController::class,
         'posts' => PostController::class,
         'sections' => SectionController::class,
+        'categories' => CategoryController::class,
+        // 'projects' => ProjectController::class,
+        // 'projects-index' => ProjectIndexController::class,
+        'products' => ProductController::class,
+        // 'banners' => BannerController::class,
+        'orders' => OrderController::class,
+        'options' => OptionController::class,
         'modes' => ModeController::class,
         'apps' => AppController::class,
 
         // Resources
         'companies' => CompanyController::class,
+        'currencies' => CurrencyController::class,
         'regions' => RegionController::class,
         'users' => UserController::class,
         'roles' => RoleController::class,
@@ -86,6 +105,7 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth', 'roles:admin|
         'languages' => LanguageController::class,
     ]);
 
+    // Cargo
     Route::get('tracks/search/tracks', [TrackController::class, 'search']);
     Route::get('tracks/{id}/search/users', [TrackController::class, 'searchUsers']);
     Route::get('tracks/{id}/pin-user/{userId}', [TrackController::class, 'pinUser']);
@@ -96,6 +116,22 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth', 'roles:admin|
     Route::get('arrival-tracks', [TrackExtensionController::class, 'arrivalTracks']);
     Route::post('upload-tracks', [TrackExtensionController::class, 'uploadTracks']);
 
+    // Content
+    Route::get('categories-actions', [CategoryController::class, 'actionCategories']);
+    Route::get('products/{id}/copy', [ProductController::class, 'copy']);
+    Route::get('products-search', [ProductExtensionController::class, 'search']);
+    Route::get('products-search-ajax', [ProductExtensionController::class, 'searchAjax']);
+    Route::get('products-actions', [ProductExtensionController::class, 'actionProducts']);
+    Route::get('products-category/{id}', [ProductExtensionController::class, 'categoryProducts']);
+    Route::get('joytable', [ProductExtensionController::class, 'joytable']);
+    Route::post('joytable-update', [ProductExtensionController::class, 'joytableUpdate']);
+    Route::get('products-export', [ProductExtensionController::class, 'export']);
+    Route::get('products-import', [ProductExtensionController::class, 'importView']);
+    Route::post('products-import', [ProductExtensionController::class, 'import']);
+    Route::get('products-price/edit', [ProductExtensionController::class, 'calcForm']);
+    Route::post('products-price/update', [ProductExtensionController::class, 'priceUpdate']);
+
+    // Resources
     Route::get('companies-actions', [CompanyController::class, 'actionCompanies']);
     Route::get('users/search/user', [UserController::class, 'search']);
     // Route::get('users/search-ajax', [UserController::class, 'searchAjax']);
@@ -103,11 +139,37 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth', 'roles:admin|
     Route::put('users/password/{id}', [UserController::class, 'passwordUpdate']);
 });
 
+
 // Input Actions
-Route::get('search', [InputController::class, 'search']);
+// Route::get('search', [InputController::class, 'search']);
+// Route::get('search-ajax', [InputController::class, 'searchAjax']);
 Route::get('search-track', [InputController::class, 'searchTrack']);
-Route::get('search-ajax', [InputController::class, 'searchAjax']);
 Route::post('send-app', [InputController::class, 'sendApp']);
+
+
+// Market
+Route::redirect('market', '/'.app()->getLocale().'/market');
+Route::group(['prefix' => '{lang}/market'], function() {
+
+    Route::get('/', [MarketController::class, 'index']);
+    Route::get('{category}/{id}', [MarketController::class, 'categoryProducts']);
+    Route::get('{id}-{product}', [MarketController::class, 'product']);
+    Route::get('search', [MarketController::class, 'search']);
+
+    // Cart Actions
+    Route::get('cart', [CartController::class, 'cart']);
+    Route::get('checkout', [CartController::class, 'checkout']);
+    Route::get('add-to-cart/{id}', [CartController::class, 'addToCart']);
+    Route::get('remove-from-cart/{id}', [CartController::class, 'removeFromCart']);
+    Route::get('clear-cart', [CartController::class, 'clearCart']);
+    Route::post('store-order', [CartController::class, 'storeOrder']);
+    Route::get('destroy-from-cart/{id}', [CartController::class, 'destroy']);
+
+    // Favourite Actions
+    Route::get('favorite', [FavouriteController::class, 'getFavorite']);
+    Route::get('toggle-favourite/{id}', [FavouriteController::class, 'toggleFavourite']);
+});
+
 
 // User Profile
 Route::group(['prefix' => '{lang}', 'middleware' => 'auth'], function() {

@@ -9,8 +9,6 @@ use Validator;
 
 use App\Models\App;
 use App\Models\Track;
-use App\Models\Project;
-use App\Models\ProjectIndex;
 use App\Models\Product;
 use App\Models\Category;
 

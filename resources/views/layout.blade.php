@@ -14,7 +14,7 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
   <link rel="icon" href="favicon-32x32.png" sizes="32x32" type="image/png">
   <link rel="icon" href="favicon-16x16.png" sizes="16x16" type="image/png">
-  <link rel="manifest" href="manifest.json">
+  <!-- <link rel="manifest" href="manifest.json"> -->
   <link rel="mask-icon" href="safari-pinned-tab.svg" color="#7952b3">
   <link rel="icon" href="favicon.ico">
   <meta name="theme-color" content="#7952b3">
@@ -39,9 +39,12 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
-        <ul class="navbar-nav py-2 mx-auto-">
+        <ul class="navbar-nav py-2">
           <li class="nav-item">
             <a class="nav-link px-3" aria-current="page" href="/"><i class="bi bi-house-fill text-white"></i></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3" aria-current="page" href="/{{ $lang }}/market"><i class="bi bi-shop-window text-white"></i> Market</a>
           </li>
           @foreach($pages as $page)
             <li class="nav-item">

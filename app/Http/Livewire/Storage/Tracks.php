@@ -49,7 +49,7 @@ class Tracks extends Component
     public function render()
     {
         $statuses = Status::get();
-        $regions = Region::get();
+        $regions = Region::get()->toTree();
 
         $tracksStatus = $this->tracksStatus;
         $tracksRegion = $this->tracksRegion;

@@ -42,6 +42,9 @@
           <li class="nav-item">
             <a class="nav-link px-3" aria-current="page" href="/"><i class="bi bi-house-fill text-white"></i></a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link px-3" aria-current="page" href="/{{ $lang }}/market"><i class="bi bi-shop-window text-white"></i> Market</a>
+          </li>
           @auth
             <li class="nav-item">
               <a class="nav-link px-3" href="/{{ $lang }}/profile">Мой аккаунт</a>
