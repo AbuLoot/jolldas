@@ -1,13 +1,11 @@
-<ul class="suggestions__list">
-  @foreach ($products->take(20) as $product)
-    <li class="suggestions__item">
-      <a class="suggestions__item-link" href="/p/{{ $product->id.'-'.$product->slug }}">
-        <div class="suggestions__item-info">
-          <div class="suggestions__item-name">{{ $product->title }}</div>
-          <div class="suggestions__item-meta">КОД: {{ $product->barcode }}, Цена: {{ $product->price }}〒</div>
-        </div>
-        <div class="suggestions__item-price"></div>
-      </a>
-    </li>
-  @endforeach
-</ul>
+@if($products->count() > 0)
+  <div class="dropdown-menu d-block pt-0 w-100 shadow overflow-hidden" style="position: absolute;">
+    <ul class="list-unstyled mb-0">
+      @foreach($products as $product)
+        <li>
+          <a href="/{{ $lang }}/market/{{ $product->id.'-'.$product->slug }}" class="dropdown-item d-flex align-items-center gap-2 py-2">{{ $product->title }}</a>
+        </li>
+      @endforeach
+    </ul>
+  </div>
+@endif

@@ -6,6 +6,7 @@
 @section('head')
   <!-- <link rel="stylesheet" href="/vendor/photoswipe/photoswipe.css"> -->
   <!-- <link rel="stylesheet" href="/vendor/photoswipe/default-skin/default-skin.css"> -->
+  <script src="https://unpkg.com/htmx.org@1.9.6"></script>
 @endsection
 
 @section('content')
@@ -14,11 +15,9 @@
 
   <div class="py-3 border-bottom mb-3">
     <div class="container d-flex flex-wrap justify-content-between align-items-center">
-      <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Market</h4>
+      <h4 class="col-12 col-sm-6 col-lg-4 mb-md-2 mb-lg-0">Market</h4>
 
-      <form class="col-10 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
-        <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Enter track code..." aria-label="Search">
-      </form>
+      @include('components.form-search')
     </div>
   </div>
 
@@ -31,7 +30,7 @@
       </ol>
     </nav>
     <div class="row g-3">
-      <div class="col-6">
+      <div class="col-12 col-sm-12 col-md-6 col-lg-6">
         <div id="carousel" class="carousel slide">
           <div class="carousel-inner">
             <?php $images = unserialize($product->images); ?>
@@ -59,22 +58,37 @@
         </div>
       </div>
 
-      <div class="col-6">
+      <div class="col-12 col-sm-12 col-md-6 col-lg-6">
         <h1>{{ $product->title }}</h1>
-        @if(isset($product->company)) <div>Марка: {{ $product->company->title }}</div>@endif
-        <div>Артикулы:
-          <br>
-          <?php $barcodes = json_decode($product->barcodes, true) ?? []; ?>
-          @foreach($barcodes as $barcode)
-           {{ $barcode }}<br>
-          @endforeach
-        </div>
+        <dl class="row">
+          @if(isset($product->company))
+            <dt class="col-4 col-sm-3">Марка:</dt>
+            <dd class="col-8 col-sm-9">{{ $product->company->title }}</dd>
+          @endif
 
-        <div>Товар: {{ trans('statuses.types.'.$product->type) }}</div>
-        <div>Количество: {{ $product->count_web }}шт</div>
-        <h4>{{ $product->price }}₸</h4>
+          <dt class="col-4 col-sm-3">Товар:</dt>
+          <dd class="col-8 col-sm-9">{{ trans('statuses.types.'.$product->type) }}</dd>
 
-        <p>{!! $product->description !!}</p>
+          <dt class="col-4 col-sm-3 text-truncate">Количество:</dt>
+          <dd class="col-8 col-sm-9">{{ $product->count_web }}шт</dd>
+
+          <dt class="col-4 col-sm-3">Цена:</dt>
+          <dd class="col-8 col-sm-9"><h4>{{ $product->price }}₸</h4></dd>
+
+          <dt class="col-4 col-sm-3">Артикулы:</dt>
+          <dd class="col-8 col-sm-9">
+            <?php $barcodes = json_decode($product->barcodes, true) ?? []; ?>
+            @foreach($barcodes as $barcode)
+              {{ $barcode }}<br>
+            @endforeach
+            &nbsp;
+          </dd>
+
+          <dt class="col-sm-3">Описание:</dt>
+          <dd class="col-sm-9">{!! $product->description !!}</dd>
+        </dl>
+
+        <p></p>
 
         <div>
           @foreach($product->modes as $mode)

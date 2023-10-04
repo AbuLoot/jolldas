@@ -152,9 +152,10 @@ Route::redirect('market', '/'.app()->getLocale().'/market');
 Route::group(['prefix' => '{lang}/market'], function() {
 
     Route::get('/', [MarketController::class, 'index']);
+    Route::get('search-ajax', [MarketController::class, 'searchAjax']);
+    Route::get('search', [MarketController::class, 'search']);
     Route::get('{category}/{id}', [MarketController::class, 'categoryProducts']);
     Route::get('{id}-{product}', [MarketController::class, 'product']);
-    Route::get('search', [MarketController::class, 'search']);
 
     // Cart Actions
     Route::get('cart', [CartController::class, 'cart']);

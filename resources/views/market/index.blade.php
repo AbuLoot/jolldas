@@ -9,39 +9,15 @@
 @endsection
 
 @section('content')
+
   <div class="py-3 border-bottom mb-3">
     <div class="container d-flex flex-wrap justify-content-between align-items-center">
       <h4 class="col-12 col-sm-6 col-lg-4 mb-md-2 mb-lg-0">Market</h4>
 
-      <form class="col-12 col-sm-6 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto input-group-">
-        <input hx-get="/{{ $lang }}/market/" type="search" class="form-control form-control-lg" placeholder="Поиск товаров..." aria-label="Search">
-
-      </form>
+      @include('components.form-search')
     </div>
   </div>
-                  <!-- <div class="dropdown-menu d-block position-static pt-0 mx-0 rounded-3 shadow overflow-hidden w-280px" data-bs-theme="light">
-                    <form class="p-2 mb-2 bg-body-tertiary border-bottom">
-                      <input type="search" class="form-control" autocomplete="false" placeholder="Type to filter...">
-                    </form>
-                    <ul class="list-unstyled mb-0">
-                      <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">
-                        <span class="d-inline-block bg-success rounded-circle p-1"></span>
-                        Action
-                      </a></li>
-                      <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">
-                        <span class="d-inline-block bg-primary rounded-circle p-1"></span>
-                        Another action
-                      </a></li>
-                      <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">
-                        <span class="d-inline-block bg-danger rounded-circle p-1"></span>
-                        Something else here
-                      </a></li>
-                      <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">
-                        <span class="d-inline-block bg-info rounded-circle p-1"></span>
-                        Separated link
-                      </a></li>
-                    </ul>
-                  </div> -->
+
   <div class="container">
     <div class="row g-3">
       <div class="col-12 col-sm-12 col-md-12 col-lg-3">
@@ -54,7 +30,6 @@
           <?php }; ?>
           <?php $traverse($categories); ?>
         </div>
-
 
         <div class="dropdown d-block d-md-block d-lg-none">
           <div class="d-grid gap-2">
@@ -83,9 +58,9 @@
               <div class="card-body">
                 <p class="card-text"><a href="/{{ $lang }}/market/{{ $product->id.'-'.$product->slug }}">{{ $product->title }}</a></p>
                 <div class="d-flex justify-content-between align-items-center">
-                  <div class="btn-group">
+<!--                   <div class="btn-group">
                     <button type="button" class="btn btn-sm btn-outline-secondary">To cart</button>
-                  </div>
+                  </div> -->
                   <small class="text-body-secondary">{{ $product->price }}〒</small>
                 </div>
               </div>

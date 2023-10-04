@@ -48,18 +48,22 @@ class MarketController extends Controller
         return view('market.found', compact('text', 'products'));
     }
 
-    public function searchAjax(Request $request)
+    public function searchAjax(Request $request, $lang)
     {
         $text = trim(strip_tags($request->text));
 
         $products = Product::where('status', 1)
-            ->where(function($query) use ($text) {
-                return $query->where('barcodes', 'LIKE', '%'.$text.'%')
-                ->orWhere('title', 'LIKE', '%'.$text.'%')
-                ->orWhere('description', 'LIKE', '%'.$text.'%');
-            })->take(15);
+            ->when(strlen($text) >= 2, function($query) use ($text) {
+                $query->where('title', 'LIKE', '%'.$text.'%')
+                ->orWhere('description', 'LIKE', '%'.$text.'%')
+                ->orWhere('barcodes', 'LIKE', '%'.$text.'%')
+                ->take(15);
+            }, function($query) {
+                $query->take(0);
+            })
+            ->get();
 
-        return view('suggestions-render', ['products' => $products]);
+        return view('market.suggestions-render', ['products' => $products]);
     }
 
     public function categoryProducts(Request $request, $lang, $categorySlug, $categoryId)
