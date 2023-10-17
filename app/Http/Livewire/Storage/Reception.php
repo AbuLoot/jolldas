@@ -26,10 +26,6 @@ class Reception extends Component
         'trackCode' => 'required|string|min:10|max:20',
     ];
 
-    protected $listeners = [
-        'newData' => '$refresh',
-    ];
-
     public function mount()
     {
         if (auth()->user()->roles->first()->name == 'storekeeper-last') {

@@ -3,7 +3,7 @@
   <div class="py-3 border-bottom mb-3">
     <div class="container d-flex flex-wrap justify-content-between align-items-center">
 
-      <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Track codes</h4>
+      <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Search</h4>
 
       <form class="col-12 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
         <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Enter track code..." aria-label="Search">
@@ -27,6 +27,7 @@
                 <div class="col-12 col-lg-5">
                   <div><b>Track code:</b> {{ $track->code }}</div>
                   <div><b>Description:</b> {{ Str::limit($track->description, 35) }}</div>
+                  <div><b>Text:</b> {{ $track->text }}</div>
                 </div>
                 <div class="col-12 col-lg-4">
                   <div><b>{{ ucfirst($activeStatus->slug) }} Date:</b> {{ $activeStatus->pivot->created_at }}</div>
@@ -77,43 +78,20 @@
       </div>
     @endforeach
 
-    <ul class="nav nav-tabs mb-3">
-      @can('reception', Auth::user())
-        <li class="nav-item">
-          <a class="nav-link" href="/{{ $lang }}/storage">Reception</a>
-        </li>
-      @endcan
-      @can('sending', Auth::user())
-        <li class="nav-item">
-          <a class="nav-link" href="/{{ $lang }}/storage/sending">Send</a>
-        </li>
-      @endcan
-      @can('sorting', Auth::user())
-        <li class="nav-item">
-          <a class="nav-link" href="/{{ $lang }}/storage/sorting"><i class="bi bi-dpad"></i> Sorting</a>
-        </li>
-      @endcan
-      @can('arrival', Auth::user())
-        <li class="nav-item">
-          <a class="nav-link" href="/{{ $lang }}/storage/arrival">Arrival</a>
-        </li>
-      @endcan
-      @can('giving', Auth::user())
-        <li class="nav-item">
-          <a class="nav-link bg-light active" area-current="page">Giving</a>
-        </li>
-      @endcan
-    </ul>
+    <h3>Giving</h3>
 
     <div class="row">
       <div class="col-12 col-sm-4 mb-2">
         <form wire:submit.prevent="toGive">
-          <div class="form-floating mb-3">
-            <input wire:model.defer="trackCode" type="text" class="form-control form-control-lg @error('trackCode') is-invalid @enderror" placeholder="Add track-code" id="trackCodeArea">
-            <label for="trackCodeArea">Enter track code</label>
+          <div class="input-group @error('trackCode') has-validation @enderror mb-3">
+            <div class="form-floating @error('trackCode') is-invalid @enderror">
+              <input wire:model.defer="trackCode" type="text" class="form-control form-control-lg" placeholder="Add track-code" id="trackCodeArea">
+              <label for="trackCodeArea">Enter track code</label>
+            </div>
+            <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalUploadDoc"><i class="bi bi-file-earmark-arrow-up-fill"></i> </button>
             @error('trackCode')<div class="invalid-feedback">{{ $message }}</div>@enderror
           </div>
-          <div class="btn-group mb-2" role="group" aria-label="Button group with nested dropdown">
+          <div class="btn-group mb-3" role="group" aria-label="Button group with nested dropdown">
             <div class="btn-group" role="group">
               <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                 {{ $region->title }}
@@ -132,7 +110,39 @@
           </div>
         </form>
 
-        <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalUploadDoc">Upload</button>
+        <div class="input-group mb-3">
+          @if(session('givingToUser'))
+            <div class="form-floating">
+              <input value="{{ session('givingToUser')->id_client.'. '.session('givingToUser')->name.' '.session('givingToUser')->lastname }}" type="text" class="form-control form-control-lg" id="givingToUser" placeholder="ID Client" disabled>
+              <label for="givingToUser">ID Client</label>
+            </div>
+            <button wire:click="detachUser({{ session('givingToUser')->id }})" class="btn btn-danger btn-lg input-group-text"><i class="bi bi-x-square"></i></button>
+          @else
+            <div class="form-floating">
+              <input wire:model="idClient" type="text" class="form-control form-control-lg" id="id_client" placeholder="ID Client">
+              <label for="id_client">ID Client</label>
+
+              @if($users)
+                <div class="dropdown-menu d-block pt-0 w-100 shadow overflow-hidden" style="position: absolute;">
+                  <ul class="list-unstyled mb-0">
+                    @forelse($users as $user)
+                      <li>
+                        <a wire:click="attachUser({{ $user->id }})" class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">{{ $user->id_client.'. '.$user->name.' '.$user->lastname }}</a>
+                      </li>
+                    @empty
+                      <li><a class="dropdown-item d-flex align-items-center gap-2 py-2 disabled">No users</a></li>
+                    @endforelse
+                  </ul>
+                </div>
+              @endif
+            </div>
+          @endif
+        </div>
+
+        <div class="form-floating mb-3">
+          <input wire:model="text" class="form-control form-control-lg" id="text" maxlength="250" placeholder="Leave a comment here">
+          <label for="text" class="form--label">Text</label>
+        </div>
 
       </div>
       <div class="col-12 col-sm-8">
@@ -149,7 +159,7 @@
           </div>
         @endif
 
-        @foreach($arrivedTracks as $track)
+        @foreach($sentLocallyTracks as $track)
           <div class="track-item mb-2">
             <?php
               $activeStatus = $track->statuses->last();
@@ -161,12 +171,13 @@
                 <div class="col-12 col-lg-6">
                   <div><b>Track code:</b> {{ $track->code }}</div>
                   <div><b>Description:</b> {{ Str::limit($track->description, 35) }}</div>
+                  <div><b>Text:</b> {{ $track->text }}</div>
                 </div>
                 <div class="col-12 col-lg-6">
                   <div><b>{{ ucfirst($activeStatus->slug) }} Date:</b> {{ $activeStatus->pivot->created_at }}</div>
                   <div><b>Status:</b> {{ $activeStatus->title }} {{ $arrivedRegion }}</div>
                 </div>
-                @if($track->user) 
+                @if($track->user)
                   <div class="col-12 col-lg-12">
                     <b>User:</b> {{ $track->user->name.' '.$track->user->lastname }}<br>
                     <b>ID:</b> {{ $track->user->id_client }}
@@ -184,7 +195,12 @@
                       @if($activeStatus->id == $status->id)
                         <li class="timeline-item mb-2">
                           <span class="timeline-icon bg-success"><i class="bi bi-check text-white"></i></span>
-                          <p class="text-success mb-0">{{ $status->title }}</p>
+                          <p class="text-success mb-0">
+                            {{ $status->title }}
+                            @if($status->pivot->region_id)
+                              ({{ $regions->firstWhere('id', $status->pivot->region_id)->title ?? __('statuses.regions.title') }}, Казахстан)
+                            @endif
+                          </p>
                           <p class="text-success mb-0">{{ $status->pivot->created_at }}</p>
                         </li>
                         @continue
@@ -205,7 +221,7 @@
         @endforeach
         <br>
         <nav aria-label="Page navigation">
-          {{ $arrivedTracks->links() }}
+          {{ $sentLocallyTracks->links() }}
         </nav>
       </div>
     </div>

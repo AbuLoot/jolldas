@@ -23,10 +23,6 @@ class Tracks extends Component
     public $tracksRegion = 0;
     public $sort = 'desc';
 
-    protected $listeners = [
-        'newData' => '$refresh',
-    ];
-
     public function mount()
     {
         $this->lang = app()->getLocale();
@@ -49,7 +45,7 @@ class Tracks extends Component
     public function render()
     {
         $statuses = Status::get();
-        $regions = Region::get()->toTree();
+        $regions = Region::get();
 
         $tracksStatus = $this->tracksStatus;
         $tracksRegion = $this->tracksRegion;

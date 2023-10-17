@@ -3,7 +3,7 @@
   <div class="py-3 border-bottom mb-3">
     <div class="container d-flex flex-wrap justify-content-between align-items-center">
 
-      <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Track codes</h4>
+      <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Search</h4>
 
       <form class="col-12 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
         <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Enter track code..." aria-label="Search">
@@ -75,40 +75,7 @@
       </div>
     @endforeach
 
-    <ul class="nav nav-tabs mb-3">
-      @can('reception', Auth::user())
-        <li class="nav-item">
-          <a class="nav-link" href="/{{ $lang }}/storage">Reception</a>
-        </li>
-      @endcan
-      @can('sending', Auth::user())
-        <li class="nav-item dropdown">
-          <?php $icons = ['list' => 'card-checklist', 'group' => 'collection']; ?>
-          <a class="nav-link bg-light active dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
-            <i class="bi bi-{{ $icons[$mode] }}"></i> Send
-          </a>
-          <ul class="dropdown-menu">
-            <li><a wire:click="setMode('list')" class="dropdown-item" href="#"><i class="bi bi-card-checklist"></i> List tracks</a></li>
-            <li><a wire:click="setMode('group')" class="dropdown-item" href="#"><i class="bi bi-collection"></i> Group tracks</a></li>
-          </ul>
-        </li>
-      @endcan
-      @can('sorting', Auth::user())
-        <li class="nav-item">
-          <a class="nav-link" href="/{{ $lang }}/storage/sorting"><i class="bi bi-dpad"></i> Sorting</a>
-        </li>
-      @endcan
-      @can('arrival', Auth::user())
-        <li class="nav-item">
-          <a class="nav-link" href="/{{ $lang }}/storage/arrival">Arrival</a>
-        </li>
-      @endcan
-      @can('giving', Auth::user())
-        <li class="nav-item">
-          <a class="nav-link" href="/{{ $lang }}/storage/giving">Giving</a>
-        </li>
-      @endcan
-    </ul>
+    <h3>Sending</h3>
 
     <div class="row">
       <div class="col-12 col-sm-3 mb-2">

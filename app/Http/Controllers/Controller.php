@@ -22,7 +22,7 @@ class Controller extends BaseController
         $pages = Page::where('status', 1)->whereNotIn('slug', ['/'])->orderBy('sort_id')->get()->toTree();
         $sections = Section::whereIn('slug', ['header-code', 'footer-code', 'contacts', 'soc-networks'])->get();
         $companies = Company::where('status', 2)->orderBy('sort_id')->get();
-
+ 
         view()->share([
             'lang' => app()->getLocale(),
             'pages' => $pages,

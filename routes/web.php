@@ -45,6 +45,7 @@ use App\Http\Livewire\Storage\Reception;
 use App\Http\Livewire\Storage\Sending;
 use App\Http\Livewire\Storage\Sorting;
 use App\Http\Livewire\Storage\Arrival;
+use App\Http\Livewire\Storage\SendLocally;
 use App\Http\Livewire\Storage\Giving;
 use App\Http\Livewire\Storage\Tracks;
 
@@ -64,6 +65,7 @@ Route::group(['prefix' => '/{lang}/storage', 'middleware' => ['auth', 'roles:adm
     Route::get('sending', Sending::class);
     Route::get('sorting', Sorting::class);
     Route::get('arrival', Arrival::class);
+    Route::get('send-locally', SendLocally::class);
     Route::get('giving', Giving::class);
     Route::get('tracks', Tracks::class);
 });

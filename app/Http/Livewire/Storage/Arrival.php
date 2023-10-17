@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Storage;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 
+use App\Models\User;
 use App\Models\Region;
 use App\Models\Track;
 use App\Models\Status;
@@ -15,21 +16,15 @@ use App\Jobs\SendMailNotification;
 class Arrival extends Component
 {
     public $lang;
+    public $mode = 'list';
     public $search;
     public $status;
     public $region;
-    public $mode = 'list';
+    public $idClient = 'J7799';
     public $trackCode;
     public $trackCodes = [];
     public $allSortedTracks = [];
-
-    protected $rules = [
-        'trackCode' => 'required|string|min:10|max:20',
-    ];
-
-    protected $listeners = [
-        'newData' => '$refresh',
-    ];
+    public $text;
 
     public function mount()
     {
@@ -121,7 +116,7 @@ class Arrival extends Component
 
     public function toArrive()
     {
-        $this->validate();
+        $this->validate(['trackCode' => 'required|string|min:10|max:20']);
 
         $statusArrived = Status::select('id', 'slug')
             ->where('slug', 'arrived')
@@ -132,12 +127,14 @@ class Arrival extends Component
 
         if (!$track) {
             $newTrack = new Track;
-            $newTrack->user_id = null;
+            $newTrack->user_id = session('arrivalToUser')->id ?? $newTrack;
             $newTrack->lang = $this->lang;
             $newTrack->code = $this->trackCode;
             $newTrack->description = '';
+            $newTrack->text = $this->text;
             $newTrack->save();
 
+            unset($this->text);
             $track = $newTrack;
         }
 
@@ -155,6 +152,7 @@ class Arrival extends Component
         $trackStatus->updated_at = now();
         $trackStatus->save();
 
+        $track->user_id = session('arrivalToUser')->id ?? $track->user_id;
         $track->status = $statusArrived->id;
         $track->save();
 
@@ -164,6 +162,17 @@ class Arrival extends Component
 
         $this->trackCode = null;
         $this->dispatchBrowserEvent('area-focus');
+    }
+
+    public function attachUser($id)
+    {
+        session()->put('arrivalToUser', User::findOrFail($id));
+    }
+
+    public function detachUser()
+    {
+        session()->forget('arrivalToUser');
+        $this->idClient = 'J7799';
     }
 
     public function setMode($mode)
@@ -194,6 +203,7 @@ class Arrival extends Component
         $this->setRegionId = session()->get('jRegion')->id;
 
         $tracks = [];
+        $users = [];
 
         if (strlen($this->search) >= 4) {
             $tracks = Track::query()
@@ -203,8 +213,16 @@ class Arrival extends Component
                 ->paginate(10);
         }
 
+        if (strlen($this->idClient) >= 9) {
+            $users = User::orderBy('id', 'desc')
+                ->where('id_client', 'like', '%'.$this->idClient.'%')
+                ->get()
+                ->take(10);
+        }
+
         return view('livewire.storage.arrival', [
                 'tracks' => $tracks,
+                'users' => $users,
                 'sortedTracks' => $sortedTracks,
                 'regions' => Region::descendantsAndSelf(1)->toTree(),
             ])

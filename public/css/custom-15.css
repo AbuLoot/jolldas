@@ -26,6 +26,7 @@ body {
 .bg-sent { background-color: #3dd5f3 !important; }
 .bg-sorted { background-color: #c29ffa !important; }
 .bg-arrived { background-color: #4dd4ac !important; }
+.bg-sent-locally { background-color: #6ea8fe !important; }
 .bg-given { background-color: #20c997 !important; }
 .bg-green-jd { background-color: #479f76 !important; }
 

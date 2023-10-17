@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Client;
 use Livewire\Component;
 
 use App\Models\Track;
+use App\Models\Region;
 
 class Archive extends Component
 {
@@ -37,7 +38,10 @@ class Archive extends Component
             })
             ->paginate(50);
 
-        return view('livewire.client.archive', ['tracks' => $tracks])
+        return view('livewire.client.archive', [
+            'tracks' => $tracks,
+            'regions' => Region::get()->toTree(),
+            ])
             ->layout('livewire.client.layout');
     }
 }

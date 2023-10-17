@@ -7,6 +7,10 @@ return [
 	      	'card-color' => 'bg-given',
 	      	'item-color' => 'bg-secondary',
 	    ],
+	    'sent-locally' => [
+	      	'card-color' => 'bg-sent-locally',
+	      	'item-color' => 'bg-secondary',
+	    ],
 	    'arrived' => [
 	      	'card-color' => 'bg-arrived',
 	      	'item-color' => 'bg-secondary',

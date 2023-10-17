@@ -46,6 +46,7 @@
           <td>Email</td>
           <td>Номер телефона</td>
           <td>Регион</td>
+          <td>ID клиента</td>
           <td>Роль</td>
           <td class="text-right">Функции</td>
         </tr>
@@ -59,6 +60,7 @@
             <td>{{ $user->email }}</td>
             <td>{{ $user->tel }}</td>
             <td>{{ $user->region->title }}</td>
+            <td>{{ $user->id_client }}</td>
             <td>
               @foreach($user->roles as $role)
                 {{ $role->name }}<br>

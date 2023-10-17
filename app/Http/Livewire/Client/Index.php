@@ -6,6 +6,7 @@ use Livewire\Component;
 
 use App\Models\Track;
 use App\Models\Status;
+use App\Models\Region;
 
 class Index extends Component
 {
@@ -58,6 +59,7 @@ class Index extends Component
         return view('livewire.client.index', [
                 'tracks' => $tracks,
                 'statuses' => $statuses,
+                'regions' => Region::get()->toTree(),
             ])
             ->layout('livewire.client.layout');
     }

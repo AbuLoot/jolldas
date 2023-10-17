@@ -72,5 +72,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('setting-regions', function(User $user) {
             return $user->roles->first()->permissions->pluck('name')->contains('setting-regions');
         });
+
+        Gate::define('sending-locally', function(User $user) {
+            return $user->roles->first()->permissions->pluck('name')->contains('sending-locally');
+        });
     }
 }

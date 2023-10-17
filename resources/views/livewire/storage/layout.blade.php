@@ -16,7 +16,7 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
   <link rel="icon" href="favicon-32x32.png" sizes="32x32" type="image/png">
   <link rel="icon" href="favicon-16x16.png" sizes="16x16" type="image/png">
-  <link rel="manifest" href="manifest.json">
+  <!-- <link rel="manifest" href="manifest.json"> -->
   <link rel="mask-icon" href="safari-pinned-tab.svg" color="#7952b3">
   <link rel="icon" href="favicon.ico">
   <meta name="theme-color" content="#7952b3">
@@ -46,31 +46,30 @@
           <li class="nav-item">
             <a class="nav-link px-3" href="/{{ $lang }}/storage/tracks">All tracks</a>
           </li>
-          @can('reception', Auth::user())
+          @canany(['reception', 'sending'], Auth::user())
             <li class="nav-item">
               <a class="nav-link px-3" href="/{{ $lang }}/storage/reception">Reception</a>
             </li>
-          @endcan
-          @can('sending', Auth::user())
             <li class="nav-item">
               <a class="nav-link px-3" href="/{{ $lang }}/storage/sending">Sending</a>
             </li>
-          @endcan
+          @endcanany
           @can('sorting', Auth::user())
             <li class="nav-item">
-              <a class="nav-link px-3" href="/{{ $lang }}/storage/sorting">Sorting</a>
+              <a class="nav-link px-3" href="/{{ $lang }}/storage/sorting"><i class="bi bi-dpad"></i> Sorting</a>
             </li>
           @endcan
-          @can('arrival', Auth::user())
+          @canany(['arrival', 'send-locally', 'giving'], Auth::user())
             <li class="nav-item">
               <a class="nav-link px-3" href="/{{ $lang }}/storage/arrival">Arrival</a>
             </li>
-          @endcan
-          @can('giving', Auth::user())
+            <li class="nav-item">
+              <a class="nav-link px-3" href="/{{ $lang }}/storage/send-locally">Send Locally</a>
+            </li>
             <li class="nav-item">
               <a class="nav-link px-3" href="/{{ $lang }}/storage/giving">Giving</a>
             </li>
-          @endcan
+          @endcanany
         </ul>
 
         <div class="flex-shrink-0 dropdown ms-md-auto ps-3">

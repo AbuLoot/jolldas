@@ -19,7 +19,7 @@
 
       <div class="col-2 col-lg-4 text-end ms-md-auto ms-lg-0">
         <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalAddTrack">
-          <i class="bi bi-plus-circle-fill me-sm-2"></i> <span class="d-none d-sm-inline">Добавить трек</span>
+          <i class="bi bi-plus-circle-fill me-sm-2"></i> <span class="d-none d-md-inline">Добавить трек</span>
         </button>
       </div>
 
@@ -50,28 +50,32 @@
             'sorted' => null,
             'waiting' => null,
             'arrived' => null,
+            'sent-locally' => null,
             'given' => '<i class="bi bi-person-check-fill"></i>',
           ];
 
-          $sortedOrArrivalOrGivenRegion = null;
+          $trackAndRegion = null;
 
-          if (in_array($activeStatus->slug, ['sorted', 'arrived', 'given']) OR in_array($activeStatus->id, [4, 5, 6])) {
+          if (in_array($activeStatus->slug, ['sorted', 'arrived', 'sent-locally', 'given']) OR in_array($activeStatus->id, [4, 5, 6, 7])) {
 
-            $sortedOrArrivalOrGivenRegion = $track->regions->last()->title ?? __('statuses.regions.title');
-            $sortedOrArrivalOrGivenRegion = '('.$sortedOrArrivalOrGivenRegion.', Казахстан)';
+            $trackAndRegion = $track->regions->last()->title ?? __('statuses.regions.title');
+            $trackAndRegion = '('.$trackAndRegion.', Казахстан)';
           }
         ?>
-        <div class="row">
+        <div class="row gx-2">
           <div class="col-10 col-lg-11">
             <div class="border {{ __('statuses.classes.'.$activeStatus->slug.'.card-color') }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
               <div class="row">
                 <div class="col-12 col-lg-5">
                   <div><b>Трек-код:</b> {{ $track->code }}</div>
                   <div><b>Описание:</b> {{ Str::limit($track->description, 35) }}</div>
+                  @if($track->text)
+                    <div><b>Text:</b> {{ $track->text }}</div>
+                  @endif
                 </div>
                 <div class="col-9 col-lg-5">
                   <div><b>Дата:</b> {{ $track->updated_at }}</div>
-                  <div><b>Статус: {!! $givenIcon[$activeStatus->slug] !!}</b> {{ $activeStatus->title }} {{ $sortedOrArrivalOrGivenRegion }}</div>
+                  <div><b>Статус: {!! $givenIcon[$activeStatus->slug] !!}</b> {{ $activeStatus->title }} {{ $trackAndRegion }}</div>
                 </div>
               </div>
             </div>
@@ -85,7 +89,7 @@
                       @if($activeStatus->id == $status->id)
                         <li class="timeline-item mb-2">
                           <span class="timeline-icon bg-success"><i class="bi bi-check text-white"></i></span>
-                          <p class="text-success mb-0">{{ $status->title }} {{ $sortedOrArrivalOrGivenRegion }}</p>
+                          <p class="text-success mb-0">{{ $status->title }} {{ $trackAndRegion }}</p>
                           <p class="text-success mb-0">{{ $status->pivot->created_at }}</p>
                         </li>
                         @continue
@@ -93,7 +97,12 @@
 
                       <li class="timeline-item mb-2">
                         <span class="timeline-icon bg-secondary"><i class="bi bi-check text-white"></i></span>
-                        <p class="text-body mb-0">{{ $status->title }}</p>
+                        <p class="text-body mb-0">
+                          {{ $status->title }}
+                          @if($status->pivot->region_id)
+                            ({{ $regions->firstWhere('id', $status->pivot->region_id)->title ?? __('statuses.regions.title') }}, Казахстан)
+                          @endif
+                        </p>
                         <p class="text-body mb-0">{{ $status->pivot->created_at }}</p>
                       </li>
                     @endforeach

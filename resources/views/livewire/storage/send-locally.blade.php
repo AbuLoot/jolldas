@@ -1,4 +1,5 @@
 <div>
+
   <div class="py-3 border-bottom mb-3">
     <div class="container d-flex flex-wrap justify-content-between align-items-center">
 
@@ -12,11 +13,75 @@
   </div>
 
   <div class="container">
-    <h3>Reception</h3>
+    @foreach($tracks as $track)
+      <div class="track-item mb-2">
+        <?php
+          $activeStatus = $track->statuses->last();
+          $sortedRegion = $track->regions->last()->title ?? __('statuses.regions.title');
+          $sortedRegion = '('.$sortedRegion.', Казахстан)';
+        ?>
+        <div class="row">
+          <div class="col-10 col-lg-10">
+            <div class="border {{ __('statuses.classes.'.$activeStatus->slug.'.card-color') }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
+              <div class="row">
+                <div class="col-12 col-lg-5">
+                  <div><b>Track code:</b> {{ $track->code }}</div>
+                  <div><b>Description:</b> {{ Str::limit($track->description, 35) }}</div>
+                </div>
+                <div class="col-12 col-lg-4">
+                  <div><b>{{ ucfirst($activeStatus->slug) }} Date:</b> {{ $activeStatus->pivot->created_at }}</div>
+                  <div><b>Status:</b> {{ $activeStatus->title }} {{ $sortedRegion }}</div>
+                </div>
+                @if($track->user) 
+                  <div class="col-12 col-lg-3">
+                    <b>User:</b> {{ $track->user->name.' '.$track->user->lastname }}<br>
+                    <b>ID:</b> {{ $track->user->id_client }}
+                  </div>
+                @endif
+              </div>
+            </div>
+
+            <div class="collapse" id="collapse{{ $track->id }}">
+              <div class="border border-top-0 rounded-bottom p-3">
+                <section>
+                  <ul class="timeline-with-icons">
+                    @foreach($track->statuses()->orderByPivot('created_at', 'desc')->get() as $status)
+
+                      @if($activeStatus->id == $status->id)
+                        <li class="timeline-item mb-2">
+                          <span class="timeline-icon bg-success"><i class="bi bi-check text-white"></i></span>
+                          <p class="text-success mb-0">{{ $status->title }}</p>
+                          <p class="text-success mb-0">{{ $status->pivot->created_at }}</p>
+                        </li>
+                        @continue
+                      @endif
+
+                      <li class="timeline-item mb-2">
+                        <span class="timeline-icon bg-secondary"><i class="bi bi-check text-white"></i></span>
+                        <p class="text-body mb-0">{{ $status->title }}</p>
+                        <p class="text-body mb-0">{{ $status->pivot->created_at }}</p>
+                      </li>
+                    @endforeach
+                  </ul>
+                  <p><b>Description:</b> {{ $track->description }}</p>
+                </section>
+              </div>
+            </div>
+          </div>
+          <div class="col-2 col-lg-2 text-end">
+            <div class="d-grid">
+              <button wire:click="btnToSendLocally('{{ $track->code }}')" type="button" wire:loading.attr="disabled" class="btn btn-primary btn-lg-"><i class="bi bi-check2-all"></i> <span class="d-none d-sm-inline">To arrive</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    @endforeach
+
+    <h3>Send locally</h3>
 
     <div class="row">
-      <div class="col-12 col-sm-3 mb-2">
-        <form wire:submit.prevent="toReceive">
+      <div class="col-12 col-sm-4 mb-2">
+        <form wire:submit.prevent="toSendLocally">
           <div class="input-group @error('trackCode') has-validation @enderror mb-3">
             <div class="form-floating @error('trackCode') is-invalid @enderror">
               <input wire:model.defer="trackCode" type="text" class="form-control form-control-lg" placeholder="Add track-code" id="trackCodeArea">
@@ -26,16 +91,33 @@
             @error('trackCode')<div class="invalid-feedback">{{ $message }}</div>@enderror
           </div>
 
-          <button type="submit" id="toReceive" class="btn btn-primary btn-lg mb-2"><i class="bi bi-check2"></i> To receive</button>
-        </form>
-      </div>
+          <div class="btn-group mb-3" role="group" aria-label="Button group with nested dropdown">
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ $region->title }}
+              </button>
 
-      <div class="col-12 col-sm-9">
+              <ul class="dropdown-menu" style="max-height: 400px; overflow-y: auto; padding-bottom: 50px;">
+                <?php $traverse = function ($nodes, $prefix = null) use (&$traverse) { ?>
+                  <?php foreach ($nodes as $node) : ?>
+                    <li><a wire:click="setRegionId('{{ $node->id }}')" class="dropdown-item" href="#">{{ PHP_EOL.$prefix.' '.$node->title }}</a></li>
+                    <?php $traverse($node->children, $prefix.'___'); ?>
+                  <?php endforeach; ?>
+                <?php }; ?>
+                <?php $traverse($regions); ?>
+              </ul>
+            </div>
+            <button type="submit" id="toSendLocally" wire:loading.attr="disabled" class="btn btn-primary btn-lg"><i class="bi bi-send-plus-fill"></i> To send</button>
+          </div>
+        </form>
+
+      </div>
+      <div class="col-12 col-sm-8">
 
         @if (session('result'))
           <div class="alert alert-info">
             <h4>Total tracks count: {{ session('result')['totalTracksCount'] }}pcs</h4>
-            <h4>Received tracks count: {{ session('result')['receivedTracksCount'] }}pcs</h4>
+            <h4>Arrived tracks count: {{ session('result')['arrivedTracksCount'] }}pcs</h4>
             <h4>Existent tracks count: {{ session('result')['existentTracksCount'] }}pcs</h4>
             <?php session()->forget('result'); ?>
             <div>
@@ -44,11 +126,13 @@
           </div>
         @endif
 
-        @foreach($tracks as $track)
+        @foreach($arrivedTracks as $track)
           <div class="track-item mb-2">
-
-            <?php $activeStatus = $track->statuses->last(); ?>
-
+            <?php
+              $activeStatus = $track->statuses->last();
+              $sortedRegion = $track->regions->last()->title ?? __('statuses.regions.title');
+              $sortedRegion = '('.$sortedRegion.', Казахстан)';
+            ?>
             <div class="border {{ __('statuses.classes.'.$activeStatus->slug.'.card-color') }} rounded-top p-2" data-bs-toggle="collapse" href="#collapse{{ $track->id }}">
               <div class="row">
                 <div class="col-12 col-lg-6">
@@ -57,7 +141,7 @@
                 </div>
                 <div class="col-12 col-lg-6">
                   <div><b>{{ ucfirst($activeStatus->slug) }} Date:</b> {{ $activeStatus->pivot->created_at }}</div>
-                  <div><b>Status:</b> {{ $activeStatus->title }}</div>
+                  <div><b>Status:</b> {{ $activeStatus->title }} {{ $sortedRegion }}</div>
                 </div>
                 @if($track->user) 
                   <div class="col-12 col-lg-12">
@@ -96,22 +180,22 @@
             </div>
           </div>
         @endforeach
-
+        <br>
+        <nav aria-label="Page navigation">
+          {{ $arrivedTracks->links() }}
+        </nav>
       </div>
     </div>
-
-    <br>
-    <nav aria-label="Page navigation">
-      {{ $tracks->links() }}
-    </nav>
   </div>
+
+  <br>
 
   <div class="modal fade" id="modalUploadDoc" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <form action="/{{ $lang }}/admin/upload-tracks" method="post" enctype="multipart/form-data">
           @csrf
-          <input type="hidden" name="storageStage" value="reception">
+          <input type="hidden" name="storageStage" value="arrival">
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="modalLabel">Uploading Track Codes</h1>
             <button type="button" id="closeUploadDoc" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -135,7 +219,7 @@
 
 @section('scripts')
   <script type="text/javascript">
-    // Toast Script
+    // Focus Script
     window.addEventListener('area-focus', event => {
 
       var areaEl = document.getElementById('trackCodeArea');

@@ -25,10 +25,6 @@ class Sorting extends Component
         'trackCode' => 'required|string|min:10|max:20',
     ];
 
-    protected $listeners = [
-        'newData' => '$refresh',
-    ];
-
     public function mount()
     {
         if (! Gate::allows('sorting', auth()->user())) {

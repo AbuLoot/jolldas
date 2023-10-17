@@ -71,6 +71,7 @@ class TrackExtensionController extends Controller
         $trackCodes = [];
 
         while ($line = fgets($fh)) {
+            // $item = strlen(trim($line)) > 9;
             $trackCodes[] = trim($line);
         }
 
@@ -86,7 +87,9 @@ class TrackExtensionController extends Controller
             ->select('id', 'slug')
             ->first();
 
-        $uniqueTrackCodes = collect($trackCodes)->unique();
+        $uniqueTrackCodes = collect($trackCodes)->filter(function ($value) {
+                return strlen($value) > 9;
+            })->unique();
 
         $existentTracks = Track::whereIn('code', $uniqueTrackCodes)->get();
         $unreceivedTracks = $existentTracks->where('status', '<', $statusReceived->id);
