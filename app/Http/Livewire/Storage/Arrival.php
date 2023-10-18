@@ -127,14 +127,14 @@ class Arrival extends Component
 
         if (!$track) {
             $newTrack = new Track;
-            $newTrack->user_id = session('arrivalToUser')->id ?? $newTrack;
+            $newTrack->user_id = session('arrivalToUser')->id ?? null;
             $newTrack->lang = $this->lang;
             $newTrack->code = $this->trackCode;
             $newTrack->description = '';
             $newTrack->text = $this->text;
             $newTrack->save();
 
-            unset($this->text);
+            $this->text = null;
             $track = $newTrack;
         }
 

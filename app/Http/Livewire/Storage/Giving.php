@@ -63,17 +63,18 @@ class Giving extends Component
 
         if (!$track) {
             $newTrack = new Track;
-            $newTrack->user_id = session('givingToUser')->id ?? $newTrack->user_id;
+            $newTrack->user_id = session('givingToUser')->id ?? null;
             $newTrack->lang = $this->lang;
             $newTrack->code = $this->trackCode;
             $newTrack->description = '';
             $newTrack->text = $this->text;
             $newTrack->save();
 
+            $this->text = null;
             $track = $newTrack;
         }
 
-        if ($track->status >= $statusGiven->id) {
+        if ($track->status >= $statusGiven->id AND $track->status != 7) {
             $this->addError('trackCode', 'Track '.$this->trackCode.' given');
             $this->trackCode = null;
             return;
