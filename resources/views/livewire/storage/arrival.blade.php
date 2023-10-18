@@ -175,16 +175,16 @@
             $twoWeekAgo   = $now->copy()->startOfWeek()->subWeek(3)->format('Y-m-d');
 
             // Grouped by date
-            $todayGroup         = $sortedTracks->where('updated_at', '>', $yesterday.' 23:59:59')->where('updated_at', '<=', now());
-            $yesterdayGroup     = $sortedTracks->where('updated_at', '>=', $yesterday)->where('updated_at', '<', $today);
-            $twoDaysAgoGroup    = $sortedTracks->where('updated_at', '>', $twoDaysAgo)->where('updated_at', '<', $yesterday);
-            $threeDaysAgoGroup  = $sortedTracks->where('updated_at', '>', $threeDaysAgo)->where('updated_at', '<', $twoDaysAgo);
-            $fourDaysAgoGroup   = $sortedTracks->where('updated_at', '>', $fourDaysAgo)->where('updated_at', '<', $threeDaysAgo);
-            $fiveDaysAgoGroup   = $sortedTracks->where('updated_at', '>', $fiveDaysAgo)->where('updated_at', '<', $fourDaysAgo);
-            $sixDaysAgoGroup    = $sortedTracks->where('updated_at', '>', $sixDaysAgo)->where('updated_at', '<', $fiveDaysAgo);
-            $previousWeekGroup  = $sortedTracks->where('updated_at', '>', $previousWeek)->where('updated_at', '<', $sixDaysAgo);
-            $twoWeekAgoGroup    = $sortedTracks->where('updated_at', '>', $twoWeekAgo)->where('updated_at', '<', $previousWeek);
-            $prevTimeGroup      = $sortedTracks->where('updated_at', '<', $twoWeekAgo);
+            $todayGroup         = $sentLocallyTracks->where('updated_at', '>', $yesterday.' 23:59:59')->where('updated_at', '<=', now());
+            $yesterdayGroup     = $sentLocallyTracks->where('updated_at', '>=', $yesterday)->where('updated_at', '<', $today);
+            $twoDaysAgoGroup    = $sentLocallyTracks->where('updated_at', '>', $twoDaysAgo)->where('updated_at', '<', $yesterday);
+            $threeDaysAgoGroup  = $sentLocallyTracks->where('updated_at', '>', $threeDaysAgo)->where('updated_at', '<', $twoDaysAgo);
+            $fourDaysAgoGroup   = $sentLocallyTracks->where('updated_at', '>', $fourDaysAgo)->where('updated_at', '<', $threeDaysAgo);
+            $fiveDaysAgoGroup   = $sentLocallyTracks->where('updated_at', '>', $fiveDaysAgo)->where('updated_at', '<', $fourDaysAgo);
+            $sixDaysAgoGroup    = $sentLocallyTracks->where('updated_at', '>', $sixDaysAgo)->where('updated_at', '<', $fiveDaysAgo);
+            $previousWeekGroup  = $sentLocallyTracks->where('updated_at', '>', $previousWeek)->where('updated_at', '<', $sixDaysAgo);
+            $twoWeekAgoGroup    = $sentLocallyTracks->where('updated_at', '>', $twoWeekAgo)->where('updated_at', '<', $previousWeek);
+            $prevTimeGroup      = $sentLocallyTracks->where('updated_at', '<', $twoWeekAgo);
 
             $allTracksGroups = [
               'today' => [
@@ -270,7 +270,7 @@
             @endif
           @endforeach
         @else
-          @foreach($sortedTracks as $track)
+          @foreach($sentLocallyTracks as $track)
             <div class="track-item mb-2">
               <?php
                 $activeStatus = $track->statuses->last();
@@ -326,7 +326,7 @@
           @endforeach
           <br>
           <nav aria-label="Page navigation">
-            {{ $sortedTracks->links() }}
+            {{ $sentLocallyTracks->links() }}
           </nav>
         @endif
       </div>

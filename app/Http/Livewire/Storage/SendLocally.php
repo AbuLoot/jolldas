@@ -28,10 +28,10 @@ class SendLocally extends Component
         }
 
         $this->lang = app()->getLocale();
-        $this->status = Status::select('id', 'slug')
-            ->where('slug', 'sorted')
-            ->orWhere('id', 4)
-            ->first();
+        $this->prevStatuses = Status::select('id', 'slug')
+            ->whereIn('slug', ['sent', 'sorted'])
+            ->orWhere('id', [3, 4])
+            ->get();
 
         if (!session()->has('jRegion')) {
             $region = auth()->user()->region()->first() ?? Region::where('slug', 'kazakhstan')->orWhere('id', 1)->first();
@@ -51,7 +51,7 @@ class SendLocally extends Component
 
         $statusSentLocally = Status::select('id', 'slug')
             ->where('slug', 'sent-locally')
-            ->orWhere('sort_id', 6)
+            ->orWhere('id', 7)
             ->first();
 
         $track = Track::where('code', $this->trackCode)->first();
@@ -99,7 +99,7 @@ class SendLocally extends Component
 
     public function render()
     {
-        $sortedTracks = Track::query()->where('status', '<=', $this->status->id)->orderByDesc('id')->paginate(50);
+        $sortedTracks = Track::query()->whereIn('status', $this->prevStatuses->pluck('id'))->orderByDesc('id')->paginate(50);
 
         $this->region = session()->get('jRegion');
         $this->setRegionId = session()->get('jRegion')->id;
@@ -109,7 +109,7 @@ class SendLocally extends Component
         if (strlen($this->search) >= 4) {
             $tracks = Track::query()
                 ->orderByDesc('id')
-                ->where('status', $this->status->id)
+                ->whereIn('status', $this->prevStatuses->pluck('id'))
                 ->where('code', 'like', '%'.$this->search.'%')
                 ->paginate(10);
         }
