@@ -33,8 +33,8 @@ class Giving extends Component
 
         $this->lang = app()->getLocale();
         $this->status = Status::select('id', 'slug')
-            ->where('slug', 'sent-locally')
-            ->orWhere('sort_id', 6)
+            ->where('slug', 'arrived')
+            ->orWhere('id', 5)
             ->first();
 
         if (!session()->has('jRegion')) {
@@ -56,7 +56,7 @@ class Giving extends Component
 
         $statusGiven = Status::select('id', 'slug')
             ->where('slug', 'giving')
-            ->orWhere('id', 7)
+            ->orWhere('id', 6)
             ->first();
 
         $track = Track::where('code', $this->trackCode)->first();
@@ -118,7 +118,7 @@ class Giving extends Component
 
     public function render()
     {
-        $sentLocallyTracks = Track::query()->where('status', $this->status->id)->orderByDesc('id')->paginate(50);
+        $arrivedTracks = Track::query()->where('status', $this->status->id)->orderByDesc('id')->paginate(50);
 
         $this->region = session()->get('jRegion');
         $this->setRegionId = session()->get('jRegion')->id;
@@ -144,7 +144,7 @@ class Giving extends Component
         return view('livewire.storage.giving', [
                 'tracks' => $tracks,
                 'users' => $users,
-                'sentLocallyTracks' => $sentLocallyTracks,
+                'arrivedTracks' => $arrivedTracks,
                 'regions' => Region::descendantsAndSelf(1)->toTree(),
             ])->layout('livewire.storage.layout');
     }

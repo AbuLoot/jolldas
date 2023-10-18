@@ -159,7 +159,7 @@
           </div>
         @endif
 
-        @foreach($sentLocallyTracks as $track)
+        @foreach($arrivedTracks as $track)
           <div class="track-item mb-2">
             <?php
               $activeStatus = $track->statuses->last();
@@ -221,7 +221,7 @@
         @endforeach
         <br>
         <nav aria-label="Page navigation">
-          {{ $sentLocallyTracks->links() }}
+          {{ $arrivedTracks->links() }}
         </nav>
       </div>
     </div>

@@ -82,12 +82,9 @@
     <div class="row">
       <div class="col-12 col-sm-4 mb-2">
         <form wire:submit.prevent="toSendLocally">
-          <div class="input-group @error('trackCode') has-validation @enderror mb-3">
-            <div class="form-floating @error('trackCode') is-invalid @enderror">
-              <input wire:model.defer="trackCode" type="text" class="form-control form-control-lg" placeholder="Add track-code" id="trackCodeArea">
-              <label for="trackCodeArea">Enter track code</label>
-            </div>
-            <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalUploadDoc"><i class="bi bi-file-earmark-arrow-up-fill"></i> </button>
+          <div class="form-floating mb-3">
+            <input wire:model.defer="trackCode" type="text" class="form-control form-control-lg @error('trackCode') is-invalid @enderror" placeholder="Add track-code" id="trackCodeArea">
+            <label for="trackCodeArea">Enter track code</label>
             @error('trackCode')<div class="invalid-feedback">{{ $message }}</div>@enderror
           </div>
 
@@ -114,19 +111,7 @@
       </div>
       <div class="col-12 col-sm-8">
 
-        @if (session('result'))
-          <div class="alert alert-info">
-            <h4>Total tracks count: {{ session('result')['totalTracksCount'] }}pcs</h4>
-            <h4>Arrived tracks count: {{ session('result')['arrivedTracksCount'] }}pcs</h4>
-            <h4>Existent tracks count: {{ session('result')['existentTracksCount'] }}pcs</h4>
-            <?php session()->forget('result'); ?>
-            <div>
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-          </div>
-        @endif
-
-        @foreach($arrivedTracks as $track)
+        @foreach($sortedTracks as $track)
           <div class="track-item mb-2">
             <?php
               $activeStatus = $track->statuses->last();
@@ -182,7 +167,7 @@
         @endforeach
         <br>
         <nav aria-label="Page navigation">
-          {{ $arrivedTracks->links() }}
+          {{ $sortedTracks->links() }}
         </nav>
       </div>
     </div>

@@ -29,8 +29,8 @@ class SendLocally extends Component
 
         $this->lang = app()->getLocale();
         $this->status = Status::select('id', 'slug')
-            ->where('slug', 'arrived')
-            ->orWhere('id', 5)
+            ->where('slug', 'sorted')
+            ->orWhere('id', 4)
             ->first();
 
         if (!session()->has('jRegion')) {
@@ -99,7 +99,7 @@ class SendLocally extends Component
 
     public function render()
     {
-        $arrivedTracks = Track::query()->where('status', $this->status->id)->orderByDesc('id')->paginate(50);
+        $sortedTracks = Track::query()->where('status', '<=', $this->status->id)->orderByDesc('id')->paginate(50);
 
         $this->region = session()->get('jRegion');
         $this->setRegionId = session()->get('jRegion')->id;
@@ -116,7 +116,7 @@ class SendLocally extends Component
 
         return view('livewire.storage.send-locally', [
                 'tracks' => $tracks,
-                'arrivedTracks' => $arrivedTracks,
+                'sortedTracks' => $sortedTracks,
                 'regions' => Region::descendantsAndSelf(1)->toTree(),
             ])
             ->layout('livewire.storage.layout');

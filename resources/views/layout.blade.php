@@ -23,7 +23,7 @@
   <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="/node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
   <link href="/css/offcanvas.css" rel="stylesheet">
-  <link href="/css/custom-15.css" rel="stylesheet">
+  <link href="/css/custom-18.css" rel="stylesheet">
 
   @yield('head')
 

@@ -25,7 +25,7 @@
   <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="/node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
   <link href="/css/offcanvas.css" rel="stylesheet">
-  <link href="/css/custom-15.css" rel="stylesheet">
+  <link href="/css/custom-18.css" rel="stylesheet">
 
   @livewireStyles
 </head>
@@ -54,17 +54,17 @@
               <a class="nav-link px-3" href="/{{ $lang }}/storage/sending">Sending</a>
             </li>
           @endcanany
-          @can('sorting', Auth::user())
+          @canany(['sorting', 'send-locally'], Auth::user())
             <li class="nav-item">
               <a class="nav-link px-3" href="/{{ $lang }}/storage/sorting"><i class="bi bi-dpad"></i> Sorting</a>
             </li>
-          @endcan
-          @canany(['arrival', 'send-locally', 'giving'], Auth::user())
-            <li class="nav-item">
-              <a class="nav-link px-3" href="/{{ $lang }}/storage/arrival">Arrival</a>
-            </li>
             <li class="nav-item">
               <a class="nav-link px-3" href="/{{ $lang }}/storage/send-locally">Send Locally</a>
+            </li>
+          @endcanany
+          @canany(['arrival', 'giving'], Auth::user())
+            <li class="nav-item">
+              <a class="nav-link px-3" href="/{{ $lang }}/storage/arrival">Arrival</a>
             </li>
             <li class="nav-item">
               <a class="nav-link px-3" href="/{{ $lang }}/storage/giving">Giving</a>
