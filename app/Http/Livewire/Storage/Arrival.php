@@ -134,13 +134,13 @@ class Arrival extends Component
             $newTrack->text = $this->text;
             $newTrack->save();
 
-            $this->text = null;
             $track = $newTrack;
         }
 
         if ($track->status >= $statusArrived->id AND $track->status != 7) {
             $this->addError('trackCode', 'Track '.$this->trackCode.' arrived');
             $this->trackCode = null;
+            $this->text = null;
             return;
         }
 
@@ -153,6 +153,7 @@ class Arrival extends Component
         $trackStatus->save();
 
         $track->user_id = session('arrivalToUser')->id ?? $track->user_id;
+        $track->text = $this->text;
         $track->status = $statusArrived->id;
         $track->save();
 
@@ -161,6 +162,7 @@ class Arrival extends Component
         }
 
         $this->trackCode = null;
+        $this->text = null;
         $this->dispatchBrowserEvent('area-focus');
     }
 

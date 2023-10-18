@@ -70,13 +70,13 @@ class Giving extends Component
             $newTrack->text = $this->text;
             $newTrack->save();
 
-            $this->text = null;
             $track = $newTrack;
         }
 
         if ($track->status >= $statusGiven->id AND $track->status != 7) {
             $this->addError('trackCode', 'Track '.$this->trackCode.' given');
             $this->trackCode = null;
+            $this->text = null;
             return;
         }
 
@@ -90,9 +90,11 @@ class Giving extends Component
 
         $track->user_id = session('givingToUser')->id ?? $track->user_id;
         $track->status = $statusGiven->id;
+        $track->text = $this->text;
         $track->save();
 
         $this->trackCode = null;
+        $this->text = null;
         $this->dispatchBrowserEvent('area-focus');
     }
 
