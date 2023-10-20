@@ -31,7 +31,7 @@
                 </div>
                 <div class="col-12 col-lg-4">
                   <div><b>{{ ucfirst($activeStatus->slug) }} Date:</b> {{ $activeStatus->pivot->created_at }}</div>
-                  <div><b>Status:</b> {{ $activeStatus->title }} {{ $arrivedRegion }}</div>
+                  <div><b>Status: <i class="bi bi-person-check-fill"></i></b> {{ $activeStatus->title }} {{ $arrivedRegion }}</div>
                 </div>
                 @if($track->user) 
                   <div class="col-12 col-lg-3">
@@ -175,7 +175,7 @@
                 </div>
                 <div class="col-12 col-lg-6">
                   <div><b>{{ ucfirst($activeStatus->slug) }} Date:</b> {{ $activeStatus->pivot->created_at }}</div>
-                  <div><b>Status:</b> {{ $activeStatus->title }} {{ $arrivedRegion }}</div>
+                  <div><b>Status: <i class="bi bi-person-check-fill"></i></b> {{ $activeStatus->title }} {{ $arrivedRegion }}</div>
                 </div>
                 @if($track->user)
                   <div class="col-12 col-lg-12">

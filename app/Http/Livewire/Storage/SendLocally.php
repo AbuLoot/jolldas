@@ -49,7 +49,7 @@ class SendLocally extends Component
 
         $statusSentLocally = Status::select('id', 'slug')
             ->where('slug', 'sent-locally')
-            ->orWhere('id', 7)
+            ->orWhere('id', 5)
             ->first();
 
         $track = Track::where('code', $this->trackCode)->first();

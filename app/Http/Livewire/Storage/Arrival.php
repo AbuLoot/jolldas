@@ -81,7 +81,7 @@ class Arrival extends Component
         $tracks = $this->allArrivedTracks->whereIn('id', $ids);
 
         $statusArrived = Status::where('slug', 'arrived')
-            ->orWhere('id', 5)
+            ->orWhere('id', 6)
             ->select('id', 'slug')
             ->first();
 
@@ -120,7 +120,7 @@ class Arrival extends Component
 
         $statusArrived = Status::select('id', 'slug')
             ->where('slug', 'arrived')
-            ->orWhere('id', 5)
+            ->orWhere('id', 6)
             ->first();
 
         $track = Track::where('code', $this->trackCode)->first();

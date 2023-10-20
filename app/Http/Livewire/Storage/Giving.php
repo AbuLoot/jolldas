@@ -56,7 +56,7 @@ class Giving extends Component
 
         $statusGiven = Status::select('id', 'slug')
             ->where('slug', 'giving')
-            ->orWhere('id', 6)
+            ->orWhere('id', 7)
             ->first();
 
         $track = Track::where('code', $this->trackCode)->first();
