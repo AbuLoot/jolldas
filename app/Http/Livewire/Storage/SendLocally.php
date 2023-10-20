@@ -4,14 +4,12 @@ namespace App\Http\Livewire\Storage;
 
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
+use Rap2hpoutre\FastExcel\FastExcel;
 
-use App\Models\User;
 use App\Models\Region;
 use App\Models\Track;
 use App\Models\Status;
 use App\Models\TrackStatus;
-
-use App\Jobs\SendMailNotification;
 
 class SendLocally extends Component
 {
@@ -28,10 +26,10 @@ class SendLocally extends Component
         }
 
         $this->lang = app()->getLocale();
-        $this->prevStatuses = Status::select('id', 'slug')
-            ->whereIn('slug', ['sent', 'sorted'])
-            ->orWhere('id', [3, 4])
-            ->get();
+        $this->status = Status::select('id', 'slug')
+            ->where('slug', 'sent-locally')
+            ->orWhere('id', 5)
+            ->first();
 
         if (!session()->has('jRegion')) {
             $region = auth()->user()->region()->first() ?? Region::where('slug', 'kazakhstan')->orWhere('id', 1)->first();
@@ -99,7 +97,7 @@ class SendLocally extends Component
 
     public function render()
     {
-        $sortedTracks = Track::query()->whereIn('status', $this->prevStatuses->pluck('id'))->orderByDesc('id')->paginate(50);
+        $sentLocallyTracks = Track::query()->where('status', $this->status->id)->orderByDesc('updated_at')->paginate(50);
 
         $this->region = session()->get('jRegion');
         $this->setRegionId = session()->get('jRegion')->id;
@@ -108,15 +106,15 @@ class SendLocally extends Component
 
         if (strlen($this->search) >= 4) {
             $tracks = Track::query()
-                ->orderByDesc('id')
-                ->whereIn('status', $this->prevStatuses->pluck('id'))
+                ->orderByDesc('updated_at')
+                ->where('status', $this->status->id)
                 ->where('code', 'like', '%'.$this->search.'%')
                 ->paginate(10);
         }
 
         return view('livewire.storage.send-locally', [
                 'tracks' => $tracks,
-                'sortedTracks' => $sortedTracks,
+                'sentLocallyTracks' => $sentLocallyTracks,
                 'regions' => Region::descendantsAndSelf(1)->toTree(),
             ])
             ->layout('livewire.storage.layout');

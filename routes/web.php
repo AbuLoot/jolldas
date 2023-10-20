@@ -117,6 +117,7 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth', 'roles:admin|
     Route::get('reception-tracks', [TrackExtensionController::class, 'receptionTracks']);
     Route::get('arrival-tracks', [TrackExtensionController::class, 'arrivalTracks']);
     Route::post('upload-tracks', [TrackExtensionController::class, 'uploadTracks']);
+    Route::post('export-tracks', [TrackExtensionController::class, 'exportTracks']);
 
     // Content
     Route::get('categories-actions', [CategoryController::class, 'actionCategories']);

@@ -99,7 +99,7 @@ class Reception extends Component
     public function render()
     {
         $tracks = Track::query()
-            ->orderByDesc('id')
+            ->orderByDesc('updated_at')
             ->where('status', 2)
             ->when((strlen($this->search) >= 4), function($query) {
                 $query->where('code', 'like', '%'.$this->search.'%');

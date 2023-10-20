@@ -31,7 +31,7 @@ class TrackExtensionController extends Controller
         $request->tracksDoc->storeAs('files', $docName);
 
         $trackCodes = (new FastExcel)->import('files/'.$docName, function($line) {
-            return $line['code'];
+            return $line['Code'] ?? $line['code'];
         });
 
         if ($request->storageStage == 'reception') {
@@ -47,6 +47,39 @@ class TrackExtensionController extends Controller
         Storage::delete('files/'.$docName);
 
         return redirect()->back()->with(['result' => $result]);
+    }
+
+    public function exportTracks(Request $request)
+    {
+        $startDate = $request->startDate ?? date('Y-m-d');
+        $endDate = $request->endDate ?? date('Y-m-d');
+
+        $statusSentLocally = Status::select('id', 'slug')
+            ->where('slug', 'sent-locally')
+            ->orWhere('id', 7)
+            ->first();
+
+        $sentLocallyTracks = Track::query()
+            ->where('status', $statusSentLocally->id)
+            ->where('updated_at', '>=', $startDate.' 00:00:01')
+            ->where('updated_at', '<=', $endDate.' 23:59:59')
+            ->get();
+
+        $listTracks = [];
+
+        $sentLocallyTracks->each(function ($item) use (&$listTracks) {
+            $listTracks[] = [
+                'Code' => $item->code,
+                'Description' => $item->description,
+                'Text' => $item->text,
+            ];
+        });
+
+        $listTracks = collect($listTracks);
+
+        $docName = 'Sent locally. Start '.$startDate.' End '.$endDate;
+
+        return (new FastExcel($listTracks))->download($docName.'.xlsx');
     }
 
     public function receptionTracks()
@@ -156,14 +189,20 @@ class TrackExtensionController extends Controller
     public function toArriveTracks($trackCodes)
     {
         $statusArrived = Status::where('slug', 'arrived')
-            ->orWhere('id', 5)
+            ->orWhere('id', 6)
             ->select('id', 'slug')
             ->first();
 
         $uniqueTrackCodes = collect($trackCodes)->unique();
 
         // Track::whereIn('code', $trackCodes)->where('status', '<', $statusArrived->id)->get();
-        $existentTracks = Track::where('status', '<=', $statusArrived->id)->whereIn('code', $uniqueTrackCodes)->get();
+
+        // Get existent tracks
+        $existentTracks = Track::query()
+                ->where('status', '<=', $statusArrived->id)
+                ->whereIn('code', $uniqueTrackCodes)
+                ->get();
+
         $unarrivedTracks = $existentTracks->where('status', '<', $statusArrived->id);
         $unarrivedTracksStatus = [];
 
@@ -232,7 +271,7 @@ class TrackExtensionController extends Controller
     public function toGiveTracks($trackCodes)
     {
         $statusGiven = Status::where('slug', 'given')
-            ->orWhere('id', 6)
+            ->orWhere('id', 7)
             ->select('id', 'slug')
             ->first();
 

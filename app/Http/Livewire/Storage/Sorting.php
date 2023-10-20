@@ -16,10 +16,10 @@ class Sorting extends Component
     public $search;
     public $region;
     public $mode = 'list';
-    public $prevStatuses = [];
+    public $status = [];
     public $trackCode;
     public $trackCodes = [];
-    public $allSentTracks = [];
+    public $allSortedTracks = [];
 
     protected $rules = [
         'trackCode' => 'required|string|min:10|max:20',
@@ -32,10 +32,10 @@ class Sorting extends Component
         }
 
         $this->lang = app()->getLocale();
-        $this->prevStatuses = Status::select('id', 'slug')
-            ->whereIn('slug', ['reception', 'sent'])
-            ->orWhere('id', [2, 3])
-            ->get();
+        $this->status = Status::select('id', 'slug')
+            ->where('slug', 'sorting')
+            ->orWhere('id', 4)
+            ->first();
 
         if (!session()->has('jRegion')) {
             $region = auth()->user()->region()->first() ?? Region::where('slug', 'kazakhstan')->orWhere('id', 1)->first();
@@ -45,20 +45,20 @@ class Sorting extends Component
 
     public function getTracksIdByDate($dateFrom, $dateTo)
     {
-        $sentTracks = $this->allSentTracks;
+        $sortedTracks = $this->allSortedTracks;
 
-        $tracks = $sentTracks->when($dateTo, function ($sentTracks) use ($dateFrom, $dateTo) {
+        $tracks = $sortedTracks->when($dateTo, function ($sortedTracks) use ($dateFrom, $dateTo) {
 
                 // If tracks added today
                 if ($dateTo == now()->format('Y-m-d H-i')) {
-                    return $sentTracks->where('updated_at', '>', $dateFrom.' 23:59:59')->where('updated_at', '<=', now());
+                    return $sortedTracks->where('updated_at', '>', $dateFrom.' 23:59:59')->where('updated_at', '<=', now());
                 }
 
-                return $sentTracks->where('updated_at', '>', $dateFrom)->where('updated_at', '<', $dateTo);
+                return $sortedTracks->where('updated_at', '>', $dateFrom)->where('updated_at', '<', $dateTo);
 
-            }, function ($sentTracks) use ($dateFrom) {
+            }, function ($sortedTracks) use ($dateFrom) {
 
-                return $sentTracks->where('updated_at', '<', $dateFrom);
+                return $sortedTracks->where('updated_at', '<', $dateFrom);
             });
 
         return $tracks->pluck('id')->toArray();
@@ -68,7 +68,7 @@ class Sorting extends Component
     {
         $ids = $this->getTracksIdByDate($dateFrom, $dateTo);
 
-        $this->trackCodes = $this->allSentTracks->whereIn('id', $ids)->sortByDesc('id');
+        $this->trackCodes = $this->allSortedTracks->whereIn('id', $ids)->sortByDesc('id');
 
         $this->dispatchBrowserEvent('open-modal');
     }
@@ -77,7 +77,7 @@ class Sorting extends Component
     {
         $ids = $this->getTracksIdByDate($dateFrom, $dateTo);
 
-        $tracks = $this->allSentTracks->whereIn('id', $ids);
+        $tracks = $this->allSortedTracks->whereIn('id', $ids);
 
         $statusSorted = Status::where('slug', 'sorted')
             ->orWhere('id', 4)
@@ -172,10 +172,10 @@ class Sorting extends Component
     public function render()
     {
         if ($this->mode == 'list') {
-            $sentTracks = Track::query()->whereIn('status', $this->prevStatuses->pluck('id'))->orderByDesc('id')->paginate(50);
+            $sortedTracks = Track::query()->where('status', $this->status->id)->orderByDesc('updated_at')->paginate(50);
         } else {
-            $sentTracks = Track::query()->whereIn('status', $this->prevStatuses->pluck('id'))->orderByDesc('id')->get();
-            $this->allSentTracks = $sentTracks;
+            $sortedTracks = Track::query()->where('status', $this->status->id)->orderByDesc('updated_at')->get();
+            $this->allSortedTracks = $sortedTracks;
         }
 
         $this->region = session()->get('jRegion');
@@ -185,15 +185,15 @@ class Sorting extends Component
 
         if (strlen($this->search) >= 4) {
             $tracks = Track::query()
-                ->orderByDesc('id')
-                ->whereIn('status', $this->prevStatuses->pluck('id'))
+                ->orderByDesc('updated_at')
+                ->where('status', $this->status->id)
                 ->where('code', 'like', '%'.$this->search.'%')
                 ->paginate(10);
         }
 
         return view('livewire.storage.sorting', [
                 'tracks' => $tracks,
-                'sentTracks' => $sentTracks,
+                'sortedTracks' => $sortedTracks,
                 'regions' => Region::descendantsAndSelf(1)->toTree(),
             ])
             ->layout('livewire.storage.layout');

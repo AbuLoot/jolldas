@@ -33,8 +33,8 @@ class Giving extends Component
 
         $this->lang = app()->getLocale();
         $this->status = Status::select('id', 'slug')
-            ->where('slug', 'arrived')
-            ->orWhere('id', 5)
+            ->where('slug', 'given')
+            ->orWhere('id', 7)
             ->first();
 
         if (!session()->has('jRegion')) {

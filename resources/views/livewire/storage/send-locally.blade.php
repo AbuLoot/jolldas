@@ -5,9 +5,29 @@
 
       <h4 class="col-12 col-lg-4 mb-md-2 mb-lg-0">Search</h4>
 
-      <form class="col-12 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
+      <form class="col-10 col-lg-4 mb-md-2 mb-lg-0 me-lg-auto">
         <input wire:model="search" type="search" class="form-control form-control-lg" placeholder="Enter track code..." aria-label="Search">
       </form>
+
+      <div class="col-2 col-lg-4 mb-md-2 mb-lg-0 ms-lg-auto text-end">
+        <div class="dropdown">
+          <button class="btn btn-outline-primary btn-lg dropdown-toggle-" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-file-earmark-arrow-down me-sm-2"></i> <span class="d-none d-md-inline">Export</span>
+          </button>
+          <form method="POST" action="/{{ $lang }}/admin/export-tracks" class="dropdown-menu dropdown-menu-end p-4">
+            @csrf
+            <div class="mb-3">
+              <label class="form-label">Start</label>
+              <input type="date" name="startDate" class="form-control form-control-lg" value="" placeholder="yyyy-mm-dd" data-date-format="yyyy-mm-dd">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">End</label>
+              <input type="date" name="endDate" class="form-control form-control-lg" value="" placeholder="yyyy-mm-dd" data-date-format="yyyy-mm-dd">
+            </div>
+            <button type="submit" wire:loading.attr="disabled" class="btn btn-primary btn-lg"><i class="bi bi-file-earmark-arrow-down me-sm-2"></i> Export doc</button>
+          </form>
+        </div>
+      </div>
 
     </div>
   </div>
@@ -111,7 +131,7 @@
       </div>
       <div class="col-12 col-sm-8">
 
-        @foreach($sortedTracks as $track)
+        @foreach($sentLocallyTracks as $track)
           <div class="track-item mb-2">
             <?php
               $activeStatus = $track->statuses->last();
@@ -167,7 +187,7 @@
         @endforeach
         <br>
         <nav aria-label="Page navigation">
-          {{ $sortedTracks->links() }}
+          {{ $sentLocallyTracks->links() }}
         </nav>
       </div>
     </div>

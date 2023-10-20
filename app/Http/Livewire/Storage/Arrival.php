@@ -23,7 +23,7 @@ class Arrival extends Component
     public $idClient = 'J7799';
     public $trackCode;
     public $trackCodes = [];
-    public $allSentLocallyTracks = [];
+    public $allArrivedTracks = [];
     public $text;
 
     public function mount()
@@ -34,8 +34,8 @@ class Arrival extends Component
 
         $this->lang = app()->getLocale();
         $this->status = Status::select('id', 'slug')
-            ->where('slug', 'sent-locally')
-            ->orWhere('id', 7)
+            ->where('slug', 'arrived')
+            ->orWhere('id', 6)
             ->first();
 
         if (!session()->has('jRegion')) {
@@ -46,20 +46,20 @@ class Arrival extends Component
 
     public function getTracksIdByDate($dateFrom, $dateTo)
     {
-        $sentLocallyTracks = $this->allSentLocallyTracks;
+        $arrivedTracks = $this->allArrivedTracks;
 
-        $tracks = $sentLocallyTracks->when($dateTo, function ($sentLocallyTracks) use ($dateFrom, $dateTo) {
+        $tracks = $arrivedTracks->when($dateTo, function ($arrivedTracks) use ($dateFrom, $dateTo) {
 
                 // If tracks added today
                 if ($dateTo == now()->format('Y-m-d H-i')) {
-                    return $sentLocallyTracks->where('updated_at', '>', $dateFrom.' 23:59:59')->where('updated_at', '<=', now());
+                    return $arrivedTracks->where('updated_at', '>', $dateFrom.' 23:59:59')->where('updated_at', '<=', now());
                 }
 
-                return $sentLocallyTracks->where('updated_at', '>', $dateFrom)->where('updated_at', '<', $dateTo);
+                return $arrivedTracks->where('updated_at', '>', $dateFrom)->where('updated_at', '<', $dateTo);
 
-            }, function ($sentLocallyTracks) use ($dateFrom) {
+            }, function ($arrivedTracks) use ($dateFrom) {
 
-                return $sentLocallyTracks->where('updated_at', '<', $dateFrom);
+                return $arrivedTracks->where('updated_at', '<', $dateFrom);
             });
 
         return $tracks->pluck('id')->toArray();
@@ -69,7 +69,7 @@ class Arrival extends Component
     {
         $ids = $this->getTracksIdByDate($dateFrom, $dateTo);
 
-        $this->trackCodes = $this->allSentLocallyTracks->whereIn('id', $ids)->sortByDesc('id');
+        $this->trackCodes = $this->allArrivedTracks->whereIn('id', $ids)->sortByDesc('id');
 
         $this->dispatchBrowserEvent('open-modal');
     }
@@ -78,7 +78,7 @@ class Arrival extends Component
     {
         $ids = $this->getTracksIdByDate($dateFrom, $dateTo);
 
-        $tracks = $this->allSentLocallyTracks->whereIn('id', $ids);
+        $tracks = $this->allArrivedTracks->whereIn('id', $ids);
 
         $statusArrived = Status::where('slug', 'arrived')
             ->orWhere('id', 5)
@@ -195,10 +195,10 @@ class Arrival extends Component
     public function render()
     {
         if ($this->mode == 'list') {
-            $sentLocallyTracks = Track::query()->where('status', $this->status->id)->orderByDesc('id')->paginate(50);
+            $arrivedTracks = Track::query()->where('status', $this->status->id)->orderByDesc('updated_at')->paginate(50);
         } else {
-            $sentLocallyTracks = Track::query()->where('status', $this->status->id)->orderByDesc('id')->get();
-            $this->allSentLocallyTracks = $sentLocallyTracks;
+            $arrivedTracks = Track::query()->where('status', $this->status->id)->orderByDesc('updated_at')->get();
+            $this->allArrivedTracks = $arrivedTracks;
         }
 
         $this->region = session()->get('jRegion');
@@ -209,7 +209,7 @@ class Arrival extends Component
 
         if (strlen($this->search) >= 4) {
             $tracks = Track::query()
-                ->orderByDesc('id')
+                ->orderByDesc('updated_at')
                 ->where('status', $this->status->id)
                 ->where('code', 'like', '%'.$this->search.'%')
                 ->paginate(10);
@@ -225,7 +225,7 @@ class Arrival extends Component
         return view('livewire.storage.arrival', [
                 'tracks' => $tracks,
                 'users' => $users,
-                'sentLocallyTracks' => $sentLocallyTracks,
+                'arrivedTracks' => $arrivedTracks,
                 'regions' => Region::descendantsAndSelf(1)->toTree(),
             ])
             ->layout('livewire.storage.layout');
