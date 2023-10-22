@@ -137,7 +137,7 @@ class Arrival extends Component
             $track = $newTrack;
         }
 
-        if ($track->status >= $statusArrived->id AND $track->status != 7) {
+        if ($track->status >= $statusArrived->id) {
             $this->addError('trackCode', 'Track '.$this->trackCode.' arrived');
             $this->trackCode = null;
             $this->text = null;

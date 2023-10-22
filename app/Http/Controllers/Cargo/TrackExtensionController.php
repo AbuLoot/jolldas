@@ -59,8 +59,14 @@ class TrackExtensionController extends Controller
             ->orWhere('id', 7)
             ->first();
 
+        $regionId = session()->get('jRegion')->id;
+        $regionName = ucfirst(session()->get('jRegion')->slug);
+
         $sentLocallyTracks = Track::query()
             ->where('status', $statusSentLocally->id)
+            ->whereHas('statuses', function($query) use ($regionId) {
+                $query->where('region_id', $regionId);
+            })
             ->where('updated_at', '>=', $startDate.' 00:00:01')
             ->where('updated_at', '<=', $endDate.' 23:59:59')
             ->get();
@@ -77,7 +83,7 @@ class TrackExtensionController extends Controller
 
         $listTracks = collect($listTracks);
 
-        $docName = 'Sent locally. Start '.$startDate.' End '.$endDate;
+        $docName = 'Sent locally to '.$regionName.'. Start '.$startDate.' End '.$endDate;
 
         return (new FastExcel($listTracks))->download($docName.'.xlsx');
     }

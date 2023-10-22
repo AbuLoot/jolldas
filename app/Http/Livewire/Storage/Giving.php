@@ -73,7 +73,7 @@ class Giving extends Component
             $track = $newTrack;
         }
 
-        if ($track->status >= $statusGiven->id AND $track->status != 7) {
+        if ($track->status >= $statusGiven->id) {
             $this->addError('trackCode', 'Track '.$this->trackCode.' given');
             $this->trackCode = null;
             $this->text = null;
