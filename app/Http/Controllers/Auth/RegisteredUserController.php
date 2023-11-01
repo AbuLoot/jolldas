@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
-
+use Illuminate\Support\Facades\Validator;
 use Str;
 
 class RegisteredUserController extends Controller
@@ -36,18 +36,41 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'lastname' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'tel' => ['required', 'string', 'min:8', 'max:15', 'unique:users'],
-            'region_id' => ['required', 'integer'],
-            'address' => ['required', 'string'],
-            'id_client' => ['max:20'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+        // $request->validate([
+        //     'name' => ['required', 'string', 'max:255'],
+        //     'lastname' => ['required', 'string', 'max:255'],
+        //     'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+        //     'tel' => ['required', 'string', 'min:10', 'max:14', 'unique:users'],
+        //     'region_id' => ['required', 'integer'],
+        //     'address' => ['required', 'string'],
+        //     'id_client' => ['max:20', 'unique:users'],
+        //     'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        // ]);
 
         $region = Region::find($request->region_id);
+
+        // If is Kazakhstan
+        if ($region->parent_id == 1) {
+
+            $tel = str_replace(' ', '', $request->tel);
+            $length = strlen($tel);
+
+            if ($length < 10 || $length > 12) {
+                return redirect()->back()->withInput()->withErrors([
+                        __('validation.between.string', ['attribute' => 'tel', 'min' => '10', 'max' => '12'])
+                    ]);
+            }
+
+            $symbols = substr($tel, 0, 2);
+
+            $validTel = match ($symbols) {
+                '+7' => $tel,
+                '87' => substr_replace($tel, '+7', 0, -10),
+                '70' => substr_replace($tel, '+7', 0, -10),
+                '74' => substr_replace($tel, '+7', 0, -10),
+                default => substr_replace($tel, '+7', 0, -10),
+            };
+        }
 
         $idClient = 'J7799'.substr($region->slug, 0, 3).substr($request->tel, -5);
         $idClient = Str::upper($idClient);
@@ -56,7 +79,7 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'lastname' => $request->lastname,
             'email' => $request->email,
-            'tel' => $request->tel,
+            'tel' => $validTel,
             'id_client' => $idClient,
             'region_id' => $request->region_id,
             'address' => $request->address,

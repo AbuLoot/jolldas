@@ -6,13 +6,10 @@
   <title>Новые обновления на вашем аккаунте</title>
 </head>
 <body>
-
-  <h2>Новые обновления на вашем аккаунте.</h2>
+  <h1>Jolldas Cargo</h1>
   <h2>Поступили новые товары на склад.</h2>
   <h4>Дата: <?php echo date('Y-m-d'); ?></h4><br>
   <h4>Время: <?php echo date('G:i'); ?></h4>
-
   <p><a href="https://jolldas.kz/">www.jolldas.kz</a></p>
-
 </body>
 </html>

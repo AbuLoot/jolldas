@@ -121,10 +121,10 @@ class Giving extends Component
 
     public function render()
     {
-        $arrivedTracks = Track::query()->where('status', $this->status->id)->orderByDesc('id')->paginate(50);
-
         $this->region = session()->get('jRegion');
         $this->setRegionId = session()->get('jRegion')->id;
+
+        $arrivedTracks = Track::query()->where('status', $this->status->id)->orderByDesc('id')->paginate(50);
 
         $tracks = [];
         $users = [];

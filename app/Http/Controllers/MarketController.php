@@ -12,7 +12,6 @@ use URL;
 use App\Models\Page;
 use App\Models\Mode;
 use App\Models\Post;
-use App\Models\Banner;
 use App\Models\Product;
 use App\Models\Section;
 use App\Models\Comment;

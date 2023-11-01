@@ -80,22 +80,6 @@ class Reception extends Component
         $this->dispatchBrowserEvent('area-focus');
     }
 
-    public function uploadDoc(Request $request)
-    {
-        $this->validate([
-            'tracksDoc' => 'required|mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        ]);
-
-        // dd($request->file('tracksDoc'));
-
-        $tracksDoc = (new FastExcel)->import('tracksDoc', function($line) {
-            dd($line);
-            // return = [
-                // 'code' => 
-            // ];
-        });
-    }
-
     public function render()
     {
         $tracks = Track::query()

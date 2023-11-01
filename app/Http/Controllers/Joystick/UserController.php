@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Joystick\Controller;
 
+use Rap2hpoutre\FastExcel\FastExcel;
+
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Profile;
@@ -66,6 +68,52 @@ class UserController extends Controller
         }
 
         return response()->json($products);
+    }
+
+    public function correctionTels()
+    {
+        $users = User::all();
+        $regionKz = Region::where('slug', 'kazakhstan')->first();
+        $uncorrectUsersTel = [];
+
+        foreach ($users as $user) {
+
+            // If is Kazakhstan
+            if ($regionKz->ancestorsOf($user->region_id)) {
+
+                $tel = str_replace(' ', '', $user->tel);
+                $length = strlen($tel);
+
+                if ($length < 10 || $length > 12) {
+
+                    $uncorrectUsersTel[] = [
+                        'Tel' => $tel,
+                        'ID client' => $user->id_client,
+                        'User' => $user->name.' '.$user->lastname,
+                        'Tracks Count' => $user->tracks->count(),
+                    ];
+                }
+
+                $symbols = substr($tel, 0, 2);
+
+                $validTel = match ($symbols) {
+                    '+7' => $tel,
+                    '87' => substr_replace($tel, '+7', 0, -10),
+                    '70' => substr_replace($tel, '+7', 0, -10),
+                    '74' => substr_replace($tel, '+7', 0, -10),
+                    default => substr_replace($tel, '+7', 0, -10),
+                };
+
+                $user->tel = $validTel;
+                $user->save();
+            }
+        }
+
+        if ($uncorrectUsersTel) {
+            $uncorrectUsersTel = collect($uncorrectUsersTel);
+
+            return (new FastExcel($uncorrectUsersTel))->download('Uncorrect Users Tel.xlsx');
+        }
     }
 
     public function edit($lang, $id)

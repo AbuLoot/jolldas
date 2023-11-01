@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Storage;
 
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 use App\Models\User;
@@ -11,7 +12,8 @@ use App\Models\Track;
 use App\Models\Status;
 use App\Models\TrackStatus;
 
-use App\Jobs\SendMailNotification;
+// use App\Jobs\SendMailNotification;
+use App\Mail\SendMailNotification;
 
 class Arrival extends Component
 {
@@ -104,7 +106,10 @@ class Arrival extends Component
         // Updating Track Status
         Track::whereIn('id', $ids)->update(['status' => $statusArrived->id]);
 
-        SendMailNotification::dispatch($tracksUsers);
+        // SendMailNotification::dispatch($tracksUsers);
+        foreach($tracksUsers as $emailUser) {
+            Mail::to($emailUser)->send(new SendMailNotification());
+        }
     }
 
     public function btnToArrive($trackCode)
@@ -158,7 +163,8 @@ class Arrival extends Component
         $track->save();
 
         if (isset($track->user->email)) {
-            SendMailNotification::dispatch($track->user->email);
+            // SendMailNotification::dispatch($track->user->email);
+            Mail::to($track->user->email)->send(new SendMailNotification());
         }
 
         $this->trackCode = null;
@@ -194,15 +200,15 @@ class Arrival extends Component
 
     public function render()
     {
+        $this->region = session()->get('jRegion');
+        $this->setRegionId = session()->get('jRegion')->id;
+
         if ($this->mode == 'list') {
             $arrivedTracks = Track::query()->where('status', $this->status->id)->orderByDesc('updated_at')->paginate(50);
         } else {
             $arrivedTracks = Track::query()->where('status', $this->status->id)->orderByDesc('updated_at')->get();
             $this->allArrivedTracks = $arrivedTracks;
         }
-
-        $this->region = session()->get('jRegion');
-        $this->setRegionId = session()->get('jRegion')->id;
 
         $tracks = [];
         $users = [];

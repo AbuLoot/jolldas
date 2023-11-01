@@ -70,6 +70,7 @@ Route::group(['prefix' => '/{lang}/storage', 'middleware' => ['auth', 'roles:adm
     Route::get('tracks', Tracks::class);
 });
 
+
 // Joystick Administration
 Route::redirect('admin', '/'.app()->getLocale().'/admin');
 Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth', 'roles:admin|manager|partner']], function () {
@@ -140,6 +141,7 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth', 'roles:admin|
     // Route::get('users/search-ajax', [UserController::class, 'searchAjax']);
     Route::get('users/password/{id}/edit', [UserController::class, 'passwordEdit']);
     Route::put('users/password/{id}', [UserController::class, 'passwordUpdate']);
+    Route::get('users/correction/tels', [UserController::class, 'correctionTels']);
 });
 
 

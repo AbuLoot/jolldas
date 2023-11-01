@@ -97,10 +97,10 @@ class SendLocally extends Component
 
     public function render()
     {
-        $sentLocallyTracks = Track::query()->where('status', $this->status->id)->orderByDesc('updated_at')->paginate(50);
-
         $this->region = session()->get('jRegion');
         $this->setRegionId = session()->get('jRegion')->id;
+
+        $sentLocallyTracks = Track::query()->where('status', $this->status->id)->orderByDesc('updated_at')->paginate(50);
 
         $tracks = [];
 

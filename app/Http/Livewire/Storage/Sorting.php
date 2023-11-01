@@ -41,6 +41,9 @@ class Sorting extends Component
             $region = auth()->user()->region()->first() ?? Region::where('slug', 'kazakhstan')->orWhere('id', 1)->first();
             session()->put('jRegion', $region);
         }
+
+        $this->region = session()->get('jRegion');
+        $this->setRegionId = session()->get('jRegion')->id;
     }
 
     public function getTracksIdByDate($dateFrom, $dateTo)
@@ -177,9 +180,6 @@ class Sorting extends Component
             $sortedTracks = Track::query()->where('status', $this->status->id)->orderByDesc('updated_at')->get();
             $this->allSortedTracks = $sortedTracks;
         }
-
-        $this->region = session()->get('jRegion');
-        $this->setRegionId = session()->get('jRegion')->id;
 
         $tracks = [];
 
