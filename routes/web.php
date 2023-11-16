@@ -41,13 +41,19 @@ use App\Http\Controllers\Cargo\TrackExtensionController;
 
 use App\Http\Livewire\Client\Index as Client;
 use App\Http\Livewire\Client\Archive;
+
+use App\Http\Livewire\Storage\Tracks;
 use App\Http\Livewire\Storage\Reception;
 use App\Http\Livewire\Storage\Sending;
 use App\Http\Livewire\Storage\Sorting;
-use App\Http\Livewire\Storage\Arrival;
 use App\Http\Livewire\Storage\SendLocally;
+use App\Http\Livewire\Storage\Arrival;
 use App\Http\Livewire\Storage\Giving;
-use App\Http\Livewire\Storage\Tracks;
+
+use Illuminate\Support\Facades\Mail;
+// use App\Jobs\SendMailNotification;
+use App\Mail\SendMailNotification;
+
 
 // Client Livewire Routes
 Route::redirect('client', '/'.app()->getLocale().'/client');
@@ -57,19 +63,26 @@ Route::group(['prefix' => '/{lang}/client', 'middleware' => ['auth']], function 
     Route::get('archive', Archive::class);
 });
 
+
 // Storage Livewire Routes
 Route::redirect('storage', '/'.app()->getLocale().'/storage');
 Route::group(['prefix' => '/{lang}/storage', 'middleware' => ['auth', 'roles:admin|storekeeper-first|storekeeper-sorter|storekeeper-last']], function () {
+    Route::get('tracks', Tracks::class);
     Route::get('/', Reception::class);
     Route::get('reception', Reception::class);
     Route::get('sending', Sending::class);
     Route::get('sorting', Sorting::class);
-    Route::get('arrival', Arrival::class);
     Route::get('send-locally', SendLocally::class);
+    Route::get('arrival', Arrival::class);
     Route::get('giving', Giving::class);
-    Route::get('tracks', Tracks::class);
 });
 
+
+Route::get('test-mail', function() {
+
+    Mail::to('issa.adilet@gmail.com')->send(new SendMailNotification());
+
+});
 
 // Joystick Administration
 Route::redirect('admin', '/'.app()->getLocale().'/admin');
