@@ -80,7 +80,11 @@ Route::group(['prefix' => '/{lang}/storage', 'middleware' => ['auth', 'roles:adm
 
 Route::get('test-mail', function() {
 
-    Mail::to('issa.adilet@gmail.com')->send(new SendMailNotification());
+    Mail::to('issayev.adilet@gmail.com')->send(new SendMailNotification());
+
+    // MAIL_MAILER=mailgun
+    // MAILGUN_DOMAIN=sandbox37c4d6318c77485fa00f085ad223bfbf.mailgun.org
+    // MAILGUN_SECRET=a73e583785319628f7df669ec018bf05
 
 });
 
