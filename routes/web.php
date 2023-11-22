@@ -82,10 +82,6 @@ Route::get('test-mail', function() {
 
     Mail::to('issayev.adilet@gmail.com')->send(new SendMailNotification());
 
-    // MAIL_MAILER=mailgun
-    // MAILGUN_DOMAIN=sandbox37c4d6318c77485fa00f085ad223bfbf.mailgun.org
-    // MAILGUN_SECRET=a73e583785319628f7df669ec018bf05
-
 });
 
 // Joystick Administration
