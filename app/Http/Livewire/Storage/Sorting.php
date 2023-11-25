@@ -46,74 +46,6 @@ class Sorting extends Component
         $this->setRegionId = session()->get('jRegion')->id;
     }
 
-    public function getTracksIdByDate($dateFrom, $dateTo)
-    {
-        $sortedTracks = $this->allSortedTracks;
-
-        $tracks = $sortedTracks->when($dateTo, function ($sortedTracks) use ($dateFrom, $dateTo) {
-
-                // If tracks added today
-                if ($dateTo == now()->format('Y-m-d H-i')) {
-                    return $sortedTracks->where('updated_at', '>', $dateFrom.' 23:59:59')->where('updated_at', '<=', now());
-                }
-
-                return $sortedTracks->where('updated_at', '>', $dateFrom)->where('updated_at', '<', $dateTo);
-
-            }, function ($sortedTracks) use ($dateFrom) {
-
-                return $sortedTracks->where('updated_at', '<', $dateFrom);
-            });
-
-        return $tracks->pluck('id')->toArray();
-    }
-
-    public function openGroupByDate($dateFrom, $dateTo)
-    {
-        $ids = $this->getTracksIdByDate($dateFrom, $dateTo);
-
-        $this->trackCodes = $this->allSortedTracks->whereIn('id', $ids)->sortByDesc('id');
-
-        $this->dispatchBrowserEvent('open-modal');
-    }
-
-    public function groupSortedByDate($dateFrom, $dateTo)
-    {
-        $ids = $this->getTracksIdByDate($dateFrom, $dateTo);
-
-        $tracks = $this->allSortedTracks->whereIn('id', $ids);
-
-        $statusSorted = Status::where('slug', 'sorted')
-            ->orWhere('id', 4)
-            ->select('id', 'slug')
-            ->first();
-
-        // Creating Track Status
-        $tracksStatus = [];
-        $tracksUsers = [];
-
-        foreach($tracks as $track) {
-            $tracksStatus[] = [
-                'track_id' => $track->id, 'status_id' => $statusSorted->id, 'created_at' => now(), 'updated_at' => now(),
-            ];
-
-            if (isset($track->user->email) && !in_array($track->user->email, $tracksUsers)) {
-                $tracksUsers[] = $track->user->email;
-            }
-        }
-
-        TrackStatus::insert($tracksStatus);
-
-        // Updating Track Status
-        Track::whereIn('id', $ids)->update(['status' => $statusSorted->id]);
-    }
-
-    public function btnToSort($trackCode)
-    {
-        $this->trackCode = $trackCode;
-        $this->toSort();
-        // $this->search = null;
-    }
-
     public function toSort()
     {
         $this->validate();
@@ -157,11 +89,6 @@ class Sorting extends Component
         $this->dispatchBrowserEvent('area-focus');
     }
 
-    public function setMode($mode)
-    {
-        $this->mode = $mode;
-    }
-
     public function setRegionId($id)
     {
         if (! Gate::allows('setting-regions', auth()->user())) {
@@ -174,12 +101,10 @@ class Sorting extends Component
 
     public function render()
     {
-        if ($this->mode == 'list') {
-            $sortedTracks = Track::query()->where('status', $this->status->id)->orderByDesc('updated_at')->paginate(50);
-        } else {
-            $sortedTracks = Track::query()->where('status', $this->status->id)->orderByDesc('updated_at')->get();
-            $this->allSortedTracks = $sortedTracks;
-        }
+        $this->region = session()->get('jRegion');
+        $this->setRegionId = session()->get('jRegion')->id;
+
+        $sortedTracks = Track::query()->where('status', $this->status->id)->orderByDesc('updated_at')->paginate(50);
 
         $tracks = [];
 
