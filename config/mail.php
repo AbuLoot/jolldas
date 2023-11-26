@@ -48,8 +48,8 @@ return [
             'transport' => 'ses',
         ],
 
-        'mailgun' => [
-            'transport' => 'mailgun',
+        'mailersend' => [
+            'transport' => 'mailersend',
         ],
 
         'postmark' => [
