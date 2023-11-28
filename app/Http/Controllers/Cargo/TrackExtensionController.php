@@ -37,6 +37,15 @@ class TrackExtensionController extends Controller
         if ($request->storageStage == 'reception') {
             $result = $this->toReceiveTracks($trackCodes);
         }
+        elseif ($request->storageStage == 'sending') {
+            $result = $this->toSendTracks($trackCodes);
+        }
+        elseif ($request->storageStage == 'sorting') {
+            $result = $this->toSortTracks($trackCodes);
+        }
+        elseif ($request->storageStage == 'sendingLocally') {
+            $result = $this->toSendLocallyTracks($trackCodes);
+        }
         elseif ($request->storageStage == 'arrival') {
             $result = $this->toArriveTracks($trackCodes);
         }
@@ -189,6 +198,252 @@ class TrackExtensionController extends Controller
             'totalTracksCount' => $trackCodes->count(),
             'receivedTracksCount' => $unreceivedTracks->count() + $nonexistentTracks->count(),
             'existentTracksCount' => $receivedTracks->count(),
+        ];
+    }
+
+    public function toSendTracks($trackCodes)
+    {
+        $statusSent = Status::where('slug', 'sent')
+            ->orWhere('id', 3)
+            ->select('id', 'slug')
+            ->first();
+
+        $uniqueTrackCodes = collect($trackCodes)->unique();
+
+        // Track::whereIn('code', $trackCodes)->where('status', '<', $statusSent->id)->get();
+
+        // Get existent tracks
+        $existentTracks = Track::query()
+                ->where('status', '<=', $statusSent->id)
+                ->whereIn('code', $uniqueTrackCodes)
+                ->get();
+
+        $unsentTracks = $existentTracks->where('status', '<', $statusSent->id);
+        $unsentTracksStatus = [];
+
+        $sentTracks = $existentTracks->where('status', '>=', $statusSent->id);
+
+        $region = session()->get('jRegion');
+
+        $unsentTracks->each(function ($item, $key) use (&$unsentTracksStatus, $statusSent, $region) {
+            $unsentTracksStatus[] = [
+                'track_id' => $item->id,
+                'status_id' => $statusSent->id,
+                'region_id' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        });
+
+        // Update Unarrived Tracks
+        if ($unsentTracks->count() >= 1) {
+
+            try {
+                $resultInsert = TrackStatus::insert($unsentTracksStatus);
+
+                $resultUpdate = Track::whereIn('id', $unsentTracks->pluck('id')->toArray())
+                    ->update(['status' => $statusSent->id]);
+
+                if (!$resultInsert OR !$resultUpdate) {
+                    throw new \Exception("Error Processing Request", 1);
+                }
+            } catch (\Exception $e) {
+                echo 'Error: '.$e->getMessage();
+            }
+        }
+
+        $allSentTracks = $sentTracks->merge($unsentTracks);
+
+        $nonexistentTracks = collect($trackCodes)->diff($allSentTracks->pluck('code'));
+
+        // Create Tracks
+        foreach($nonexistentTracks as $code) {
+
+            $newTrack = new Track;
+            $newTrack->user_id = null;
+            $newTrack->lang = $this->lang;
+            $newTrack->code = $code;
+            $newTrack->description = '';
+            $newTrack->status  = $statusSent->id;
+            $newTrack->save();
+
+            $trackStatus = new TrackStatus();
+            $trackStatus->track_id = $newTrack->id;
+            $trackStatus->status_id = $statusSent->id;
+            $trackStatus->region_id = null;
+            $trackStatus->created_at = now();
+            $trackStatus->updated_at = now();
+            $trackStatus->save();
+        }
+
+        return [
+            'totalTracksCount' => $trackCodes->count(),
+            'sentTracksCount' => $unsentTracks->count() + $nonexistentTracks->count(),
+            'existentTracksCount' => $sentTracks->count(),
+        ];
+    }
+
+    public function toSortTracks($trackCodes)
+    {
+        $statusSorted = Status::where('slug', 'sorted')
+            ->orWhere('id', 4)
+            ->select('id', 'slug')
+            ->first();
+
+        $uniqueTrackCodes = collect($trackCodes)->unique();
+
+        // Track::whereIn('code', $trackCodes)->where('status', '<', $statusSorted->id)->get();
+
+        // Get existent tracks
+        $existentTracks = Track::query()
+                ->where('status', '<=', $statusSorted->id)
+                ->whereIn('code', $uniqueTrackCodes)
+                ->get();
+
+        $unsortedTracks = $existentTracks->where('status', '<', $statusSorted->id);
+        $unsortedTracksStatus = [];
+
+        $sortedTracks = $existentTracks->where('status', '>=', $statusSorted->id);
+
+        $region = session()->get('jRegion');
+
+        $unsortedTracks->each(function ($item, $key) use (&$unsortedTracksStatus, $statusSorted, $region) {
+            $unsortedTracksStatus[] = [
+                'track_id' => $item->id,
+                'status_id' => $statusSorted->id,
+                'region_id' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        });
+
+        // Update Unarrived Tracks
+        if ($unsortedTracks->count() >= 1) {
+
+            try {
+                $resultInsert = TrackStatus::insert($unsortedTracksStatus);
+
+                $resultUpdate = Track::whereIn('id', $unsortedTracks->pluck('id')->toArray())
+                    ->update(['status' => $statusSorted->id]);
+
+                if (!$resultInsert OR !$resultUpdate) {
+                    throw new \Exception("Error Processing Request", 1);
+                }
+            } catch (\Exception $e) {
+                echo 'Error: '.$e->getMessage();
+            }
+        }
+
+        $allSortedTracks = $sortedTracks->merge($unsortedTracks);
+
+        $nonexistentTracks = collect($trackCodes)->diff($allSortedTracks->pluck('code'));
+
+        // Create Tracks
+        foreach($nonexistentTracks as $code) {
+
+            $newTrack = new Track;
+            $newTrack->user_id = null;
+            $newTrack->lang = $this->lang;
+            $newTrack->code = $code;
+            $newTrack->description = '';
+            $newTrack->status  = $statusSorted->id;
+            $newTrack->save();
+
+            $trackStatus = new TrackStatus();
+            $trackStatus->track_id = $newTrack->id;
+            $trackStatus->status_id = $statusSorted->id;
+            $trackStatus->region_id = null;
+            $trackStatus->created_at = now();
+            $trackStatus->updated_at = now();
+            $trackStatus->save();
+        }
+
+        return [
+            'totalTracksCount' => $trackCodes->count(),
+            'sortedTracksCount' => $unsortedTracks->count() + $nonexistentTracks->count(),
+            'existentTracksCount' => $sortedTracks->count(),
+        ];
+    }
+
+    public function toSendLocallyTracks($trackCodes)
+    {
+        $statusSent = Status::where('slug', 'sent-locally')
+            ->orWhere('id', 5)
+            ->select('id', 'slug')
+            ->first();
+
+        $uniqueTrackCodes = collect($trackCodes)->unique();
+
+        // Track::whereIn('code', $trackCodes)->where('status', '<', $statusSent->id)->get();
+
+        // Get existent tracks
+        $existentTracks = Track::query()
+                ->where('status', '<=', $statusSent->id)
+                ->whereIn('code', $uniqueTrackCodes)
+                ->get();
+
+        $unsentTracks = $existentTracks->where('status', '<', $statusSent->id);
+        $unsentTracksStatus = [];
+
+        $sentTracks = $existentTracks->where('status', '>=', $statusSent->id);
+
+        $region = session()->get('jRegion');
+
+        $unsentTracks->each(function ($item, $key) use (&$unsentTracksStatus, $statusSent, $region) {
+            $unsentTracksStatus[] = [
+                'track_id' => $item->id,
+                'status_id' => $statusSent->id,
+                'region_id' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        });
+
+        // Update Unarrived Tracks
+        if ($unsentTracks->count() >= 1) {
+
+            try {
+                $resultInsert = TrackStatus::insert($unsentTracksStatus);
+
+                $resultUpdate = Track::whereIn('id', $unsentTracks->pluck('id')->toArray())
+                    ->update(['status' => $statusSent->id]);
+
+                if (!$resultInsert OR !$resultUpdate) {
+                    throw new \Exception("Error Processing Request", 1);
+                }
+            } catch (\Exception $e) {
+                echo 'Error: '.$e->getMessage();
+            }
+        }
+
+        $allSentTracks = $sentTracks->merge($unsentTracks);
+
+        $nonexistentTracks = collect($trackCodes)->diff($allSentTracks->pluck('code'));
+
+        // Create Tracks
+        foreach($nonexistentTracks as $code) {
+
+            $newTrack = new Track;
+            $newTrack->user_id = null;
+            $newTrack->lang = $this->lang;
+            $newTrack->code = $code;
+            $newTrack->description = '';
+            $newTrack->status  = $statusSent->id;
+            $newTrack->save();
+
+            $trackStatus = new TrackStatus();
+            $trackStatus->track_id = $newTrack->id;
+            $trackStatus->status_id = $statusSent->id;
+            $trackStatus->region_id = null;
+            $trackStatus->created_at = now();
+            $trackStatus->updated_at = now();
+            $trackStatus->save();
+        }
+
+        return [
+            'totalTracksCount' => $trackCodes->count(),
+            'sentTracksCount' => $unsentTracks->count() + $nonexistentTracks->count(),
+            'existentTracksCount' => $sentTracks->count(),
         ];
     }
 

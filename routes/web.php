@@ -78,12 +78,6 @@ Route::group(['prefix' => '/{lang}/storage', 'middleware' => ['auth', 'roles:adm
 });
 
 
-Route::get('test-mail', function() {
-
-    Mail::to('issayev.adilet@gmail.com')->send(new SendMailNotification());
-
-});
-
 // Joystick Administration
 Route::redirect('admin', '/'.app()->getLocale().'/admin');
 Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth', 'roles:admin|manager|partner']], function () {

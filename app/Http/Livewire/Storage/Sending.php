@@ -17,7 +17,7 @@ class Sending extends Component
     public $mode = 'list';
     public $trackCode;
     public $trackCodes = [];
-    public $allSentTracks = [];
+    public $allReceivedTracks = [];
 
     protected $rules = [
         'trackCode' => 'required|string|min:10|max:20',
@@ -48,7 +48,7 @@ class Sending extends Component
 
     public function getTracksIdByDate($dateFrom, $dateTo)
     {
-        $tracksGroup = $this->allSentTracks;
+        $tracksGroup = $this->allReceivedTracks;
 
         $tracks = $tracksGroup->when($dateTo, function ($tracksGroup) use ($dateFrom, $dateTo) {
 
@@ -71,7 +71,7 @@ class Sending extends Component
     {
         $ids = $this->getTracksIdByDate($dateFrom, $dateTo);
 
-        $this->trackCodes = $this->allSentTracks->whereIn('id', $ids)->sortByDesc('id');
+        $this->trackCodes = $this->allReceivedTracks->whereIn('id', $ids)->sortByDesc('id');
 
         $this->dispatchBrowserEvent('open-modal');
     }
@@ -80,7 +80,7 @@ class Sending extends Component
     {
         $ids = $this->getTracksIdByDate($dateFrom, $dateTo);
 
-        $tracks = $this->allSentTracks->whereIn('id', $ids);
+        $tracks = $this->allReceivedTracks->whereIn('id', $ids);
 
         $statusSent = Status::where('slug', 'sent')
             ->orWhere('id', 3)
@@ -164,8 +164,14 @@ class Sending extends Component
         if ($this->mode == 'list') {
             $sentTracks = Track::query()->where('status', $this->status->id)->orderByDesc('updated_at')->paginate(50);
         } else {
-            $sentTracks = Track::query()->where('status', $this->status->id)->get();
-            $this->allSentTracks = $sentTracks;
+
+            $statusReceived = Status::select('id', 'slug')
+                ->where('slug', 'received')
+                ->orWhere('id', 2)
+                ->first();
+
+            $sentTracks = Track::query()->where('status', $statusReceived->id)->get();
+            $this->allReceivedTracks = $sentTracks;
         }
 
         $tracks = [];

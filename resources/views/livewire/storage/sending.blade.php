@@ -78,18 +78,45 @@
     <h3>Sending</h3>
 
     <div class="row">
-      <div class="col-12 col-sm-3 mb-2">
+      <div class="col-12 col-sm-4 mb-2">
         <form wire:submit.prevent="toSend">
-          <div class="form-floating mb-3">
-            <input wire:model.defer="trackCode" type="text" class="form-control form-control-lg @error('trackCode') is-invalid @enderror" placeholder="Add track-code" id="trackCodeArea">
-            <label for="trackCodeArea">Enter track code</label>
+          <div class="input-group @error('trackCode') has-validation @enderror mb-3">
+            <div class="form-floating @error('trackCode') is-invalid @enderror">
+              <input wire:model.defer="trackCode" type="text" class="form-control form-control-lg" placeholder="Add track-code" id="trackCodeArea">
+              <label for="trackCodeArea">Enter track code</label>
+            </div>
+            <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalUploadDoc"><i class="bi bi-file-earmark-arrow-up-fill"></i></button>
             @error('trackCode')<div class="invalid-feedback">{{ $message }}</div>@enderror
           </div>
 
-          <button type="submit" id="toSend" wire:loading.attr="disabled" class="btn btn-primary btn-lg"><i class="bi bi-send"></i> To send</button>
+          <div class="input-group">
+            <?php $icons = ['list' => 'card-checklist', 'group' => 'collection']; ?>
+            <button class="btn btn-primary btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-{{ $icons[$mode] }}"></i> View
+            </button>
+            <ul class="dropdown-menu">
+              <li><a wire:click="setMode('list')" class="dropdown-item" href="#"><i class="bi bi-card-checklist"></i> List tracks</a></li>
+              <li><a wire:click="setMode('group')" class="dropdown-item" href="#"><i class="bi bi-collection"></i> Group tracks</a></li>
+            </ul>
+            <button type="submit" id="toSend" wire:loading.attr="disabled" class="btn btn-primary btn-lg"><i class="bi bi-send"></i> To send</button>
+          </div>
+
         </form>
       </div>
-      <div class="col-12 col-sm-9">
+      <div class="col-12 col-sm-8">
+
+        @if (session('result'))
+          <div class="alert alert-info">
+            <h4>Total tracks count: {{ session('result')['totalTracksCount'] }}pcs</h4>
+            <h4>Sent tracks count: {{ session('result')['sentTracksCount'] }}pcs</h4>
+            <h4>Existent tracks count: {{ session('result')['existentTracksCount'] }}pcs</h4>
+            <?php session()->forget('result'); ?>
+            <div>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          </div>
+        @endif
+
         @if($mode == 'group')
 
           <?php
@@ -106,16 +133,16 @@
             $twoWeekAgo   = $now->copy()->startOfWeek()->subWeek(3)->format('Y-m-d');
 
             // Grouped by date
-            $todayGroup         = $sentTracks->where('updated_at', '>', $yesterday.' 23:59:59')->where('updated_at', '<=', now());
-            $yesterdayGroup     = $sentTracks->where('updated_at', '>=', $yesterday)->where('updated_at', '<', $today);
-            $twoDaysAgoGroup    = $sentTracks->where('updated_at', '>', $twoDaysAgo)->where('updated_at', '<', $yesterday);
-            $threeDaysAgoGroup  = $sentTracks->where('updated_at', '>', $threeDaysAgo)->where('updated_at', '<', $twoDaysAgo);
-            $fourDaysAgoGroup   = $sentTracks->where('updated_at', '>', $fourDaysAgo)->where('updated_at', '<', $threeDaysAgo);
-            $fiveDaysAgoGroup   = $sentTracks->where('updated_at', '>', $fiveDaysAgo)->where('updated_at', '<', $fourDaysAgo);
-            $sixDaysAgoGroup    = $sentTracks->where('updated_at', '>', $sixDaysAgo)->where('updated_at', '<', $fiveDaysAgo);
-            $previousWeekGroup  = $sentTracks->where('updated_at', '>', $previousWeek)->where('updated_at', '<', $sixDaysAgo);
-            $twoWeekAgoGroup    = $sentTracks->where('updated_at', '>', $twoWeekAgo)->where('updated_at', '<', $previousWeek);
-            $prevTimeGroup      = $sentTracks->where('updated_at', '<', $twoWeekAgo);
+            $todayGroup         = $allReceivedTracks->where('updated_at', '>', $yesterday.' 23:59:59')->where('updated_at', '<=', now());
+            $yesterdayGroup     = $allReceivedTracks->where('updated_at', '>=', $yesterday)->where('updated_at', '<', $today);
+            $twoDaysAgoGroup    = $allReceivedTracks->where('updated_at', '>', $twoDaysAgo)->where('updated_at', '<', $yesterday);
+            $threeDaysAgoGroup  = $allReceivedTracks->where('updated_at', '>', $threeDaysAgo)->where('updated_at', '<', $twoDaysAgo);
+            $fourDaysAgoGroup   = $allReceivedTracks->where('updated_at', '>', $fourDaysAgo)->where('updated_at', '<', $threeDaysAgo);
+            $fiveDaysAgoGroup   = $allReceivedTracks->where('updated_at', '>', $fiveDaysAgo)->where('updated_at', '<', $fourDaysAgo);
+            $sixDaysAgoGroup    = $allReceivedTracks->where('updated_at', '>', $sixDaysAgo)->where('updated_at', '<', $fiveDaysAgo);
+            $previousWeekGroup  = $allReceivedTracks->where('updated_at', '>', $previousWeek)->where('updated_at', '<', $sixDaysAgo);
+            $twoWeekAgoGroup    = $allReceivedTracks->where('updated_at', '>', $twoWeekAgo)->where('updated_at', '<', $previousWeek);
+            $prevTimeGroup      = $allReceivedTracks->where('updated_at', '<', $twoWeekAgo);
 
             $allTracksGroups = [
               'today' => [
@@ -284,6 +311,31 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalUploadDoc" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form action="/{{ $lang }}/admin/upload-tracks" method="post" enctype="multipart/form-data">
+          @csrf
+          <input type="hidden" name="storageStage" value="sending">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="modalLabel">Uploading Track Codes</h1>
+            <button type="button" id="closeUploadDoc" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label" for="tracksDocArea">Select document</label>
+              <input type="file" name="tracksDoc" class="form-control form-control-lg @error('tracksDoc') is-invalid @enderror" placeholder="Add tracks doc" id="tracksDocArea" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.oasis.opendocument.spreadsheet,application/vnd.oasis.opendocument.spreadsheet,application/vnd.ms-excel">
+              @error('tracksDoc')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" id="uploadDoc" class="btn btn-primary btn-lg"><i class="bi bi-file-earmark-arrow-up-fill"></i> Upload doc</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>

@@ -5,6 +5,8 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class SendMailNotification extends Mailable
@@ -22,12 +24,36 @@ class SendMailNotification extends Mailable
     }
 
     /**
-     * Build the message.
+     * Get the message envelope.
      *
-     * @return $this
+     * @return \Illuminate\Mail\Mailables\Envelope
      */
-    public function build()
+    public function envelope()
     {
-        return $this->view('mail.arrived-tracks');
+        return new Envelope(
+            subject: 'Новые обновления на вашем аккаунте',
+        );
+    }
+
+    /**
+     * Get the message content definition.
+     *
+     * @return \Illuminate\Mail\Mailables\Content
+     */
+    public function content()
+    {
+        return new Content(
+            view: 'mail.arrived-tracks',
+        );
+    }
+
+    /**
+     * Get the attachments for the message.
+     *
+     * @return array
+     */
+    public function attachments()
+    {
+        return [];
     }
 }

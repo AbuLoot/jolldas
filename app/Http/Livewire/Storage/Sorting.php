@@ -33,7 +33,7 @@ class Sorting extends Component
 
         $this->lang = app()->getLocale();
         $this->status = Status::select('id', 'slug')
-            ->where('slug', 'sorting')
+            ->where('slug', 'sorted')
             ->orWhere('id', 4)
             ->first();
 
