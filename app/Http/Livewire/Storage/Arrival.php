@@ -12,8 +12,8 @@ use App\Models\Track;
 use App\Models\Status;
 use App\Models\TrackStatus;
 
-use App\Jobs\SendMailNotification;
-// use App\Mail\SendMailNotification;
+// use App\Jobs\SendMailNotification;
+use App\Mail\SendMailNotification;
 
 class Arrival extends Component
 {
@@ -106,10 +106,10 @@ class Arrival extends Component
         // Updating Track Status
         Track::whereIn('id', $ids)->update(['status' => $statusArrived->id]);
 
-        SendMailNotification::dispatch($tracksUsers);
-        // foreach($tracksUsers as $emailUser) {
-            // Mail::to($emailUser)->send(new SendMailNotification());
-        // }
+        // SendMailNotification::dispatch($tracksUsers);
+        foreach($tracksUsers as $emailUser) {
+            Mail::to($emailUser)->send(new SendMailNotification());
+        }
     }
 
     public function btnToArrive($trackCode)
@@ -163,8 +163,8 @@ class Arrival extends Component
         $track->save();
 
         if (isset($track->user->email)) {
-            SendMailNotification::dispatch($track->user->email);
-            // Mail::to($track->user->email)->send(new SendMailNotification());
+            // SendMailNotification::dispatch($track->user->email);
+            Mail::to($track->user->email)->send(new SendMailNotification());
         }
 
         $this->trackCode = null;
