@@ -311,7 +311,7 @@ class TrackExtensionController extends Controller
             $unsortedTracksStatus[] = [
                 'track_id' => $item->id,
                 'status_id' => $statusSorted->id,
-                'region_id' => null,
+                'region_id' => $region->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -393,7 +393,7 @@ class TrackExtensionController extends Controller
             $unsentTracksStatus[] = [
                 'track_id' => $item->id,
                 'status_id' => $statusSent->id,
-                'region_id' => null,
+                'region_id' => $region->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];

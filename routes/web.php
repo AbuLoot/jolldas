@@ -50,10 +50,6 @@ use App\Http\Livewire\Storage\SendLocally;
 use App\Http\Livewire\Storage\Arrival;
 use App\Http\Livewire\Storage\Giving;
 
-use Illuminate\Support\Facades\Mail;
-// use App\Jobs\SendMailNotification;
-use App\Mail\SendMailNotification;
-
 
 // Client Livewire Routes
 Route::redirect('client', '/'.app()->getLocale().'/client');
