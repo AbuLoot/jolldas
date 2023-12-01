@@ -17,6 +17,7 @@
         "laravel/tinker": "^2.5",
         "livewire/livewire": "^2.10",
         "mailersend/laravel-driver": "^2.3",
+        "mobizon/mobizon-php": "^2.0",
         "picqer/php-barcode-generator": "^2.2",
         "rap2hpoutre/fast-excel": "^5.1",
         "symfony/http-client": "^6.3",
