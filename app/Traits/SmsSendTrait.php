@@ -2,7 +2,8 @@
 
 namespace App\Traits;
 
-use Auth;
+use Illuminate\Support\Facades\Storage;
+
 use Mobizon\MobizonApi;
 
 trait SmsSendTrait {
@@ -13,24 +14,30 @@ trait SmsSendTrait {
      * API documentation: https://help.mobizon.com/help/api-docs
      */
 
-    public function sendSms() {
+    public function sendSms($user) {
 
         $api = new MobizonApi('kz7b06e6a6963ff8743a5b02fcbe59316cee88351356b45a5f02608698124a45af0194', 'api.mobizon.kz');
 
         echo 'Send message...' . PHP_EOL;
 
-        $alphaname = 'Jolldas Cargo';
+        // Create sms-log.txt if not exists
+        if (!Storage::exists('sms-log.txt')) {
+            Storage::disk('local')->put('sms-log.txt', 'Start');
+        }
 
-        if ($api->call('message', 'sendSMSMessage', [
-                'recipient' => '+77078875631',
-                'text' => 'Test sms message to',
-                'from' => $alphaname,
-                //Optional, if you don't have registered alphaname, just skip this param and your message will be sent with our free common alphaname.
-            ])) {
+        $alphaname = 'Jolldas Cargo';
+        $data = [
+            'recipient' => $user->tel,
+            'text' => 'Test sms message to'.$user->name.' '.$user->lastname,
+            'from' => $alphaname, //Optional, if you don't have registered alphaname, just skip this param and your message will be sent with our free common alphaname.
+        ];
+
+        if ($api->call('message', 'sendSMSMessage', $data)) {
 
             $messageId = $api->getData('messageId');
 
-            echo 'Message created with ID:' . $messageId . PHP_EOL;
+            // Record to sms-log.txt
+            Storage::prepend('sms-log.txt', 'Message created with ID:' . $messageId . PHP_EOL);
 
             if ($messageId) {
 
@@ -41,6 +48,7 @@ trait SmsSendTrait {
                 if ($api->hasData()) {
                     foreach ($api->getData() as $messageInfo) {
                         echo 'Message # ' . $messageInfo->id . " status:\t" . $messageInfo->status . PHP_EOL;
+                        // Storage::prepend('sms-log.txt', 'Message # ' . $messageInfo->id . " status:\t" . $messageInfo->status);
                     }
                 }
             }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 
+use App\Models\User;
 use App\Traits\SmsSendTrait;
 
 class PasswordResetLinkController extends Controller
@@ -36,7 +37,13 @@ class PasswordResetLinkController extends Controller
             'email' => ['required', 'email'],
         ]);
 
-        return $this->sendSms();
+        $user = User::where('email', $request->email)->first();
+
+        if ($user) {
+            $this->sendSms($user);
+        }
+
+        // dd(12);
 
         // We will send the password reset link to this user. Once we have attempted
         // to send the link, we will examine the response then see the message we
