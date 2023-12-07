@@ -52,6 +52,7 @@ class RegisteredUserController extends Controller
         // If is Kazakhstan
         if ($region->parent_id == 1) {
 
+            // $tel = trim($request->tel);
             $tel = str_replace(' ', '', $request->tel);
             $length = strlen($tel);
 

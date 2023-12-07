@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
@@ -31,6 +32,7 @@ class SendMailNotification extends Mailable implements ShouldQueue
     public function envelope()
     {
         return new Envelope(
+            from: new Address('joldas7799@gmail.com', 'Jolldas Team'),
             subject: 'Новые обновления на вашем аккаунте',
         );
     }

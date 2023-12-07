@@ -56,7 +56,7 @@ use App\Mail\SendMailNotification;
 
 Route::get('testm', function() {
 
-    Mail::to('issayev.adilet@gmail.com')->send(new SendMailNotification());
+    Mail::to('issa.adilet@gmail.com')->send(new SendMailNotification());
 });
 
 // Client Livewire Routes
