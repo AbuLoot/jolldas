@@ -20,6 +20,10 @@
           <label for="email">Email адрес</label>
         </div>
         <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">{{ __('Email Password Reset Link') }}</button>
+
+        @if (Route::has('password.request'))
+          <a href="/verify-user" class="w-100 mb-2 btn btn-lg btn-link">{{ __('Другой способ') }}</a>
+        @endif
       </form>
 
     </div>
