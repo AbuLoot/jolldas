@@ -161,6 +161,7 @@ Route::group(['prefix' => '{lang}/admin', 'middleware' => ['auth', 'roles:admin|
 // Route::get('search-ajax', [InputController::class, 'searchAjax']);
 Route::get('search-track', [InputController::class, 'searchTrack']);
 Route::post('send-app', [InputController::class, 'sendApp']);
+Route::post('calculate', [InputController::class, 'calculate']);
 
 
 // Market
