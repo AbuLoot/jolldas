@@ -14,7 +14,7 @@
   
     <div class="row">
 
-      <div class="col-8">
+      <div class="col-12 col-md-8">
         @if($post->image)
           <img src="/img/posts/{{ $post->image }}" class="img-fluid" alt="{{ $post->title }}">
         @endif

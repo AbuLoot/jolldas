@@ -14,7 +14,7 @@
   
     <div class="row">
 
-      <div class="col-8">
+      <div class="col-12 col-md-8">
         <h1>{{ $page->title }}</h1>
 
         @foreach($posts as $post)

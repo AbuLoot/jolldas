@@ -15,9 +15,8 @@
       <div class="carousel-item active">
         <img src="img/jolldas-2.jpg" class="bg-jolldas d-block w-lg-100 h-100" alt="...">
         <div class="carousel-caption d-none-d-md-block pb-2">
-          <div class="col-12 col-md-10 mx-auto text-bg-dark rounded-2 opacity-75 py-2 mb-3">
-            
-            <h1 class="display-4 fw-bold">Jolldas - верная логистика от Китая до дома с&nbsp;гарантией.</h1>
+          <div class="col-12 col-md-10 mx-auto text-bg-dark rounded-2 opacity-75 p-2 mb-3">
+            <h1 class="display-4 fw-bold">Jolldas - верная логистика от Китая до адреса с&nbsp;гарантией</h1>
             <!-- <h5 class="text-info">"За 2023 год, мы доставили более 300,000 грузов".</h5> -->
           </div>
 
@@ -34,7 +33,7 @@
   <div class="container mb-5">
     <div class="row align-items-md-stretch">
       <div class="col-md-6 mb-3">
-        <div class="h-100 py-5 px-4 text-bg-info border rounded-3">
+        <div class="h-100 py-5 px-4 bg-added border rounded-3">
           <h2>Гарантии</h2>
 
           <div class="container">
@@ -48,7 +47,7 @@
               <div class="col-12 d-flex align-items-start">
                 <span class="me-3"><i class="bi bi-shield-check fs-1"></i></span>
                 <div>
-                  <h3 class="mb-0 fs-4">Возмещяем утерянные или испорченные по нашей вине грузам</h3>
+                  <h3 class="mb-0 fs-4">Возмещяем утерянные или испорченные по нашей вине грузы</h3>
                 </div>
               </div>
               <div class="col-12 d-flex align-items-start">
