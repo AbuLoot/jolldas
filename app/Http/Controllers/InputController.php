@@ -145,7 +145,7 @@ class InputController extends Controller
         ]);
     }
 
-    public function calculate(Request $request, $lang)
+    public function calculate(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'length' => 'required|numeric|min:2|max:10',
@@ -154,8 +154,6 @@ class InputController extends Controller
             'weight' => 'required|numeric|min:2|max:10',
             'type_delivery' => 'required|numeric',
         ]);
-
-
 
         $typesDelivery = [
             '1' => 'standart-price',
@@ -174,6 +172,8 @@ class InputController extends Controller
 
         $amount = $length * $width * $height;
         $density = (int) round($weight / $amount);
+
+        // dd($length, $width, $height, $weight, $amount, $density);
 
         foreach ($densityPrice as $key => $value) {
 

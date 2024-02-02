@@ -63,7 +63,7 @@
       </div>
       <div class="col-md-6">
         <div class="h-100 p-5 text-bg-secondary border rounded-3">
-          <form method="POST" action="/{{ $lang }}/calculate" id="calc">
+          <form method="POST" action="/calculate" id="calc">
             @csrf
             <h2 class="mb-4">{{ __('app.price_calculator') }}</h2>
             <div class="row">
@@ -102,7 +102,7 @@
               </div>
             </div>
 
-            <button type="button" disabled class="btn btn-primary">{{ __('app.count') }}</button>
+            <button type="submit" class="btn btn-primary">{{ __('app.count') }}</button>
 
             @if(session('price'))
               <?php
@@ -118,7 +118,7 @@
                 <div class="h3">{{ __('app.bulk_density') }}: <span id="density">{{ session('density') }}</span></div>
                 <div class="h5">{{ __('app.delivery') }}: <span id="density">{{ $typesDelivery[session('typeDelivery')] }}</span></div>
                 <div class="h3">{{ __('app.price') }}: $<span class="price">{{ session('price') }}</span></div>
-                <div class="display-5">{{ __('app.total') }}: <span class="text-success fw-bold">${{ session('weight') * session('price') }}</span></div>
+                <div class="display-5">{{ __('app.total') }}: <span style="color: #20c997;" class="fw-bold">${{ session('weight') * session('price') }}</span></div>
               </div>
             @endif
           </form>
