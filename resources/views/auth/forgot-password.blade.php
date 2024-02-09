@@ -3,7 +3,7 @@
     <div class="col-lg-5 col-md-7 col-sm-9 mx-auto">
 
       <div class="p-4">
-          {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+          {{ __('Забыли пароль? Без проблем. Просто введите свой email, и мы вышлем вам ссылку для сброса пароля.') }}
       </div>
 
 			<!-- Session Status -->
@@ -19,7 +19,7 @@
           <input type="email" class="form-control rounded-3" id="email" name="email" :value="old('email')" placeholder="name@example.com" required autofocus>
           <label for="email">Email адрес</label>
         </div>
-        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">{{ __('Email Password Reset Link') }}</button>
+        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">{{ __('Получить ссылку на почту') }}</button>
 
         @if (Route::has('password.request'))
           <a href="/verify-user" class="w-100 mb-2 btn btn-lg btn-link">{{ __('Другой способ') }}</a>

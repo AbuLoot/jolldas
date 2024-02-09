@@ -30,7 +30,7 @@ class SectionController extends Controller
         $this->authorize('create', Section::class);
 
         $this->validate($request, [
-            'title' => 'required|min:5|max:80|unique:sections',
+            'title' => 'required|min:3|max:80|unique:sections',
         ]);
 
         $data = [];
@@ -40,6 +40,8 @@ class SectionController extends Controller
             $data[$i]['value'] = $request->data['value'][$i];
         }
 
+        // dd(serialize($data));
+
         $section = new Section;
 
         $section->sort_id = ($request->sort_id > 0) ? $request->sort_id : $section->count() + 1;
@@ -47,9 +49,7 @@ class SectionController extends Controller
         $section->title = $request->title;
         $section->image = NULL;
         $section->images = NULL;
-        $section->data_1 = serialize($data[0]);
-        $section->data_2 = serialize($data[1]);
-        $section->data_3 = serialize($data[2]);
+        $section->data = serialize($data);
         $section->content = $request->content;
         $section->lang = $request->lang;
         $section->status = ($request->status == 'on') ? 1 : 0;
@@ -74,10 +74,15 @@ class SectionController extends Controller
         ]);
 
         $data = [];
+        $n = 0;
 
         for ($i = 0; $i < count($request->data['key']); $i++) {
-            $data[$i]['key'] = $request->data['key'][$i];
-            $data[$i]['value'] = $request->data['value'][$i];
+
+            if (isset($request->data['key'][$i])) {
+                $data[$n]['key'] = $request->data['key'][$i];
+                $data[$n]['value'] = $request->data['value'][$i];
+                $n++;
+            }
         }
 
         $section = Section::findOrFail($id);
@@ -89,9 +94,7 @@ class SectionController extends Controller
         $section->title = $request->title;
         $section->image = NULL;
         $section->images = NULL;
-        $section->data_1 = serialize($data[0]);
-        $section->data_2 = serialize($data[1]);
-        $section->data_3 = serialize($data[2]);
+        $section->data = serialize($data);
         $section->content = $request->content;
         $section->lang = $request->lang;
         $section->status = ($request->status == 'on') ? 1 : 0;

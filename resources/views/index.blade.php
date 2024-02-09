@@ -41,13 +41,13 @@
               <div class="col-12 d-flex align-items-start">
                 <span class="me-3"><i class="bi bi-shield-check fs-1"></i></span>
                 <div>
-                  <h3 class="mb-0 fs-4">Заключаем договор с клиентом на справедливых условиях</h3>
+                  <h3 class="mb-0 fs-4">Заключаем договор с&nbsp;клиентом на&nbsp;справедливых условиях</h3>
                 </div>
               </div>
               <div class="col-12 d-flex align-items-start">
                 <span class="me-3"><i class="bi bi-shield-check fs-1"></i></span>
                 <div>
-                  <h3 class="mb-0 fs-4">Возмещяем утерянные или испорченные по нашей вине грузы</h3>
+                  <h3 class="mb-0 fs-4">Возмещяем утерянным или&nbsp;испорченным по нашей вине грузам</h3>
                 </div>
               </div>
               <div class="col-12 d-flex align-items-start">
@@ -118,7 +118,14 @@
                 <div class="h3">{{ __('app.bulk_density') }}: <span id="density">{{ session('density') }}</span></div>
                 <div class="h5">{{ __('app.delivery') }}: <span id="density">{{ $typesDelivery[session('typeDelivery')] }}</span></div>
                 <div class="h3">{{ __('app.price') }}: $<span class="price">{{ session('price') }}</span></div>
-                <div class="display-5">{{ __('app.total') }}: <span style="color: #20c997;" class="fw-bold">${{ session('weight') * session('price') }}</span></div>
+                <div class="display-5">
+                  {{ __('app.total') }}:
+                  @if(in_array(session('densityRange')[0], ['100', '800', '1000']))
+                    <span style="color: #20c997;" class="fw-bold">${{ session('price') }}</span>
+                  @else
+                    <span style="color: #20c997;" class="fw-bold">${{ session('weight') * session('price') }}</span>
+                  @endif
+                </div>
               </div>
             @endif
           </form>
@@ -157,7 +164,7 @@
 
           <div class="d-flex flex-column gap-2">
             <div><i class="bi bi-person-video text-info fs-1"></i></div>
-            <h4 class="mb-0">Консультируем, информируем и обучаем</h4>
+            <h4 class="mb-0">Консультируем, информируем и&nbsp;обучаем</h4>
           </div>
         </div>
       </div>
@@ -172,34 +179,38 @@
   </style>
 
   <!-- How we works? -->
-  <div class="container text-center mb-5">
-    <h2 class="mb-5">Как мы работаем?</h2>
+  <div class="container mb-5">
+    <h2 class="text-center mb-5">Как мы работаем?</h2>
 
-    <div class="row align-items-start mb-4">
-      <div class="col">
-        <div class="mx-auto p-2 stage-nums display-6 bg-info rounded-2 fw-bold">1</div>
-        <p class="fw-bold- mt-2">Регистрируетесь на сайте и получаете личный ID код</p>
-      </div>
-      <div class="col">
-        <div class="mx-auto p-2 stage-nums display-6 bg-info rounded-2 fw-bold">2</div>
-        <p class="fw-bold- mt-2">На интернет площадках указываете ID код и наш адрес склада в Китае</p>
-      </div>
-      <div class="col">
-        <div class="mx-auto p-2 stage-nums display-6 bg-info rounded-2 fw-bold">3</div>
-        <p class="fw-bold- mt-2">Мы принимаем ваш заказ и вносим трек-код в веб-приложения Jolldas</p>
-      </div>
-      <div class="col">
-        <div class="mx-auto p-2 stage-nums display-6 bg-info rounded-2 fw-bold">4</div>
-        <p class="fw-bold- mt-2">Хорошо упаковав товар, отправляем в Казахстан</p>
-      </div>
-      <div class="col">
-        <div class="mx-auto p-2 stage-nums display-6 bg-info rounded-2 fw-bold">5</div>
-        <p class="fw-bold- mt-2">После прибытия оповещяем вас на сайте или же через почту</p>
-      </div>
+    <div class="row">
+      <section class="col-12 col-md-10 offset-md-2 mb-5">
+        <ul class="timeline-with-icons">
+          <li class="timeline-item mb-2">
+            <span class="timeline-icon bg-success text-white fs-2 p-4">1</span>
+            <p class="ms-3 mb-4 pt-2 fs-5">Регистрируетесь на сайте и получаете личный ID код</p>
+          </li>
+          <li class="timeline-item mb-2">
+            <span class="timeline-icon bg-success text-white fs-2 p-4">2</span>
+            <p class="ms-3 mb-4 pt-2 fs-5">На интернет площадках указываете ID код и наш адрес склада в Китае</p>
+          </li>
+          <li class="timeline-item mb-2">
+            <span class="timeline-icon bg-success text-white fs-2 p-4">3</span>
+            <p class="ms-3 mb-4 pt-2 fs-5">Мы принимаем ваш заказ и вносим трек-код в веб-приложения Jolldas</p>
+          </li>
+          <li class="timeline-item mb-2">
+            <span class="timeline-icon bg-success text-white fs-2 p-4">4</span>
+            <p class="ms-3 mb-4 pt-2 fs-5">Хорошо упаковав товар, отправляем в Казахстан</p>
+          </li>
+          <li class="timeline-item mb-2">
+            <span class="timeline-icon bg-success text-white fs-2 p-4">5</span>
+            <p class="ms-3 mb-4 pt-2 fs-5">После прибытия оповещяем вас на сайте или же через почту</p>
+          </li>
+        </ul>
+      </section>
     </div>
 
     <div class="row">
-      <div class="ms-auto">
+      <div class="ms-auto text-center">
         <a href="/login" class="btn btn-outline-dark btn-lg me-2">Вход</a>
         <a href="/register" class="btn btn-warning btn-lg">Регистрация</a>
       </div>

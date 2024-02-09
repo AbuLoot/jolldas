@@ -31,35 +31,33 @@
           <label for="meta_description">Мета описание</label>
           <input type="text" class="form-control" id="meta_description" name="meta_description" maxlength="255" value="{{ (old('meta_description')) ? old('meta_description') : '' }}">
         </div>
-        <div class="form-group row">
-          <div class="col-md-3">
-            <label for="data_1_key">Название</label>
-            <input type="text" class="form-control" id="data_1_key" name="data[key][]" maxlength="255" value="{{ (old('data_1_key')) ? old('data_1_key') : '' }}">
+        <div id="keyValue">
+          <div class="form-group row">
+            <div class="col-md-3">
+              <label for="key_1">Название</label>
+              <input type="text" class="form-control" id="key_1" name="data[key][]" maxlength="255" value="{{ (old('key_1')) ? old('key_1') : '' }}">
+            </div>
+            <div class="col-md-3">
+              <label for="value_1">Значение</label>
+              <input type="text" class="form-control" id="value_1" name="data[value][]" maxlength="255" value="{{ (old('value_1')) ? old('value_1') : '' }}">
+            </div>
           </div>
-          <div class="col-md-5">
-            <label for="data_1_value">Значение - чтобы разделить значения используйте знак /</label>
-            <input type="text" class="form-control" id="data_1_value" name="data[value][]" maxlength="255" value="{{ (old('data_1_value')) ? old('data_1_value') : '' }}">
+          <div class="form-group row">
+            <div class="col-md-3">
+              <label for="key_2">Название</label>
+              <input type="text" class="form-control" id="key_2" name="data[key][]" maxlength="255" value="{{ (old('key_2')) ? old('key_2') : '' }}">
+            </div>
+            <div class="col-md-3">
+              <label for="value_2">Значение</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="value_2" name="data[value][]" maxlength="255" value="{{ (old('value_2')) ? old('value_2') : '' }}">
+                <div class="input-group-addon" onclick="deleteKeyValueFields(this)" style="cursor:pointer;"><i class="material-icons md-18">clear</i></div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="form-group row">
-          <div class="col-md-3">
-            <label for="data_2_key">Название</label>
-            <input type="text" class="form-control" id="data_2_key" name="data[key][]" maxlength="255" value="{{ (old('data_2_key')) ? old('data_2_key') : '' }}">
-          </div>
-          <div class="col-md-5">
-            <label for="data_2_value">Значение - чтобы разделить значения используйте знак /</label>
-            <input type="text" class="form-control" id="data_2_value" name="data[value][]" maxlength="255" value="{{ (old('data_2_value')) ? old('data_2_value') : '' }}">
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-md-3">
-            <label for="data_3_key">Название</label>
-            <input type="text" class="form-control" id="data_3_key" name="data[key][]" maxlength="255" value="{{ (old('data_3_key')) ? old('data_3_key') : '' }}">
-          </div>
-          <div class="col-md-5">
-            <label for="data_3_value">Значение - чтобы разделить значения используйте знак /</label>
-            <input type="text" class="form-control" id="data_3_value" name="data[value][]" maxlength="255" value="{{ (old('data_3_value')) ? old('data_3_value') : '' }}">
-          </div>
+        <div class="form-group">
+          <button type="button" class="btn btn-success" onclick="addKeyValueFields(this)"><span class="material-icons md-18">add</span> Добавить поле</button>
         </div>
         <div class="form-group">
           <label for="content">Контент</label>
@@ -96,5 +94,28 @@
 @endsection
 
 @section('scripts')
+  <script>
+    function addKeyValueFields() {
+      var keyValueFields = 
+          '<div class="form-group row">' +
+            '<div class="col-md-3">' +
+              '<label for="key_3">Название</label>' +
+              '<input type="text" class="form-control" id="key_3" name="data[key][]" maxlength="255">' +
+            '</div>' +
+            '<div class="col-md-3">' +
+              '<label for="value_3">Значение</label>' +
+              '<div class="input-group">' +
+                '<input type="text" class="form-control" id="value_3" name="data[value][]" maxlength="255">' +
+                '<div class="input-group-addon" onclick="deleteKeyValueFields(this)" style="cursor:pointer;"><i class="material-icons md-18">clear</i></div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
 
+      $('#keyValue').append(keyValueFields);
+    }
+
+    function deleteKeyValueFields(i) {
+      $(i).parent().parent().parent().remove();
+    }
+  </script>
 @endsection

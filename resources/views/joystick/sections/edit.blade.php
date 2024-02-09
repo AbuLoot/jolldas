@@ -37,38 +37,53 @@
           <label for="meta_description">Мета описание</label>
           <input type="text" class="form-control" id="meta_description" name="meta_description" maxlength="255" value="{{ (old('meta_description')) ? old('meta_description') : $section->meta_description }}">
         </div>
-        <?php $data_1 = unserialize($section->data_1); ?>
-        <div class="form-group row">
-          <div class="col-md-3">
-            <label for="data_1_key">Название</label>
-            <input type="text" class="form-control" id="data_1_key" name="data[key][]" maxlength="255" value="{{ $data_1['key'] }}">
+        <div id="keyValue">
+          <?php $data = unserialize($section->data); ?>
+          <div class="form-group row">
+            <div class="col-md-3">
+              <label for="key_0">Название</label>
+              <input type="text" class="form-control" id="key_0" name="data[key][]" maxlength="255" value="{{ $data[0]['key'] ?? '' }}">
+            </div>
+            <div class="col-md-3">
+              <label for="value_0">Значение</label>
+              <input type="text" class="form-control" id="value_0" name="data[value][]" maxlength="255" value="{{ $data[0]['value'] ?? '' }}">
+            </div>
           </div>
-          <div class="col-md-5">
-            <label for="data_1_value">Значение - чтобы разделить значения используйте знак /</label>
-            <input type="text" class="form-control" id="data_1_value" name="data[value][]" maxlength="255" value="{{ $data_1['value'] }}">
-          </div>
+          <?php $keyLast = (!empty($data)) ? array_key_last($data) : 1; //dd($data, $keyLast); ?>
+          @for ($i = 1; $i <= (($keyLast >= 1) ? $keyLast : 1); $i++)
+            @if(array_key_exists($i, $data))
+              <div class="form-group row">
+                <div class="col-md-3">
+                  <label for="key_{{ $i }}">Название</label>
+                  <input type="text" class="form-control" id="key_{{ $i }}" name="data[key][]" maxlength="255" value="{{ $data[$i]['key'] }}">
+                </div>
+                <div class="col-md-3">
+                  <label for="value_{{ $i }}">Значение</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="value_{{ $i }}" name="data[value][]" maxlength="255" value="{{ $data[$i]['value'] }}">
+                    <div class="input-group-addon" onclick="deleteKeyValueFields(this)" style="cursor:pointer;"><i class="material-icons md-18">clear</i></div>
+                  </div>
+                </div>
+              </div>
+            @else
+              <div class="form-group row">
+                <div class="col-md-3">
+                  <label for="key_{{ $i }}">Название</label>
+                  <input type="text" class="form-control" id="key_{{ $i }}" name="data[key][]" maxlength="255" value="">
+                </div>
+                <div class="col-md-3">
+                  <label for="value_{{ $i }}">Значение</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="value_{{ $i }}" name="data[value][]" maxlength="255" value="">
+                    <div class="input-group-addon" onclick="deleteKeyValueFields(this)" style="cursor:pointer;"><i class="material-icons md-18">clear</i></div>
+                  </div>
+                </div>
+              </div>
+            @endif
+          @endfor
         </div>
-        <?php $data_2 = unserialize($section->data_2); ?>
-        <div class="form-group row">
-          <div class="col-md-3">
-            <label for="data_2_key">Название</label>
-            <input type="text" class="form-control" id="data_2_key" name="data[key][]" maxlength="255" value="{{ $data_2['key'] }}">
-          </div>
-          <div class="col-md-5">
-            <label for="data_2_value">Значение - чтобы разделить значения используйте знак /</label>
-            <input type="text" class="form-control" id="data_2_value" name="data[value][]" maxlength="255" value="{{ $data_2['value'] }}">
-          </div>
-        </div>
-        <?php $data_3 = unserialize($section->data_3); ?>
-        <div class="form-group row">
-          <div class="col-md-3">
-            <label for="data_3_key">Название</label>
-            <input type="text" class="form-control" id="data_3_key" name="data[key][]" maxlength="255" value="{{ $data_3['key'] }}">
-          </div>
-          <div class="col-md-5">
-            <label for="data_3_value">Значение - чтобы разделить значения используйте знак /</label>
-            <input type="text" class="form-control" id="data_3_value" name="data[value][]" maxlength="255" value="{{ $data_3['value'] }}">
-          </div>
+        <div class="form-group">
+          <button type="button" class="btn btn-success" onclick="addKeyValueFields(this)"><span class="material-icons md-18">add</span> Добавить поле</button>
         </div>
         <div class="form-group">
           <label for="content">Контент</label>
@@ -106,5 +121,28 @@
 @endsection
 
 @section('scripts')
+  <script>
+    function addKeyValueFields() {
+      var keyValueFields = 
+          '<div class="form-group row">' +
+            '<div class="col-md-3">' +
+              '<label for="data_3_key">Название</label>' +
+              '<input type="text" class="form-control" id="data_3_key" name="data[key][]" maxlength="255">' +
+            '</div>' +
+            '<div class="col-md-3">' +
+              '<label for="data_3_value">Значение</label>' +
+              '<div class="input-group">' +
+                '<input type="text" class="form-control" id="data_3_value" name="data[value][]" maxlength="255">' +
+                '<div class="input-group-addon" onclick="deleteKeyValueFields(this)" style="cursor:pointer;"><i class="material-icons md-18">clear</i></div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
 
+      $('#keyValue').append(keyValueFields);
+    }
+
+    function deleteKeyValueFields(i) {
+      $(i).parent().parent().parent().remove();
+    }
+  </script>
 @endsection
