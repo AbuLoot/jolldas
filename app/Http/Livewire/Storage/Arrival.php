@@ -163,8 +163,9 @@ class Arrival extends Component
         $track->save();
 
         if (isset($track->user->email)) {
+            $user = User::where('email', $track->user->email)->first();
             // SendMailNotification::dispatch($track->user->email);
-            Mail::to($track->user->email)->send(new SendMailNotification());
+            Mail::to($track->user->email)->send(new SendMailNotification($track, $user));
         }
 
         $this->trackCode = null;

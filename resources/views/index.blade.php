@@ -227,7 +227,7 @@
         <p class="display-5 fw-bold">Обращяйтесь.</p>
       </div>
       <div class="col-md-10 mx-auto col-lg-5">
-        <form method="POST" action="/{{ $lang }}/send-app" id="app-form" class="p-4 p-md-5 border rounded-3 bg-body-tertiary">
+        <form method="POST" action="/send-app" id="app-form" class="p-4 p-md-5 border rounded-3 bg-body-tertiary">
           @csrf
           @include('components.alerts')
           <h3 class="mb-3">{{ __('app.app_form') }}</h3>

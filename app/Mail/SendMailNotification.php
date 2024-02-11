@@ -10,18 +10,24 @@ use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
+use App\Models\Track;
+
 class SendMailNotification extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
+
+    protected $track;
+    protected $user;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Track $track, $user)
     {
-        //
+        $this->track = $track;
+        $this->user = $user;
     }
 
     /**
@@ -32,8 +38,8 @@ class SendMailNotification extends Mailable implements ShouldQueue
     public function envelope()
     {
         return new Envelope(
-            from: new Address('joldas7799@gmail.com', 'Jolldas Team'),
-            subject: 'Новые обновления на вашем аккаунте',
+            from: new Address('joldas7799@gmail.com', 'Jolldas Service'),
+            subject: 'Поступили новые грузы на склад',
         );
     }
 
@@ -46,6 +52,10 @@ class SendMailNotification extends Mailable implements ShouldQueue
     {
         return new Content(
             view: 'mail.arrived-tracks',
+            with: [
+                'trackCode' => $this->track->code,
+                'trackUser' => $this->user,
+            ],
         );
     }
 
