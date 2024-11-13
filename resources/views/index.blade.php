@@ -15,9 +15,12 @@
       <div class="carousel-item active">
         <img src="img/jolldas-2.jpg" class="bg-jolldas d-block w-lg-100 h-100" alt="...">
         <div class="carousel-caption d-none-d-md-block pb-2">
-          <div class="col-12 col-md-10 mx-auto text-bg-dark rounded-2 opacity-75 p-2 mb-3">
-            <h1 class="display-4 fw-bold">Jolldas - верная логистика от Китая до адреса с&nbsp;гарантией</h1>
+          <div class="col-12 col-md-10 mx-auto text-bg-dark rounded-2 opacity-75- p-2 mb-3">
+            <h1 class="display-4 fw-bold">Jolldas - верная логистика</h1>
+            <!-- <h1 class="display-4 fw-bold">Jolldas - верная логистика от Китая до адреса с&nbsp;гарантией</h1> -->
             <!-- <h5 class="text-info">"За 2023 год, мы доставили более 300,000 грузов".</h5> -->
+            <h2>Jolldas переходит на сайт <a href="https://jibekjol.kz/kz">Jibekjol</a>. Используйте свой прежний логин и пароль, чтобы пользоваться сервисом.</h2>
+            <div><a href="/" class="btn btn-primary btn-lg">Перейти на jibekjol.kz </a></div>
           </div>
 
           <h3 class="d-noned-md-block fw-normal text-shadow-1">Отслеживание по трек коду</h3>

@@ -377,10 +377,7 @@ class TrackExtensionController extends Controller
         // Track::whereIn('code', $trackCodes)->where('status', '<', $statusSent->id)->get();
 
         // Get existent tracks
-        $existentTracks = Track::query()
-                ->where('status', '<=', $statusSent->id)
-                ->whereIn('code', $uniqueTrackCodes)
-                ->get();
+        $existentTracks = Track::where('status', '<=', $statusSent->id)->whereIn('code', $uniqueTrackCodes)->get();
 
         $unsentTracks = $existentTracks->where('status', '<', $statusSent->id);
         $unsentTracksStatus = [];

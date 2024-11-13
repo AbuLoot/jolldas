@@ -32,6 +32,8 @@ trait SmsSendTrait {
             'from' => $alphaname, //Optional, if you don't have registered alphaname, just skip this param and your message will be sent with our free common alphaname.
         ];
 
+        // dd($api);
+
         if ($api->call('message', 'sendSMSMessage', $data)) {
 
             $messageId = $api->getData('messageId');

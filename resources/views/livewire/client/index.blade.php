@@ -37,6 +37,10 @@
   </div>
 
   <div class="container">
+    <div class="alert alert-info">
+      <h2>Jolldas переходит на сайт <a href="https://jibekjol.kz/kz">Jibekjol</a>. Используйте свой прежний логин и пароль, чтобы пользоваться сервисом.</h2>
+      <div><a href="https://jibekjol.kz/kz" class="btn btn-primary btn-lg">Перейти на jibekjol.kz </a></div>
+    </div>
     <!-- Content -->
     @foreach($tracks as $track)
       <div class="track-item mb-2">
